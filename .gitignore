@@ -1,0 +1,8 @@
+# for WebStorm
+.idea/
+
+# for npm
+node_modules/
+
+# for grunt
+d.ts/
