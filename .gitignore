@@ -6,3 +6,8 @@ node_modules/
 
 # for grunt
 d.ts/
+
+# misc
+*.js
+node-git/
+
