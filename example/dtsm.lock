@@ -1,0 +1,13 @@
+{
+    "dependencies": {
+        "jquery": "768468234327432",
+        "breeze": "0123456789abcdef",
+        "angular": "47895435438345",
+        "three.js": "74895438953",
+        "popcornjs": "43278436423"
+    },
+    "devDependencies": {
+        "jasmine": "734895734895734",
+        "angular-mocks": "54378574953"
+    }
+}
