@@ -1,4 +1,4 @@
-/// <reference path="node.d.ts" />
+/// <reference path="../DefinitelyTyped/node.d.ts" />
 
 import fs = require("fs");
 import gitWrapper = require("./wrapper/Git");

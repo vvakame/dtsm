@@ -1,57 +1,41 @@
 {
-  "name": "reviewjs",
-  "author": "vvakame",
-  "private": true,
-  "version": "0.1.0",
-  "description": "ReVIEW implementation by JavaScript",
-  "main": "./bin/review.js",
-  "bin": {
-    "reviewjs": "./bin/review.js"
-  },
-  "scripts": {
-    "build": "grunt default",
-    "test": "grunt test"
-  },
-  "keywords": [
-    "ReVIEW"
-  ],
-  "homepage": "https://github.com/vvakame/review.js",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:vvakame/review.js.git"
-  },
-  "bugs": {
-    "url": "https://github.com/vvakame/review.js/issues"
-  },
-  "engines": {
-    "node": ">= 0.10.0"
-  },
-  "dependencies": {
-    "commander": "2.0.0",
-    "i18next": "1.7.1",
-    "colors": "0.6.2"
-  },
-  "devDependencies": {
-    "grunt": "0.4.1",
-    "pegjs": "git://github.com/dmajda/pegjs.git#5312e124cde69d328d6de86809fd68d1a6b1399e",
-    "pegjs-override-action": "0.0.7",
-    "tsd": "0.3.1",
-    "grunt-contrib-clean": "0.5.0",
-    "grunt-contrib-copy": "0.4.1",
-    "grunt-contrib-uglify": "0.2.5",
-    "grunt-contrib-concat": "0.3.0",
-    "grunt-contrib-watch": "0.5.3",
-    "grunt-typescript": "0.2.4",
-    "grunt-tslint": "0.3.2",
-    "grunt-bower-task": "0.3.2",
-    "grunt-karma": "0.6.2",
-    "karma-phantomjs-launcher": "0.1.0",
-    "karma-junit-reporter": "0.1.0",
-    "grunt-jasmine-node": "git://github.com/tmtk75/grunt-jasmine-node-deprecated.git#142e99002d5d4d1f5a700e3de073ce30744f75fb",
-    "jasmine-node": "1.11.0",
-    "grunt-exec": "0.4.2",
-    "grunt-open": "0.2.2",
-    "matchdep": "0.3.0",
-    "git": "~0.1.5"
-  }
+	"name": "dtsm",
+	"author": "vvakame",
+	"private": true,
+	"version": "0.1.0",
+	"description": ".d.ts manager",
+	"main": "./bin/review.js",
+	"bin": {
+		"reviewjs": "./bin/review.js"
+	},
+	"scripts": {
+		"build": "grunt default",
+		"test": "grunt test"
+	},
+	"keywords": [
+		"typescript"
+	],
+	"homepage": "https://github.com/vvakame/dtsm",
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:vvakame/dtsm.git"
+	},
+	"bugs": {
+		"url": "https://github.com/vvakame/dtsm/issues"
+	},
+	"engines": {
+		"node": ">= 0.10.0"
+	},
+	"dependencies": {
+		"commander": "2.0.0",
+		"colors": "0.6.2",
+		"git": "0.1.5"
+	},
+	"devDependencies": {
+		"grunt": "0.4.2",
+		"grunt-contrib-clean": "0.5.0",
+		"grunt-contrib-watch": "0.5.3",
+		"grunt-typescript": "0.2.4",
+		"matchdep": "0.3.0"
+	}
 }

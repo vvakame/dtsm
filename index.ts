@@ -1,4 +1,4 @@
-/// <reference path="lib/node.d.ts" />
+/// <reference path="DefinitelyTyped/node.d.ts" />
 
 import dtsm = require("./lib/Dtsm");
 dtsm.Manager.run();

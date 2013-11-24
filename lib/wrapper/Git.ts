@@ -1,4 +1,4 @@
-/// <reference path="node-git.d.ts" />
+/// <reference path="../../DefinitelyTyped/node-git.d.ts" />
 
 import base = require("git");
 
