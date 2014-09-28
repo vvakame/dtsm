@@ -1,0 +1,35 @@
+{
+    "name": "dtsm",
+    "author": "TypeScript definition file manager",
+    "version": "0.0.1",
+    "private": true,
+    "description": "TypeScript definition file (.d.ts) manager",
+    "main": "./index",
+    "scripts": {
+        "test": "grunt test"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "packagemanager-backend": "0.1.0",
+        "ypromise": "0.2.3"
+    },
+    "devDependencies": {
+        "espower-loader": "0.9.1",
+        "grunt": "0.4.5",
+        "grunt-contrib-clean": "0.6.0",
+        "grunt-mocha-test": "0.12.0",
+        "grunt-ts": "1.12.1",
+        "grunt-tsd": "0.1.0",
+        "grunt-tslint": "0.4.2",
+        "grunt-typedoc": "0.2.1",
+        "load-grunt-tasks": "0.6.0",
+        "mocha": "1.21.4",
+        "power-assert": "0.9.0",
+        "source-map-support": "0.2.7",
+        "time-grunt": "1.0.0",
+        "typescript": "1.0.1"
+    },
+    "directories": {
+        "test": "test"
+    }
+}
