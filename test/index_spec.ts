@@ -9,7 +9,7 @@ import fs = require("fs");
 import dtsm = require("../lib/index");
 
 describe("dtsm", ()=> {
-    describe.skip(".init", () => {
+    describe(".init", () => {
 
         var dtsmFilePath = "./test-tmp/dtsm.json";
 

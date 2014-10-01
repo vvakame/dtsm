@@ -12,8 +12,6 @@ if (notifier.update) {
     notifier.notify();
 }
 
-import fs = require("fs");
-
 import dtsm = require("./index");
 
 import program = require("commander");
@@ -21,6 +19,17 @@ import program = require("commander");
 (<any>program)
     .version(pkg.version, "-v, --version")
     .option("--force-online", "force turn on online check");
+
+program
+    .command("init")
+    .description("make new dtsm.json")
+    .action((opts:{})=> {
+        var path = "dtsm.json";
+        var jsonContent = dtsm.init(path);
+
+        console.log("write to " + path);
+        console.log(jsonContent);
+    });
 
 program
     .command("search [phrase]")

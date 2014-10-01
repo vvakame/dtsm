@@ -3,6 +3,7 @@
 
 /// <reference path="../typings/node/node.d.ts" />
 /// <reference path="../typings/es6-promise/es6-promise.d.ts" />
+/// <reference path="../typings/mkdirp/mkdirp.d.ts" />
 
 try {
     // optional
@@ -10,7 +11,11 @@ try {
 } catch (e) {
 }
 
-import fsgit = require("fs-git"); // only types, do not emit.
+import fs = require("fs");
+import mkdirp = require("mkdirp");
+import _path = require("path");
+
+import fsgit = require("fs-git");
 import _pmb = require("packagemanager-backend");
 
 var pmb = new _pmb.PackageManagerBackend({
@@ -24,8 +29,27 @@ var pmb = new _pmb.PackageManagerBackend({
     ]
 });
 
-export function init(path:string):void {
+export function init(path:string):string {
     "use strict";
+
+    var content:any; // TODO type annotation
+
+    if (fs.existsSync(path)) {
+        content = JSON.parse(fs.readFileSync(path, "utf8"));
+    }
+
+    content = content || {};
+    content.baseRepo = content.baseRepo || "https://github.com/borisyankov/DefinitelyTyped.git";
+    content.baseRef = content.baseRef || "master";
+    content.path = content.path || "typings";
+    content.dependencies = content.dependencies || {};
+
+    var jsonContent = JSON.stringify(content, null, 2);
+
+    mkdirp.sync(_path.resolve(path, "../"));
+    fs.writeFileSync(path, jsonContent);
+
+    return jsonContent;
 }
 
 export function search(phrase:string):Promise<fsgit.IFileInfo[]> {
