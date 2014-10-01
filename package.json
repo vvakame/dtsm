@@ -5,13 +5,30 @@
   "private": true,
   "description": "TypeScript definition file (.d.ts) manager",
   "main": "./index",
+  "bin": {
+    "dtsm": "./bin/dtsm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vvakame/dtsm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vvakame/dtsm/issues"
+  },
+  "homepage": "https://github.com/vvakame/dtsm",
   "scripts": {
     "test": "grunt test"
   },
+  "directories": {
+    "test": "test"
+  },
   "license": "MIT",
   "dependencies": {
-    "packagemanager-backend": "0.1.0",
+    "update-notifier": "0.2.0",
+    "commander": "2.3.0",
+    "packagemanager-backend": "0.1.1",
     "fs-git": "0.1.1",
+    "colors": "0.6.2",
     "ypromise": "0.2.3"
   },
   "devDependencies": {
@@ -29,16 +46,5 @@
     "source-map-support": "0.2.7",
     "time-grunt": "1.0.0",
     "typescript": "1.0.1"
-  },
-  "directories": {
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/vvakame/dtsm.git"
-  },
-  "bugs": {
-    "url": "https://github.com/vvakame/dtsm/issues"
-  },
-  "homepage": "https://github.com/vvakame/dtsm"
+  }
 }

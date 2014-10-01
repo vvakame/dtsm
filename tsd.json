@@ -5,6 +5,12 @@
 	"path": "typings",
 	"bundle": "typings/bundle.d.ts",
 	"installed": {
+		"update-notifier/update-notifier.d.ts": {
+			"commit": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"
+		},
+		"commander/commander.d.ts": {
+			"commit": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"
+		},
 		"es6-promise/es6-promise.d.ts": {
 			"commit": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"
 		},

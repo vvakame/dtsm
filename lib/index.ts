@@ -1,3 +1,4 @@
+/// <reference path="../node_modules/fs-git/fs-git.d.ts" />
 /// <reference path="../node_modules/packagemanager-backend/packagemanager-backend.d.ts" />
 
 /// <reference path="../typings/node/node.d.ts" />
