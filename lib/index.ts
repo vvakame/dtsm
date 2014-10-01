@@ -9,7 +9,9 @@ try {
 } catch (e) {
 }
 
+import fsgit = require("fs-git"); // only types, do not emit.
 import _pmb = require("packagemanager-backend");
+
 var pmb = new _pmb.PackageManagerBackend({
     rootDir: "~/.dtsm",
     offlineFirst: true,
@@ -20,15 +22,38 @@ var pmb = new _pmb.PackageManagerBackend({
         }
     ]
 });
-pmb.search({
-    globPatterns: [
-        "**/*.d.ts",
-        "!_infrastructure/**/*"
-    ]
-}).then(fileList=> {
-    fileList.forEach(fileInfo => console.log(fileInfo.path));
-});
 
-export module tmp {
+export function init(path:string):void {
     "use strict";
+}
+
+export function search(phrase:string):Promise<fsgit.IFileInfo[]> {
+    "use strict";
+
+    return pmb.search({
+        globPatterns: [
+            "**/*.d.ts",
+            "!_infrastructure/**/*"
+        ]
+    }).then(fileList=> {
+        return fileList.filter(fileInfo => fileInfo.path.indexOf(phrase) !== -1);
+    });
+}
+
+export function install(opts:{save:boolean;}, phrase:string):Promise<fsgit.IFileInfo[]> {
+    "use strict";
+
+    return null;
+}
+
+export function uninstall(opts:{save:boolean;}, phrase:string):Promise<fsgit.IFileInfo[]> {
+    "use strict";
+
+    return null;
+}
+
+export function outdated():Promise<fsgit.IFileInfo[]> {
+    "use strict";
+
+    return null;
 }
