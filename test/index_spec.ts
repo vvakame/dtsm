@@ -77,4 +77,10 @@ describe("dtsm", ()=> {
             });
         });
     });
+
+    describe.skip(".fetch", ()=> {
+        it("can fetch from remote repos", ()=> {
+            return dtsm.fetch();
+        });
+    });
 });

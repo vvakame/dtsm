@@ -82,3 +82,9 @@ export function outdated():Promise<fsgit.IFileInfo[]> {
 
     return null;
 }
+
+export function fetch():Promise<void> {
+    "use strict";
+
+    return null;
+}
