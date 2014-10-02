@@ -125,7 +125,7 @@ describe("dtsm", ()=> {
         });
     });
 
-    describe.skip(".fetch", ()=> {
+    describe(".fetch", ()=> {
         it("can fetch from remote repos", ()=> {
             return dtsm.fetch();
         });

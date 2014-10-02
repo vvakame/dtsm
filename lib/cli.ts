@@ -49,6 +49,21 @@ program
     });
 
 program
+    .command("fetch")
+    .description("fetch all data from remote repos")
+    .action((opts:{})=> {
+        console.log("fetching...");
+        dtsm.fetch()
+            .then(() => {
+            }, (error:any)=> {
+                console.error(error);
+                return Promise.reject(null);
+            }).catch(()=> {
+                process.exit(1);
+            });
+    });
+
+program
     .command("install files...")
     .description("install .d.ts files")
     .option("--save", "save .d.ts file path into dtsm.json")

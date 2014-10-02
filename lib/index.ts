@@ -205,5 +205,8 @@ export function outdated():Promise<fsgit.IFileInfo[]> {
 export function fetch():Promise<void> {
     "use strict";
 
-    return null;
+    return pmb
+        .fetch("https://github.com/borisyankov/DefinitelyTyped.git")
+        .then(repo => repo.gitFetchAll())
+        .then(()=> Promise.resolve(<any>null));
 }
