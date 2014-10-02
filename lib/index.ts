@@ -82,6 +82,42 @@ export function search(phrase:string):Promise<fsgit.IFileInfo[]> {
         ]
     }).then(fileList=> {
         return fileList.filter(fileInfo => fileInfo.path.indexOf(phrase) !== -1);
+    }).then(fileList=> {
+        var reorderedList:fsgit.IFileInfo[] = [];
+        fileList = fileList.sort((a, b) => a.path.length - b.path.length);
+        // exact match
+        fileList.forEach(fileInfo => {
+            if (fileInfo.path === phrase) {
+                reorderedList.push(fileInfo);
+            }
+        });
+        // library name match
+        fileList.forEach(fileInfo => {
+            if (fileInfo.path === phrase + "/" + phrase + ".d.ts" && reorderedList.indexOf(fileInfo) === -1) {
+                reorderedList.push(fileInfo);
+            }
+        });
+        // .d.t.s file match
+        fileList.forEach(fileInfo => {
+            if (fileInfo.path.indexOf("/" + phrase + ".d.ts") !== -1 && reorderedList.indexOf(fileInfo) === -1) {
+                reorderedList.push(fileInfo);
+            }
+        });
+        // directory name match
+        fileList.forEach(fileInfo => {
+            if (fileInfo.path.indexOf(phrase + "/") === 0 && reorderedList.indexOf(fileInfo) === -1) {
+                reorderedList.push(fileInfo);
+            }
+        });
+
+        // junk
+        fileList.forEach(fileInfo => {
+            if (reorderedList.indexOf(fileInfo) === -1) {
+                reorderedList.push(fileInfo);
+            }
+        });
+
+        return reorderedList;
     });
 }
 
