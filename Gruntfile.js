@@ -26,8 +26,8 @@ module.exports = function (grunt) {
                 declaration: false             // generate a declaration .d.ts file for every output js file. [true | false (default)]
             },
             clientMain: {
-                src: ['<%= opt.client.tsMain %>/index.ts'],
-                out: '<%= opt.client.jsMainOut %>/index.js',
+                src: ['<%= opt.client.tsMain %>/cli.ts'],
+                out: '<%= opt.client.jsMainOut %>/cli.js',
                 options: {
                     declaration: true
                 }

@@ -1,0 +1,10 @@
+{
+    "baseRepo": "https://github.com/borisyankov/DefinitelyTyped.git",
+    "baseRef": "master",
+    "path": "test-tmp/installFromFile",
+    "dependencies": {
+        "atom/atom.d.ts": {
+            "ref": "master"
+        }
+    }
+}

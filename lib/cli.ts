@@ -48,4 +48,35 @@ program
         });
     });
 
+program
+    .command("install files...")
+    .description("install .d.ts files")
+    .option("--save", "save .d.ts file path into dtsm.json")
+    .action((...targets:string[])=> {
+        var opts:{save:boolean;} = <any>targets.pop();
+        var save = !!opts.save;
+
+        var path = "dtsm.json";
+
+        if (targets.length === 0) {
+            dtsm.installFromFile(path)
+                .then(result => {
+                }, (error:any)=> {
+                    console.error(error);
+                    return Promise.reject(null);
+                }).catch(()=> {
+                    process.exit(1);
+                });
+        } else {
+            dtsm.install({path: path, save: save}, targets)
+                .then(fileList => {
+                }, (error:any)=> {
+                    console.error(error);
+                    return Promise.reject(null);
+                }).catch(()=> {
+                    process.exit(1);
+                });
+        }
+    });
+
 program.parse(process.argv);

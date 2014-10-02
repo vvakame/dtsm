@@ -17,6 +17,9 @@
 		"mkdirp/mkdirp.d.ts": {
 			"commit": "b0b4af1223f4f9449012688fa0c18f20cc3267e7"
 		},
+		"rimraf/rimraf.d.ts": {
+			"commit": "0b87ad988f46378342654384728c3a388e6d7178"
+		},
 		"node/node.d.ts": {
 			"commit": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"
 		},
