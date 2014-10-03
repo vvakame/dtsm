@@ -134,21 +134,48 @@ export function install(opts:{path:string; save:boolean;}, phrases:string[]):Pro
 
     var promises = phrases.map(phrase => {
         return search(phrase).then(fileList => {
-            if (fileList.length === 1 && !opts.save) {
+            if (fileList.length === 1) {
                 return Promise.resolve(fileList[0]);
-            } else if (fileList.length === 1) {
-                var fileInfo = fileList[0];
-                content.dependencies[fileInfo.path] = {
-                    ref: fileInfo.ref // TODO expend ref
-                };
-                save(opts.path, content);
-                return Promise.resolve(fileList[0]);
+            } else if (fileList.length === 0) {
+                return Promise.reject(phrase + " is not found");
             } else {
+                var found:fsgit.IFileInfo;
+                // exact match
+                found = fileList.filter(fileInfo => fileInfo.path === phrase)[0];
+                if (found) {
+                    return Promise.resolve(found);
+                }
+                // exact match without ext
+                found = fileList.filter(fileInfo => fileInfo.path === phrase + ".d.ts")[0];
+                if (found) {
+                    return Promise.resolve(found);
+                }
+                // library name match
+                found = fileList.filter(fileInfo => fileInfo.path === phrase + "/" + phrase + ".d.ts")[0];
+                if (found) {
+                    return Promise.resolve(found);
+                }
                 return Promise.reject(phrase + " could not be identified. found: " + fileList.length);
             }
         });
     });
     return Promise.all(promises)
+        .then((fileList:fsgit.IFileInfo[])=> {
+            if (!opts.save) {
+                return fileList;
+            }
+            fileList.forEach(fileInfo => {
+                if (content.dependencies[fileInfo.path]) {
+                    return;
+                }
+                content.dependencies[fileInfo.path] = {
+                    ref: fileInfo.ref
+                };
+            });
+            save(opts.path, content);
+
+            return fileList;
+        })
         .then((fileList:fsgit.IFileInfo[])=> {
             content = content || <any>{};
             content.baseRepo = content.baseRepo || "https://github.com/borisyankov/DefinitelyTyped.git";
