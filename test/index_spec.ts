@@ -82,7 +82,6 @@ describe("dtsm", ()=> {
         });
     });
 
-
     describe(".installFromFile", ()=> {
 
         var dtsmFilePath = "./test/fixture/dtsm-installFromFile.json";
