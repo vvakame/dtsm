@@ -60,12 +60,11 @@ export class Manager {
     }
 
     load(path:string):IRecipe {
-        var recipe:IRecipe;
-
         if (fs.existsSync(path)) {
-            recipe = JSON.parse(fs.readFileSync(path, "utf8"));
+            return JSON.parse(fs.readFileSync(path, "utf8"));
+        } else {
+            return null;
         }
-        return recipe;
     }
 
     save(path:string, recipe:IRecipe):string {
@@ -83,45 +82,9 @@ export class Manager {
                 "**/*.d.ts",
                 "!_infrastructure/**/*"
             ]
-        }).then(fileList=> {
-            return fileList.filter(fileInfo => fileInfo.path.indexOf(phrase) !== -1);
-        }).then(fileList=> {
-            var reorderedList:fsgit.IFileInfo[] = [];
-            fileList = fileList.sort((a, b) => a.path.length - b.path.length);
-            // exact match
-            fileList.forEach(fileInfo => {
-                if (fileInfo.path === phrase) {
-                    reorderedList.push(fileInfo);
-                }
-            });
-            // library name match
-            fileList.forEach(fileInfo => {
-                if (fileInfo.path === phrase + "/" + phrase + ".d.ts" && reorderedList.indexOf(fileInfo) === -1) {
-                    reorderedList.push(fileInfo);
-                }
-            });
-            // .d.t.s file match
-            fileList.forEach(fileInfo => {
-                if (fileInfo.path.indexOf("/" + phrase + ".d.ts") !== -1 && reorderedList.indexOf(fileInfo) === -1) {
-                    reorderedList.push(fileInfo);
-                }
-            });
-            // directory name match
-            fileList.forEach(fileInfo => {
-                if (fileInfo.path.indexOf(phrase + "/") === 0 && reorderedList.indexOf(fileInfo) === -1) {
-                    reorderedList.push(fileInfo);
-                }
-            });
-
-            // junk
-            fileList.forEach(fileInfo => {
-                if (reorderedList.indexOf(fileInfo) === -1) {
-                    reorderedList.push(fileInfo);
-                }
-            });
-
-            return reorderedList;
-        });
+        })
+            .then(fileList=> fileList.filter(fileInfo => fileInfo.path.indexOf(phrase) !== -1))
+            .then(fileList=> this._addWeightingAndSort(phrase, fileList).map(data => data.file));
     }
 
     install(opts:{path:string; save:boolean;}, phrases:string[]):Promise<_pmb.PackageManagerBackend.IResult> {
@@ -140,23 +103,12 @@ export class Manager {
                 } else if (fileList.length === 0) {
                     return Promise.reject(phrase + " is not found");
                 } else {
-                    var found:fsgit.IFileInfo;
-                    // exact match
-                    found = fileList.filter(fileInfo => fileInfo.path === phrase)[0];
-                    if (found) {
-                        return Promise.resolve(found);
+                    var fileInfoWithWeight = this._addWeightingAndSort(phrase, fileList)[0];
+                    if (fileInfoWithWeight && fileInfoWithWeight.weight === 1) {
+                        return Promise.resolve(fileInfoWithWeight.file);
+                    } else {
+                        return Promise.reject(phrase + " could not be identified. found: " + fileList.length);
                     }
-                    // exact match without ext
-                    found = fileList.filter(fileInfo => fileInfo.path === phrase + ".d.ts")[0];
-                    if (found) {
-                        return Promise.resolve(found);
-                    }
-                    // library name match
-                    found = fileList.filter(fileInfo => fileInfo.path === phrase + "/" + phrase + ".d.ts")[0];
-                    if (found) {
-                        return Promise.resolve(found);
-                    }
-                    return Promise.reject(phrase + " could not be identified. found: " + fileList.length);
                 }
             });
         });
@@ -194,7 +146,7 @@ export class Manager {
                         ref: fileInfo.ref // TODO expend ref
                     };
                 });
-                return this.installFromOptions(diff);
+                return this._installFromOptions(diff);
             });
     }
 
@@ -209,10 +161,10 @@ export class Manager {
             return Promise.reject(path + " is not exists");
         }
 
-        return this.installFromOptions(content);
+        return this._installFromOptions(content);
     }
 
-    installFromOptions(recipe:IRecipe):Promise<_pmb.PackageManagerBackend.IResult> {
+    _installFromOptions(recipe:IRecipe):Promise<_pmb.PackageManagerBackend.IResult> {
         return this.pmb.getByRecipe({
             baseRepo: recipe.baseRepo,
             baseRef: recipe.baseRef,
@@ -250,6 +202,49 @@ export class Manager {
 
             return Promise.resolve(result);
         });
+    }
+
+    _addWeightingAndSort(phrase:string, fileList:fsgit.IFileInfo[]):{weight: number; file:fsgit.IFileInfo;}[] {
+        // TODO add something awesome weighing algorithm.
+        return fileList.map(fileInfo => {
+            // exact match
+            if (fileInfo.path === phrase) {
+                return {
+                    weight: 1,
+                    file: fileInfo
+                };
+            }
+
+            // library name match
+            if (fileInfo.path === phrase + "/" + phrase + ".d.ts") {
+                return {
+                    weight: 1,
+                    file: fileInfo
+                };
+            }
+
+            // .d.t.s file match
+            if (fileInfo.path.indexOf("/" + phrase + ".d.ts") !== -1) {
+                return {
+                    weight: 0.9,
+                    file: fileInfo
+                };
+            }
+
+            // directory name match
+            if (fileInfo.path.indexOf(phrase + "/") === 0) {
+                return {
+                    weight: 0.8,
+                    file: fileInfo
+                };
+            }
+
+            // junk
+            return {
+                weight: 0.0,
+                file: fileInfo
+            };
+        }).sort((a, b) => b.weight - a.weight);
     }
 
     uninstall(opts:{path:string; save:boolean;}, phrase:string):Promise<fsgit.IFileInfo[]> {
