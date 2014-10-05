@@ -50,8 +50,12 @@ describe("dtsm", ()=> {
             }
         });
 
+        afterEach(()=> {
+            dtsm.setConfigPath();
+        });
+
         it("can install single file without save options", ()=> {
-            return dtsm.install({path: dtsmFilePath, save: false}, ["jquery/jquery.d.ts"]).then(result => {
+            return dtsm.install({save: false}, ["jquery/jquery.d.ts"]).then(result => {
                 assert(Object.keys(result.dependencies).length === 1);
                 assert(!result.dependencies["jquery/jquery.d.ts"].error);
                 assert(!fs.existsSync(dtsmFilePath));
@@ -60,8 +64,9 @@ describe("dtsm", ()=> {
 
         it("can install single file with save options", ()=> {
             dtsm.init(dtsmFilePath);
+            dtsm.setConfigPath(dtsmFilePath);
 
-            return dtsm.install({path: dtsmFilePath, save: true}, ["jquery/jquery.d.ts"]).then(result => {
+            return dtsm.install({save: true}, ["jquery/jquery.d.ts"]).then(result => {
                 assert(Object.keys(result.dependencies).length === 1);
                 assert(!result.dependencies["jquery/jquery.d.ts"].error);
                 assert(fs.existsSync(dtsmFilePath));
@@ -73,7 +78,7 @@ describe("dtsm", ()=> {
         });
 
         it("can't install files if it found more than 1 file", ()=> {
-            return dtsm.install({path: dtsmFilePath, save: false}, ["angul"]).then(result=> {
+            return dtsm.install({save: false}, ["angul"]).then(result=> {
                 throw new Error("unexpected");
             }, ()=> {
                 // TODO

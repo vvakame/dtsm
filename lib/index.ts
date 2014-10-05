@@ -29,6 +29,8 @@ export interface IRecipe {
 
 export class Manager {
 
+    static defaultConfigPath = "dtsm.json";
+
     rootDir = "~/.dtsm";
     baseRepo = "https://github.com/borisyankov/DefinitelyTyped.git";
     baseRef = "master";
@@ -36,8 +38,8 @@ export class Manager {
 
     pmb:_pmb.PackageManagerBackend;
 
-    constructor(path = "dtsm.json") {
-        var recipe = this.load(path);
+    constructor(public configPath:string = Manager.defaultConfigPath) {
+        var recipe = this.load(this.configPath);
         if (recipe) {
             this.rootDir = recipe.rootDir || this.rootDir;
             this.baseRepo = recipe.baseRepo || this.baseRepo;
@@ -57,7 +59,7 @@ export class Manager {
         });
     }
 
-    init(path:string):string {
+    init(path:string = this.configPath):string {
         var content = this.load(path);
         content = content || <any>{};
         content.baseRepo = content.baseRepo || this.baseRepo;
@@ -96,13 +98,13 @@ export class Manager {
             .then(fileList=> this._addWeightingAndSort(phrase, fileList).map(data => data.file));
     }
 
-    install(opts:{path:string; save:boolean;}, phrases:string[]):Promise<_pmb.PackageManagerBackend.IResult> {
-        if (!opts.path) {
+    install(opts:{save:boolean;}, phrases:string[]):Promise<_pmb.PackageManagerBackend.IResult> {
+        if (!this.configPath) {
             return Promise.reject("path is required");
         }
-        var content = this.load(opts.path);
+        var content = this.load(this.configPath);
         if (!content && opts.save) {
-            return Promise.reject(opts.path + " is not exists");
+            return Promise.reject(this.configPath + " is not exists");
         }
 
         var promises = phrases.map(phrase => {
@@ -134,7 +136,7 @@ export class Manager {
                         ref: fileInfo.ref
                     };
                 });
-                this.save(opts.path, content);
+                this.save(this.configPath, content);
 
                 return fileList;
             })
@@ -159,7 +161,7 @@ export class Manager {
             });
     }
 
-    installFromFile(path:string):Promise<_pmb.PackageManagerBackend.IResult> {
+    installFromFile(path = this.configPath):Promise<_pmb.PackageManagerBackend.IResult> {
         "use strict";
 
         if (!path) {
@@ -201,7 +203,6 @@ export class Manager {
             }
 
             Object.keys(result.dependencies).forEach(depName => {
-                var dep = result.recipe.dependencies[depName];
                 var depResult = result.dependencies[depName];
 
                 var path = _path.resolve(recipe.path, depName);
@@ -283,3 +284,9 @@ export var installFromFile:typeof manager.installFromFile = manager.installFromF
 export var install:typeof manager.install = manager.install.bind(manager);
 export var uninstall:typeof manager.uninstall = manager.uninstall.bind(manager);
 export var outdated:typeof manager.outdated = manager.outdated.bind(manager);
+export function setConfigPath(path = "dtsm.json") {
+    "use strict";
+
+    Manager.defaultConfigPath = path;
+    manager.configPath = path;
+}

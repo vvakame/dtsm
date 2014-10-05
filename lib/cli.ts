@@ -20,16 +20,27 @@ import program = require("commander");
 
 (<any>program)
     .version(pkg.version, "-v, --version")
-    .option("--force-online", "force turn on online check");
+    .option("--force-online", "force turn on online check") // TODO
+    .option("--config <path>", "path to json file");
+
+var forceOnline:boolean;
+var configPath:string;
+
+function setup() {
+    forceOnline = (<any>program).forceOnline;
+    configPath = (<any>program).config;
+    dtsm.setConfigPath(configPath || "dtsm.json");
+}
 
 program
     .command("init")
     .description("make new dtsm.json")
     .action((opts:{})=> {
-        var path = "dtsm.json";
-        var jsonContent = dtsm.init(path);
+        setup();
 
-        console.log("write to " + path);
+        var jsonContent = dtsm.init();
+
+        console.log("write to " + configPath);
         console.log(jsonContent);
     });
 
@@ -38,6 +49,8 @@ program
     .description("search .d.ts files")
     .option("--raw", "output search result by raw format")
     .action((phrase:string, opts:{raw:boolean;})=> {
+        setup();
+
         dtsm.search(phrase || "").then(fileList => {
             if (opts.raw) {
                 fileList.forEach(fileInfo => {
@@ -61,6 +74,8 @@ program
     .command("fetch")
     .description("fetch all data from remote repos")
     .action((opts:{})=> {
+        setup();
+
         console.log("fetching...");
         dtsm.fetch()
             .then(() => {
@@ -78,14 +93,14 @@ program
     .option("--save", "save .d.ts file path into dtsm.json")
     .option("--stdin", "use input from stdin")
     .action((...targets:string[])=> {
+        setup();
+
         var opts:{save:boolean;stdin:boolean;} = <any>targets.pop();
         var save = !!opts.save;
         var stdin = !!opts.stdin;
 
-        var path = "dtsm.json";
-
         if (!stdin && targets.length === 0) {
-            dtsm.installFromFile(path)
+            dtsm.installFromFile()
                 .then(result => {
                 }, (error:any)=> {
                     console.error(error);
@@ -94,7 +109,7 @@ program
                     process.exit(1);
                 });
         } else if (targets.length !== 0) {
-            dtsm.install({path: path, save: save}, targets)
+            dtsm.install({save: save}, targets)
                 .then(fileList => {
                 }, (error:any)=> {
                     console.error(error);
@@ -108,7 +123,7 @@ program
                 output: process.stdout
             });
             rl.on("line", (line:string)=> {
-                dtsm.install({path: path, save: save}, [line])
+                dtsm.install({save: save}, [line])
                     .then(fileList => {
                     }, (error:any)=> {
                         console.error(error);
