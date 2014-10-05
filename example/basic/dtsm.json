@@ -1,0 +1,10 @@
+{
+  "baseRepo": "https://github.com/borisyankov/DefinitelyTyped.git",
+  "baseRef": "master",
+  "path": "typings",
+  "dependencies": {
+    "atom/atom.d.ts": {
+      "ref": "4598e7d76b2b8e0470d5dea6035de2d218b17c77"
+    }
+  }
+}
