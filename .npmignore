@@ -12,13 +12,17 @@ typings/
 
 # codes
 test/
+test-tmp/
+test-repository/
 
 # misc
+example/
 .gitignore
 .editorconfig
-.travis.yml
+circle.yml
 setup.sh
 Gruntfile.js
+tsd.json
+tslint.json
 
-test-results.xml
 npm-debug.log
