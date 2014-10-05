@@ -105,12 +105,13 @@ export class Manager {
 
     search(phrase:string):Promise<fsgit.IFileInfo[]> {
         this.track("search", phrase);
-        return this.pmb.search({
-            globPatterns: [
-                "**/*.d.ts",
-                "!_infrastructure/**/*"
-            ]
-        })
+        return this.pmb
+            .search({
+                globPatterns: [
+                    "**/*.d.ts",
+                    "!_infrastructure/**/*"
+                ]
+            })
             .then(fileList=> fileList.filter(fileInfo => fileInfo.path.indexOf(phrase) !== -1))
             .then(fileList=> this._addWeightingAndSort(phrase, fileList).map(data => data.file));
     }
@@ -198,85 +199,88 @@ export class Manager {
     }
 
     _installFromOptions(recipe:IRecipe):Promise<_pmb.PackageManagerBackend.IResult> {
-        return this.pmb.getByRecipe({
-            baseRepo: recipe.baseRepo,
-            baseRef: recipe.baseRef,
-            path: recipe.path,
-            dependencies: recipe.dependencies,
-            postProcessForDependency: (recipe, dep, content) => {
-                var reference = /\/\/\/\s+<reference\s+path=["']([^"']*)["']\s*\/>/;
-                var body:string = content.toString("utf8");
-                body
-                    .split("\n")
-                    .map(line => line.match(reference))
-                    .filter(matches => !!matches)
-                    .forEach(matches => {
-                        this.pmb.pushAdditionalDependency(recipe, dep, matches[1]);
-                    });
-            }
-        }).then(result => {
-            var errors:any[] = Object.keys(result.dependencies).map(depName => {
-                var depResult = result.dependencies[depName];
-                return depResult.error;
-            }).filter(error => !!error);
-            if (errors.length !== 0) {
-                // TODO toString
-                return Promise.reject(errors);
-            }
+        return this.pmb
+            .getByRecipe({
+                baseRepo: recipe.baseRepo,
+                baseRef: recipe.baseRef,
+                path: recipe.path,
+                dependencies: recipe.dependencies,
+                postProcessForDependency: (recipe, dep, content) => {
+                    var reference = /\/\/\/\s+<reference\s+path=["']([^"']*)["']\s*\/>/;
+                    var body:string = content.toString("utf8");
+                    body
+                        .split("\n")
+                        .map(line => line.match(reference))
+                        .filter(matches => !!matches)
+                        .forEach(matches => {
+                            this.pmb.pushAdditionalDependency(recipe, dep, matches[1]);
+                        });
+                }
+            }).then(result => {
+                var errors:any[] = Object.keys(result.dependencies).map(depName => {
+                    var depResult = result.dependencies[depName];
+                    return depResult.error;
+                }).filter(error => !!error);
+                if (errors.length !== 0) {
+                    // TODO toString
+                    return Promise.reject(errors);
+                }
 
-            Object.keys(result.dependencies).forEach(depName => {
-                var depResult = result.dependencies[depName];
+                Object.keys(result.dependencies).forEach(depName => {
+                    var depResult = result.dependencies[depName];
 
-                var path = _path.resolve(recipe.path, depName);
-                mkdirp.sync(_path.resolve(path, "../"));
-                fs.writeFileSync(path, depResult.content.toString("utf8"));
+                    var path = _path.resolve(recipe.path, depName);
+                    mkdirp.sync(_path.resolve(path, "../"));
+                    fs.writeFileSync(path, depResult.content.toString("utf8"));
+                });
+
+                return Promise.resolve(result);
             });
-
-            return Promise.resolve(result);
-        });
     }
 
     _addWeightingAndSort(phrase:string, fileList:fsgit.IFileInfo[]):{weight: number; file:fsgit.IFileInfo;}[] {
         // TODO add something awesome weighing algorithm.
-        return fileList.map(fileInfo => {
-            // exact match
-            if (fileInfo.path === phrase) {
+        return fileList
+            .map(fileInfo => {
+                // exact match
+                if (fileInfo.path === phrase) {
+                    return {
+                        weight: 1,
+                        file: fileInfo
+                    };
+                }
+
+                // library name match
+                if (fileInfo.path === phrase + "/" + phrase + ".d.ts") {
+                    return {
+                        weight: 1,
+                        file: fileInfo
+                    };
+                }
+
+                // .d.t.s file match
+                if (fileInfo.path.indexOf("/" + phrase + ".d.ts") !== -1) {
+                    return {
+                        weight: 0.9,
+                        file: fileInfo
+                    };
+                }
+
+                // directory name match
+                if (fileInfo.path.indexOf(phrase + "/") === 0) {
+                    return {
+                        weight: 0.8,
+                        file: fileInfo
+                    };
+                }
+
+                // junk
                 return {
-                    weight: 1,
+                    weight: 0.0,
                     file: fileInfo
                 };
-            }
-
-            // library name match
-            if (fileInfo.path === phrase + "/" + phrase + ".d.ts") {
-                return {
-                    weight: 1,
-                    file: fileInfo
-                };
-            }
-
-            // .d.t.s file match
-            if (fileInfo.path.indexOf("/" + phrase + ".d.ts") !== -1) {
-                return {
-                    weight: 0.9,
-                    file: fileInfo
-                };
-            }
-
-            // directory name match
-            if (fileInfo.path.indexOf(phrase + "/") === 0) {
-                return {
-                    weight: 0.8,
-                    file: fileInfo
-                };
-            }
-
-            // junk
-            return {
-                weight: 0.0,
-                file: fileInfo
-            };
-        }).sort((a, b) => b.weight - a.weight);
+            })
+            .sort((a, b) => b.weight - a.weight);
     }
 
     uninstall(opts:{path:string; save:boolean;}, phrase:string):Promise<fsgit.IFileInfo[]> {
