@@ -34,6 +34,14 @@ export interface IRecipe {
     dependencies:{[path:string]:_pmb.PackageManagerBackend.IDependency};
 }
 
+export interface IGlobalConfig {
+    repositories: {
+        [repoName:string]:{
+            fetchAt: number; // date time
+        }
+    };
+}
+
 export class Manager {
 
     configPath = "dtsm.json";
@@ -314,6 +322,31 @@ export class Manager {
         return this.pmb
             .fetch(this.baseRepo)
             .then(repo => repo.gitFetchAll())
-            .then(()=> Promise.resolve(<any>null));
+            .then(()=> {
+                this._setLastFetchAt(this.baseRepo);
+                return Promise.resolve(<any>null);
+            });
+    }
+
+    checkOutdated(callback:(outdated:boolean)=>void) {
+        var fetchAt = this._getLastFetchAt(this.baseRepo);
+        var now = new Date().getTime();
+        callback(fetchAt < (now - 3 * 24 * 60 * 1000));
+    }
+
+    _getLastFetchAt(repoID:string):number {
+        var config:IGlobalConfig = this.pmb.loadConfig() || {};
+        config.repositories = config.repositories || {};
+        var repo = config.repositories[repoID] || {fetchAt: null};
+        return repo.fetchAt;
+    }
+
+    _setLastFetchAt(repoID:string, fetchAt:number = new Date().getTime()):void {
+        var config:IGlobalConfig = this.pmb.loadConfig() || {};
+        config.repositories = config.repositories || {};
+        config.repositories[repoID] = {
+            fetchAt: fetchAt
+        };
+        this.pmb.saveConfig(config);
     }
 }

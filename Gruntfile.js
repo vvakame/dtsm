@@ -83,6 +83,7 @@ module.exports = function (grunt) {
                     '<%= opt.client.jsMainOut %>/*.js',
                     '<%= opt.client.jsMainOut %>/*.d.ts',
                     '<%= opt.client.jsMainOut %>/*.js.map',
+                    '!<%= opt.client.jsMainOut %>/insight.d.ts',
                     // client test
                     '<%= opt.client.jsTestOut %>/*.js',
                     '<%= opt.client.jsTestOut %>/*.js.map',

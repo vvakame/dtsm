@@ -28,7 +28,7 @@
     "fs-git": "0.1.4",
     "insight": "0.4.3",
     "mkdirp": "0.5.0",
-    "packagemanager-backend": "0.1.5",
+    "packagemanager-backend": "0.1.8",
     "rimraf": "2.2.8",
     "update-notifier": "0.2.0",
     "ypromise": "0.2.3"

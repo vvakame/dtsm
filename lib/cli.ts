@@ -103,6 +103,14 @@ program
     .action((phrase:string, opts:{raw:boolean;})=> {
         setup()
             .then(manager => {
+                manager.checkOutdated(outdated => {
+                    if (outdated) {
+                        console.warn("caution: repository info is maybe outdated. please exec `dtsm fetch` command");
+                    }
+                });
+                return manager;
+            })
+            .then(manager => {
                 return manager.search(phrase || "");
             })
             .then(fileList => {
@@ -144,12 +152,24 @@ program
     .option("--dry-run", "save .d.ts file path into dtsm.json")
     .option("--stdin", "use input from stdin")
     .action((...targets:string[])=> {
+        var opts:{save:boolean;dryRun:boolean;stdin:boolean;} = <any>targets.pop();
+        var save = !!opts.save;
+        var dryRun = !!opts.dryRun;
+        var stdin = !!opts.stdin;
+
         setup()
+            .then(manager => {
+                if (stdin || targets.length !== 0) {
+                    // do not check installFromFile pattern
+                    manager.checkOutdated(outdated => {
+                        if (outdated) {
+                            console.warn("caution: repository info is maybe outdated. please exec `dtsm fetch` command");
+                        }
+                    });
+                }
+                return manager;
+            })
             .then(manager=> {
-                var opts:{save:boolean;dryRun:boolean;stdin:boolean;} = <any>targets.pop();
-                var save = !!opts.save;
-                var dryRun = !!opts.dryRun;
-                var stdin = !!opts.stdin;
 
                 if (!stdin && targets.length === 0) {
                     manager.installFromFile({dryRun: dryRun})
