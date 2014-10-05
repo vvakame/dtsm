@@ -20,6 +20,7 @@ import fsgit = require("fs-git");
 import _pmb = require("packagemanager-backend");
 
 export interface IRecipe {
+    rootDir?:string;
     baseRepo:string;
     baseRef:string;
     path:string;
@@ -35,7 +36,15 @@ export class Manager {
 
     pmb:_pmb.PackageManagerBackend;
 
-    constructor() {
+    constructor(path = "dtsm.json") {
+        var recipe = this.load(path);
+        if (recipe) {
+            this.rootDir = recipe.rootDir || this.rootDir;
+            this.baseRepo = recipe.baseRepo || this.baseRepo;
+            this.baseRef = recipe.baseRef || this.baseRef;
+            this.path = recipe.path || this.path;
+        }
+
         this.pmb = new _pmb.PackageManagerBackend({
             rootDir: this.rootDir,
             offlineFirst: true,
@@ -195,7 +204,7 @@ export class Manager {
                 var dep = result.recipe.dependencies[depName];
                 var depResult = result.dependencies[depName];
 
-                var path = _path.resolve(recipe.path, dep.path);
+                var path = _path.resolve(recipe.path, depName);
                 mkdirp.sync(_path.resolve(path, "../"));
                 fs.writeFileSync(path, depResult.content.toString("utf8"));
             });
