@@ -56,7 +56,7 @@ describe("Manager", ()=> {
 
         it("can install single file without save options", ()=> {
             var manager = new dtsm.Manager();
-            return manager.install({save: false}, ["jquery/jquery.d.ts"]).then(result => {
+            return manager.install({save: false, dryRun: false}, ["jquery/jquery.d.ts"]).then(result => {
                 assert(Object.keys(result.dependencies).length === 1);
                 assert(!result.dependencies["jquery/jquery.d.ts"].error);
                 assert(!fs.existsSync(dtsmFilePath));
@@ -67,7 +67,7 @@ describe("Manager", ()=> {
             var manager = new dtsm.Manager({configPath: dtsmFilePath});
             manager.init(dtsmFilePath);
 
-            return manager.install({save: true}, ["jquery/jquery.d.ts"]).then(result => {
+            return manager.install({save: true, dryRun: false}, ["jquery/jquery.d.ts"]).then(result => {
                 assert(Object.keys(result.dependencies).length === 1);
                 assert(!result.dependencies["jquery/jquery.d.ts"].error);
                 assert(fs.existsSync(dtsmFilePath));
@@ -80,7 +80,7 @@ describe("Manager", ()=> {
 
         it("can't install files if it found more than 1 file", ()=> {
             var manager = new dtsm.Manager();
-            return manager.install({save: false}, ["angul"]).then(result=> {
+            return manager.install({save: false, dryRun: false}, ["angul"]).then(result=> {
                 throw new Error("unexpected");
             }, ()=> {
                 // TODO
@@ -102,8 +102,8 @@ describe("Manager", ()=> {
 
         it("can install files from recipe", ()=> {
             assert(!fs.existsSync(targetDir));
-            var manager = new dtsm.Manager();
-            return manager.installFromFile(dtsmFilePath).then(result => {
+            var manager = new dtsm.Manager({configPath: dtsmFilePath});
+            return manager.installFromFile().then(result => {
                 assert(1 < Object.keys(result.dependencies).length); // atom.d.ts has meny dependencies
                 assert(fs.existsSync("test-tmp/installFromFile/atom/atom.d.ts"));
             });

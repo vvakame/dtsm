@@ -116,7 +116,7 @@ export class Manager {
             .then(fileList=> this._addWeightingAndSort(phrase, fileList).map(data => data.file));
     }
 
-    install(opts:{save:boolean;}, phrases:string[]):Promise<_pmb.PackageManagerBackend.IResult> {
+    install(opts:{save:boolean;dryRun:boolean;}, phrases:string[]):Promise<_pmb.PackageManagerBackend.IResult> {
         if (phrases) {
             phrases.forEach(phrase=> {
                 this.track("install", phrase);
@@ -148,7 +148,7 @@ export class Manager {
         });
         return Promise.all(promises)
             .then((fileList:fsgit.IFileInfo[])=> {
-                if (!opts.save) {
+                if (!opts.save || opts.dryRun) {
                     return fileList;
                 }
                 fileList.forEach(fileInfo => {
@@ -180,25 +180,25 @@ export class Manager {
                         ref: fileInfo.ref // TODO expend ref
                     };
                 });
-                return this._installFromOptions(diff);
+                return this._installFromOptions(diff, opts);
             });
     }
 
-    installFromFile(path = this.configPath):Promise<_pmb.PackageManagerBackend.IResult> {
+    installFromFile(opts:{dryRun?:boolean;} = {}):Promise<_pmb.PackageManagerBackend.IResult> {
         this.track("installFromFile");
 
-        if (!path) {
-            return Promise.reject("path is required");
+        if (!this.configPath) {
+            return Promise.reject("configPath is required");
         }
-        var content = this._load(path);
+        var content = this._load(this.configPath);
         if (!content) {
-            return Promise.reject(path + " is not exists");
+            return Promise.reject(this.configPath + " is not exists");
         }
 
-        return this._installFromOptions(content);
+        return this._installFromOptions(content, opts);
     }
 
-    _installFromOptions(recipe:IRecipe):Promise<_pmb.PackageManagerBackend.IResult> {
+    _installFromOptions(recipe:IRecipe, opts:{dryRun?:boolean;} = {}):Promise<_pmb.PackageManagerBackend.IResult> {
         return this.pmb
             .getByRecipe({
                 baseRepo: recipe.baseRepo,
@@ -230,8 +230,11 @@ export class Manager {
                     var depResult = result.dependencies[depName];
 
                     var path = _path.resolve(recipe.path, depName);
-                    mkdirp.sync(_path.resolve(path, "../"));
-                    fs.writeFileSync(path, depResult.content.toString("utf8"));
+                    console.log(depName);
+                    if (!opts.dryRun) {
+                        mkdirp.sync(_path.resolve(path, "../"));
+                        fs.writeFileSync(path, depResult.content.toString("utf8"));
+                    }
                 });
 
                 return Promise.resolve(result);

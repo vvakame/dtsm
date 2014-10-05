@@ -139,16 +139,18 @@ program
     .command("install files...")
     .description("install .d.ts files")
     .option("--save", "save .d.ts file path into dtsm.json")
+    .option("--dry-run", "save .d.ts file path into dtsm.json")
     .option("--stdin", "use input from stdin")
     .action((...targets:string[])=> {
         setup()
             .then(manager=> {
-                var opts:{save:boolean;stdin:boolean;} = <any>targets.pop();
+                var opts:{save:boolean;dryRun:boolean;stdin:boolean;} = <any>targets.pop();
                 var save = !!opts.save;
+                var dryRun = !!opts.dryRun;
                 var stdin = !!opts.stdin;
 
                 if (!stdin && targets.length === 0) {
-                    manager.installFromFile()
+                    manager.installFromFile({dryRun: dryRun})
                         .then(result => {
                         }, (error:any)=> {
                             console.error(error);
@@ -157,7 +159,7 @@ program
                             process.exit(1);
                         });
                 } else if (targets.length !== 0) {
-                    manager.install({save: save}, targets)
+                    manager.install({save: save, dryRun: dryRun}, targets)
                         .then(fileList => {
                         }, (error:any)=> {
                             console.error(error);
@@ -171,7 +173,7 @@ program
                         output: process.stdout
                     });
                     rl.on("line", (line:string)=> {
-                        manager.install({save: save}, [line])
+                        manager.install({save: save, dryRun: dryRun}, [line])
                             .then(fileList => {
                             }, (error:any)=> {
                                 console.error(error);
