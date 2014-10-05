@@ -54,7 +54,7 @@ export class Manager {
         }
         this.track();
 
-        var recipe = this.load(this.configPath);
+        var recipe = this._load(this.configPath);
         if (recipe) {
             this.rootDir = recipe.rootDir || this.rootDir;
             this.baseRepo = recipe.baseRepo || this.baseRepo;
@@ -76,17 +76,17 @@ export class Manager {
 
     init(path:string = this.configPath):string {
         this.track("init");
-        var content = this.load(path);
+        var content = this._load(path);
         content = content || <any>{};
         content.baseRepo = content.baseRepo || this.baseRepo;
         content.baseRef = content.baseRef || this.baseRef;
         content.path = content.path || this.path;
         content.dependencies = content.dependencies || {};
 
-        return this.save(path, content);
+        return this._save(path, content);
     }
 
-    load(path:string):IRecipe {
+    _load(path:string):IRecipe {
         if (fs.existsSync(path)) {
             return JSON.parse(fs.readFileSync(path, "utf8"));
         } else {
@@ -94,7 +94,7 @@ export class Manager {
         }
     }
 
-    save(path:string, recipe:IRecipe):string {
+    _save(path:string, recipe:IRecipe):string {
         var jsonContent = JSON.stringify(recipe, null, 2);
 
         mkdirp.sync(_path.resolve(path, "../"));
@@ -124,7 +124,7 @@ export class Manager {
         if (!this.configPath) {
             return Promise.reject("path is required");
         }
-        var content = this.load(this.configPath);
+        var content = this._load(this.configPath);
         if (!content && opts.save) {
             return Promise.reject(this.configPath + " is not exists");
         }
@@ -158,7 +158,7 @@ export class Manager {
                         ref: fileInfo.ref
                     };
                 });
-                this.save(this.configPath, content);
+                this._save(this.configPath, content);
 
                 return fileList;
             })
@@ -189,7 +189,7 @@ export class Manager {
         if (!path) {
             return Promise.reject("path is required");
         }
-        var content = this.load(path);
+        var content = this._load(path);
         if (!content) {
             return Promise.reject(path + " is not exists");
         }
