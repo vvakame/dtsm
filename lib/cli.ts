@@ -1,5 +1,4 @@
 /// <reference path="../typings/update-notifier/update-notifier.d.ts" />
-/// <reference path="../typings/universal-analytics/universal-analytics.d.ts" />
 /// <reference path="../typings/commander/commander.d.ts" />
 
 /// <reference path="./insight.d.ts" />

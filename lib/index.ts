@@ -186,7 +186,9 @@ export class Manager {
                     dependencies: {}
                 };
                 fileList.forEach(fileInfo => {
-                    diff.dependencies[fileInfo.path] = content.dependencies[fileInfo.path];
+                    diff.dependencies[fileInfo.path] = content.dependencies[fileInfo.path] || {
+                        ref: fileInfo.ref
+                    };
                 });
                 return this._installFromOptions(diff, opts);
             });
