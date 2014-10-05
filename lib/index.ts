@@ -21,6 +21,7 @@ import _pmb = require("packagemanager-backend");
 
 export interface IOptions {
     configPath?:string;
+    forceOnline?:boolean;
     track?:(...args:string[])=>void;
 }
 
@@ -35,6 +36,7 @@ export interface IRecipe {
 export class Manager {
 
     configPath = "dtsm.json";
+    forceOnline = false;
     rootDir = "~/.dtsm";
     baseRepo = "https://github.com/borisyankov/DefinitelyTyped.git";
     baseRef = "master";
@@ -47,6 +49,7 @@ export class Manager {
     constructor(public options?:IOptions) {
         if (options) {
             this.configPath = options.configPath || this.configPath;
+            this.forceOnline = options.forceOnline || this.forceOnline;
             this.track = options.track || this.track;
         }
         this.track();
@@ -61,7 +64,7 @@ export class Manager {
 
         this.pmb = new _pmb.PackageManagerBackend({
             rootDir: this.rootDir,
-            offlineFirst: true,
+            offlineFirst: !this.forceOnline,
             repos: [
                 {
                     url: this.baseRepo,

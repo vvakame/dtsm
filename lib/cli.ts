@@ -32,20 +32,16 @@ import program = require("commander");
 (<any>program)
     .version(pkg.version, "-v, --version")
     .option("--insight <use>", "send usage opt in/out. in = `--insight true`, out = `--insight false`")
-    .option("--force-online", "force turn on online check") // TODO
+    .option("--force-online", "force turn on online check")
     .option("--config <path>", "path to json file");
-
-var forceOnline:boolean;
-var configPath:string;
 
 function setup():Promise<dtsm.Manager> {
     "use strict";
 
-    forceOnline = (<any>program).forceOnline;
-    configPath = (<any>program).config;
+    var forceOnline:boolean = (<any>program).forceOnline;
+    var configPath:string = (<any>program).config;
     var insightStr = (<any>program).insight;
 
-    // ask for permission the first time
     var promise:Promise<void>;
     if (typeof insightStr === "string") {
         if (insightStr !== "true" && insightStr !== "false") {
@@ -56,6 +52,7 @@ function setup():Promise<dtsm.Manager> {
             insight.config.set('optOut', false);
         }
     }
+    // ask for permission the first time
     if (insight.optOut === undefined) {
         promise = new Promise((resolve:(value?:any)=>void, reject:(error:any)=>void)=> {
             insight.askPermission(null, ()=> {
@@ -68,6 +65,7 @@ function setup():Promise<dtsm.Manager> {
 
     var options:dtsm.IOptions = {
         configPath: configPath || "dtsm.json",
+        forceOnline: forceOnline,
         track: insight.track.bind(insight)
     };
     return promise.then(()=> new dtsm.Manager(options));
@@ -90,7 +88,7 @@ program
             .then(manager => {
                 var jsonContent = manager.init();
 
-                console.log("write to " + configPath);
+                console.log("write to " + manager.configPath);
                 console.log(jsonContent);
             })
             .catch(errorHandler);
