@@ -5,6 +5,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.tscache" />
       <excludeFolder url="file://$MODULE_DIR$/test-repository" />
       <excludeFolder url="file://$MODULE_DIR$/test-tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/test-typings" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

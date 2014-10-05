@@ -274,19 +274,3 @@ export class Manager {
             .then(()=> Promise.resolve(<any>null));
     }
 }
-
-var manager = new Manager();
-
-export var init:typeof manager.init = manager.init.bind(manager);
-export var search:typeof manager.search = manager.search.bind(manager);
-export var fetch:typeof manager.fetch = manager.fetch.bind(manager);
-export var installFromFile:typeof manager.installFromFile = manager.installFromFile.bind(manager);
-export var install:typeof manager.install = manager.install.bind(manager);
-export var uninstall:typeof manager.uninstall = manager.uninstall.bind(manager);
-export var outdated:typeof manager.outdated = manager.outdated.bind(manager);
-export function setConfigPath(path = "dtsm.json") {
-    "use strict";
-
-    Manager.defaultConfigPath = path;
-    manager.configPath = path;
-}

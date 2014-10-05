@@ -1,4 +1,5 @@
 /// <reference path="../typings/update-notifier/update-notifier.d.ts" />
+/// <reference path="../typings/universal-analytics/universal-analytics.d.ts" />
 /// <reference path="../typings/commander/commander.d.ts" />
 
 import updateNotifier = require("update-notifier");
@@ -27,18 +28,20 @@ var forceOnline:boolean;
 var configPath:string;
 
 function setup() {
+    "use strict";
+
     forceOnline = (<any>program).forceOnline;
     configPath = (<any>program).config;
-    dtsm.setConfigPath(configPath || "dtsm.json");
+    return new dtsm.Manager(configPath || "dtsm.json");
 }
 
 program
     .command("init")
     .description("make new dtsm.json")
     .action((opts:{})=> {
-        setup();
+        var manager = setup();
 
-        var jsonContent = dtsm.init();
+        var jsonContent = manager.init();
 
         console.log("write to " + configPath);
         console.log(jsonContent);
@@ -49,9 +52,9 @@ program
     .description("search .d.ts files")
     .option("--raw", "output search result by raw format")
     .action((phrase:string, opts:{raw:boolean;})=> {
-        setup();
+        var manager = setup();
 
-        dtsm.search(phrase || "").then(fileList => {
+        manager.search(phrase || "").then(fileList => {
             if (opts.raw) {
                 fileList.forEach(fileInfo => {
                     console.log(fileInfo.path);
@@ -74,10 +77,10 @@ program
     .command("fetch")
     .description("fetch all data from remote repos")
     .action((opts:{})=> {
-        setup();
+        var manager = setup();
 
         console.log("fetching...");
-        dtsm.fetch()
+        manager.fetch()
             .then(() => {
             }, (error:any)=> {
                 console.error(error);
@@ -93,14 +96,14 @@ program
     .option("--save", "save .d.ts file path into dtsm.json")
     .option("--stdin", "use input from stdin")
     .action((...targets:string[])=> {
-        setup();
+        var manager = setup();
 
         var opts:{save:boolean;stdin:boolean;} = <any>targets.pop();
         var save = !!opts.save;
         var stdin = !!opts.stdin;
 
         if (!stdin && targets.length === 0) {
-            dtsm.installFromFile()
+            manager.installFromFile()
                 .then(result => {
                 }, (error:any)=> {
                     console.error(error);
@@ -109,7 +112,7 @@ program
                     process.exit(1);
                 });
         } else if (targets.length !== 0) {
-            dtsm.install({save: save}, targets)
+            manager.install({save: save}, targets)
                 .then(fileList => {
                 }, (error:any)=> {
                     console.error(error);
@@ -123,7 +126,7 @@ program
                 output: process.stdout
             });
             rl.on("line", (line:string)=> {
-                dtsm.install({save: save}, [line])
+                manager.install({save: save}, [line])
                     .then(fileList => {
                     }, (error:any)=> {
                         console.error(error);
