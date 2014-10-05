@@ -33,6 +33,7 @@ import program = require("commander");
     .version(pkg.version, "-v, --version")
     .option("--insight <use>", "send usage opt in/out. in = `--insight true`, out = `--insight false`")
     .option("--force-online", "force turn on online check")
+    .option("--remote <uri>", "uri of remote repository")
     .option("--config <path>", "path to json file");
 
 function setup():Promise<dtsm.Manager> {
@@ -40,6 +41,7 @@ function setup():Promise<dtsm.Manager> {
 
     var forceOnline:boolean = (<any>program).forceOnline;
     var configPath:string = (<any>program).config;
+    var remoteUri:string = (<any>program).remote;
     var insightStr = (<any>program).insight;
 
     var promise:Promise<void>;
@@ -65,6 +67,7 @@ function setup():Promise<dtsm.Manager> {
 
     var options:dtsm.IOptions = {
         configPath: configPath || "dtsm.json",
+        baseRepo: remoteUri,
         forceOnline: forceOnline,
         track: insight.track.bind(insight)
     };
@@ -155,24 +158,16 @@ program
                             Object.keys(result.dependencies).forEach(depName => {
                                 console.log(depName);
                             });
-                        }, (error:any)=> {
-                            console.error(error);
-                            return Promise.reject(null);
-                        }).catch(()=> {
-                            process.exit(1);
-                        });
+                        })
+                        .catch(errorHandler);
                 } else if (targets.length !== 0) {
                     manager.install({save: save, dryRun: dryRun}, targets)
                         .then(result => {
                             Object.keys(result.dependencies).forEach(depName => {
                                 console.log(depName);
                             });
-                        }, (error:any)=> {
-                            console.error(error);
-                            return Promise.reject(null);
-                        }).catch(()=> {
-                            process.exit(1);
-                        });
+                        })
+                        .catch(errorHandler);
                 } else {
                     var rl = readline.createInterface({
                         input: process.stdin,
@@ -184,12 +179,8 @@ program
                                 Object.keys(result.dependencies).forEach(depName => {
                                     console.log(depName);
                                 });
-                            }, (error:any)=> {
-                                console.error(error);
-                                return Promise.reject(null);
-                            }).catch(()=> {
-                                process.exit(1);
-                            });
+                            })
+                            .catch(errorHandler);
                     });
                 }
             })

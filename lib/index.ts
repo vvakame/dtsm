@@ -21,6 +21,7 @@ import _pmb = require("packagemanager-backend");
 
 export interface IOptions {
     configPath?:string;
+    baseRepo?:string;
     forceOnline?:boolean;
     track?:(...args:string[])=>void;
 }
@@ -42,24 +43,32 @@ export class Manager {
     baseRef = "master";
     path = "typings";
 
+    otherBaseRepo = false;
+
     pmb:_pmb.PackageManagerBackend;
     track:(...args:string[])=>void = ()=> {
     };
 
-    constructor(public options?:IOptions) {
-        if (options) {
-            this.configPath = options.configPath || this.configPath;
-            this.forceOnline = options.forceOnline || this.forceOnline;
-            this.track = options.track || this.track;
-        }
+    constructor(public options:IOptions = {}) {
+        this.configPath = options.configPath || this.configPath;
+        this.baseRepo = options.baseRepo || this.baseRepo;
+        this.forceOnline = options.forceOnline || this.forceOnline;
+        this.track = options.track || this.track;
+
         this.track();
 
         var recipe = this._load(this.configPath);
-        if (recipe) {
-            this.rootDir = recipe.rootDir || this.rootDir;
-            this.baseRepo = recipe.baseRepo || this.baseRepo;
-            this.baseRef = recipe.baseRef || this.baseRef;
-            this.path = recipe.path || this.path;
+        if (recipe && recipe.baseRepo !== this.baseRepo) {
+            // if recipe's baseRepo and command-line option's baseRepo is not match, some actions are limeted.
+            this.otherBaseRepo = true;
+        }
+        if (!options.baseRepo) {
+            if (recipe) {
+                this.rootDir = recipe.rootDir || this.rootDir;
+                this.baseRepo = recipe.baseRepo || this.baseRepo;
+                this.baseRef = recipe.baseRef || this.baseRef;
+                this.path = recipe.path || this.path;
+            }
         }
 
         this.pmb = new _pmb.PackageManagerBackend({
@@ -156,6 +165,7 @@ export class Manager {
                         return;
                     }
                     content.dependencies[fileInfo.path] = {
+                        repo: this.otherBaseRepo ? this.baseRepo : void 0,
                         ref: fileInfo.ref
                     };
                 });
@@ -165,9 +175,9 @@ export class Manager {
             })
             .then((fileList:fsgit.IFileInfo[])=> {
                 content = content || <any>{};
-                content.baseRepo = content.baseRepo || this.baseRepo;
-                content.baseRef = content.baseRef || this.baseRef;
-                content.path = content.path || this.path;
+                content.baseRepo = this.baseRepo;
+                content.baseRef = this.baseRef;
+                content.path = this.path;
                 content.dependencies = content.dependencies || {};
                 var diff:IRecipe = {
                     baseRepo: content.baseRepo,
@@ -176,9 +186,7 @@ export class Manager {
                     dependencies: {}
                 };
                 fileList.forEach(fileInfo => {
-                    diff.dependencies[fileInfo.path] = {
-                        ref: fileInfo.ref // TODO expend ref
-                    };
+                    diff.dependencies[fileInfo.path] = content.dependencies[fileInfo.path];
                 });
                 return this._installFromOptions(diff, opts);
             });
@@ -186,6 +194,10 @@ export class Manager {
 
     installFromFile(opts:{dryRun?:boolean;} = {}):Promise<_pmb.PackageManagerBackend.IResult> {
         this.track("installFromFile");
+
+        if (this.otherBaseRepo) {
+            return Promise.reject("do not install from file with --remote option");
+        }
 
         if (!this.configPath) {
             return Promise.reject("configPath is required");
