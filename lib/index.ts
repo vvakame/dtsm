@@ -19,6 +19,11 @@ import _path = require("path");
 import fsgit = require("fs-git");
 import _pmb = require("packagemanager-backend");
 
+export interface IOptions {
+    configPath?:string;
+    track?:(...args:string[])=>void;
+}
+
 export interface IRecipe {
     rootDir?:string;
     baseRepo:string;
@@ -29,16 +34,23 @@ export interface IRecipe {
 
 export class Manager {
 
-    static defaultConfigPath = "dtsm.json";
-
+    configPath = "dtsm.json";
     rootDir = "~/.dtsm";
     baseRepo = "https://github.com/borisyankov/DefinitelyTyped.git";
     baseRef = "master";
     path = "typings";
 
     pmb:_pmb.PackageManagerBackend;
+    track:(...args:string[])=>void = ()=> {
+    };
 
-    constructor(public configPath:string = Manager.defaultConfigPath) {
+    constructor(public options?:IOptions) {
+        if (options) {
+            this.configPath = options.configPath || this.configPath;
+            this.track = options.track || this.track;
+        }
+        this.track();
+
         var recipe = this.load(this.configPath);
         if (recipe) {
             this.rootDir = recipe.rootDir || this.rootDir;

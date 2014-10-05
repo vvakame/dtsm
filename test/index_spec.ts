@@ -64,7 +64,7 @@ describe("Manager", ()=> {
         });
 
         it("can install single file with save options", ()=> {
-            var manager = new dtsm.Manager(dtsmFilePath);
+            var manager = new dtsm.Manager({configPath: dtsmFilePath});
             manager.init(dtsmFilePath);
 
             return manager.install({save: true}, ["jquery/jquery.d.ts"]).then(result => {
