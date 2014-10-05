@@ -75,6 +75,7 @@ export class Manager {
     }
 
     init(path:string = this.configPath):string {
+        this.track("init");
         var content = this.load(path);
         content = content || <any>{};
         content.baseRepo = content.baseRepo || this.baseRepo;
@@ -103,6 +104,7 @@ export class Manager {
     }
 
     search(phrase:string):Promise<fsgit.IFileInfo[]> {
+        this.track("search", phrase);
         return this.pmb.search({
             globPatterns: [
                 "**/*.d.ts",
@@ -114,6 +116,11 @@ export class Manager {
     }
 
     install(opts:{save:boolean;}, phrases:string[]):Promise<_pmb.PackageManagerBackend.IResult> {
+        if (phrases) {
+            phrases.forEach(phrase=> {
+                this.track("install", phrase);
+            });
+        }
         if (!this.configPath) {
             return Promise.reject("path is required");
         }
@@ -177,7 +184,7 @@ export class Manager {
     }
 
     installFromFile(path = this.configPath):Promise<_pmb.PackageManagerBackend.IResult> {
-        "use strict";
+        this.track("installFromFile");
 
         if (!path) {
             return Promise.reject("path is required");
@@ -283,6 +290,7 @@ export class Manager {
     }
 
     fetch():Promise<void> {
+        this.track("fetch");
         return this.pmb
             .fetch(this.baseRepo)
             .then(repo => repo.gitFetchAll())
