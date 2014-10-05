@@ -230,7 +230,6 @@ export class Manager {
                     var depResult = result.dependencies[depName];
 
                     var path = _path.resolve(recipe.path, depName);
-                    console.log(depName);
                     if (!opts.dryRun) {
                         mkdirp.sync(_path.resolve(path, "../"));
                         fs.writeFileSync(path, depResult.content.toString("utf8"));

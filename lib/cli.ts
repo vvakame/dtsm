@@ -152,6 +152,9 @@ program
                 if (!stdin && targets.length === 0) {
                     manager.installFromFile({dryRun: dryRun})
                         .then(result => {
+                            Object.keys(result.dependencies).forEach(depName => {
+                                console.log(depName);
+                            });
                         }, (error:any)=> {
                             console.error(error);
                             return Promise.reject(null);
@@ -160,7 +163,10 @@ program
                         });
                 } else if (targets.length !== 0) {
                     manager.install({save: save, dryRun: dryRun}, targets)
-                        .then(fileList => {
+                        .then(result => {
+                            Object.keys(result.dependencies).forEach(depName => {
+                                console.log(depName);
+                            });
                         }, (error:any)=> {
                             console.error(error);
                             return Promise.reject(null);
@@ -174,7 +180,10 @@ program
                     });
                     rl.on("line", (line:string)=> {
                         manager.install({save: save, dryRun: dryRun}, [line])
-                            .then(fileList => {
+                            .then(result => {
+                                Object.keys(result.dependencies).forEach(depName => {
+                                    console.log(depName);
+                                });
                             }, (error:any)=> {
                                 console.error(error);
                                 return Promise.reject(null);
