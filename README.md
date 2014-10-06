@@ -174,9 +174,6 @@ If you are native english speaker. I wish received a pull request for document a
 ## TODO
 
  * write document
- * write command line interface test (via [nexpect](https://www.npmjs.org/package/nexpect)
- * rewrite commander.d.ts and send PR
- * send insight.d.ts to DT
  * list sub-command
  * update sub-command
    * --save option
