@@ -1,6 +1,6 @@
 {
   "name": "dtsm",
-  "author": "TypeScript definition file manager",
+  "author": "vvakame",
   "version": "0.0.1",
   "description": "TypeScript definition file (.d.ts) manager",
   "main": "./index",
@@ -38,7 +38,7 @@
     "grunt-contrib-clean": "0.6.0",
     "grunt-mocha-test": "0.12.0",
     "grunt-ts": "1.12.1",
-    "grunt-tsd": "0.1.0",
+    "grunt-dtsm": "0.1.1",
     "grunt-tslint": "0.4.2",
     "grunt-typedoc": "0.2.1",
     "load-grunt-tasks": "0.6.0",

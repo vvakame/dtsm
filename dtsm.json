@@ -1,0 +1,34 @@
+{
+  "baseRepo": "https://github.com/borisyankov/DefinitelyTyped.git",
+  "baseRef": "master",
+  "path": "typings",
+  "dependencies": {
+    "update-notifier/update-notifier.d.ts": {
+      "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
+    },
+    "insight/insight.d.ts": {
+      "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
+    },
+    "commander/commander.d.ts": {
+      "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
+    },
+    "es6-promise/es6-promise.d.ts": {
+      "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
+    },
+    "mkdirp/mkdirp.d.ts": {
+      "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
+    },
+    "rimraf/rimraf.d.ts": {
+      "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
+    },
+    "node/node.d.ts": {
+      "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
+    },
+    "mocha/mocha.d.ts": {
+      "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
+    },
+    "assert/assert.d.ts": {
+      "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
+    }
+  }
+}
