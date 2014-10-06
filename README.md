@@ -158,6 +158,14 @@ gapi/googleapis-browser-common.d.ts
 
 [example](https://github.com/vvakame/dtsm/blob/master/example/mixedRepisitory/dtsm.json)
 
+### Install with interactive filtering
+
+If you use [peco](https://github.com/peco/peco), you can install .d.ts file interactive.
+
+```
+$ dtsm search --raw | peco | dtsm install --stdin
+```
+
 ## Contributing
 
 This package's author vvakame is not native english speaker. My first language is Japanese.
@@ -174,3 +182,4 @@ If you are native english speaker. I wish received a pull request for document a
    * --save option
  * create pull request
    * generate self check todo list
+ * Windows support
