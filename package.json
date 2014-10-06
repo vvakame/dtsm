@@ -2,7 +2,6 @@
   "name": "dtsm",
   "author": "TypeScript definition file manager",
   "version": "0.0.1",
-  "private": true,
   "description": "TypeScript definition file (.d.ts) manager",
   "main": "./index",
   "bin": {
