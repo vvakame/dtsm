@@ -17,6 +17,8 @@ describe("command line interface", ()=> {
                 cwd: testWorkingDir
             })
             .run((err, stdout, exit) => {
+                assert(!err);
+                assert(exit === 0);
                 done();
             });
     });
