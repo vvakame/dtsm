@@ -39,3 +39,6 @@ tscommand.tmp.txt
 
 # for test
 test-tmp/
+test-repository/
+test-cli/
+test-typings/

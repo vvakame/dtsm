@@ -29,6 +29,9 @@
     },
     "assert/assert.d.ts": {
       "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
+    },
+    "nexpect/nexpect.d.ts": {
+      "ref": "980a64347f1621dc94a941b1ac612a66ad667c4c"
     }
   }
 }

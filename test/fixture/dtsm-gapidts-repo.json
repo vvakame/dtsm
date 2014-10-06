@@ -1,0 +1,6 @@
+{
+  "baseRepo": "https://github.com/vvakame/gapidts.git",
+  "baseRef": "master",
+  "path": "typings",
+  "dependencies": {}
+}

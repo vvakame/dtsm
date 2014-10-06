@@ -3,6 +3,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.tscache" />
+      <excludeFolder url="file://$MODULE_DIR$/test-cli" />
       <excludeFolder url="file://$MODULE_DIR$/test-repository" />
       <excludeFolder url="file://$MODULE_DIR$/test-tmp" />
       <excludeFolder url="file://$MODULE_DIR$/test-typings" />

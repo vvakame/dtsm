@@ -3,6 +3,9 @@
 
 /// <reference path="../typings/mocha/mocha.d.ts" />
 /// <reference path="../typings/assert/assert.d.ts" />
+/// <reference path="../typings/nexpect/nexpect.d.ts" />
+
+/// <reference path="./cli_spec.ts" />
 
 import fs = require("fs");
 import rimraf = require("rimraf");
