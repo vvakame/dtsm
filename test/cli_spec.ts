@@ -12,6 +12,7 @@ describe("command line interface", ()=> {
     before(done => {
         // turn off send usage
         // make fetch log
+        console.log(command, "--insight", "false", "fetch");
         nexpect
             .spawn(command, ["--insight", "false", "fetch"], {
                 cwd: testWorkingDir
