@@ -1,7 +1,6 @@
 /// <reference path="../typings/update-notifier/update-notifier.d.ts" />
+/// <reference path="../typings/insight/insight.d.ts" />
 /// <reference path="../typings/commander/commander.d.ts" />
-
-/// <reference path="./insight.d.ts" />
 
 import updateNotifier = require("update-notifier");
 var pkg = require("../package.json");
@@ -26,9 +25,16 @@ var insight = new Insight({
     packageVersion: pkg.version
 });
 
-import program = require("commander");
+var program:IExportedCommand = require("commander");
 
-(<any>program)
+interface IExportedCommand extends commander.IExportedCommand {
+    forceOnline:boolean;
+    config:string;
+    remote:string;
+    insight:string;
+}
+
+program
     .version(pkg.version, "-v, --version")
     .option("--insight <use>", "send usage opt in/out. in = `--insight true`, out = `--insight false`")
     .option("--force-online", "force turn on online check")
@@ -38,10 +44,10 @@ import program = require("commander");
 function setup():Promise<dtsm.Manager> {
     "use strict";
 
-    var forceOnline:boolean = (<any>program).forceOnline;
-    var configPath:string = (<any>program).config;
-    var remoteUri:string = (<any>program).remote;
-    var insightStr = (<any>program).insight;
+    var forceOnline = program.forceOnline;
+    var configPath:string = program.config;
+    var remoteUri:string = program.remote;
+    var insightStr = program.insight;
 
     var promise:Promise<void>;
     if (typeof insightStr === "string") {

@@ -6,28 +6,31 @@
 	"bundle": "typings/bundle.d.ts",
 	"installed": {
 		"update-notifier/update-notifier.d.ts": {
-			"commit": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"
+			"commit": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
+		},
+		"insight/insight.d.ts": {
+			"commit": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
 		},
 		"commander/commander.d.ts": {
-			"commit": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"
+			"commit": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
 		},
 		"es6-promise/es6-promise.d.ts": {
-			"commit": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"
+			"commit": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
 		},
 		"mkdirp/mkdirp.d.ts": {
-			"commit": "b0b4af1223f4f9449012688fa0c18f20cc3267e7"
+			"commit": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
 		},
 		"rimraf/rimraf.d.ts": {
-			"commit": "0b87ad988f46378342654384728c3a388e6d7178"
+			"commit": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
 		},
 		"node/node.d.ts": {
-			"commit": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"
+			"commit": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
 		},
 		"mocha/mocha.d.ts": {
-			"commit": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"
+			"commit": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
 		},
 		"assert/assert.d.ts": {
-			"commit": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"
+			"commit": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
 		}
 	}
 }
