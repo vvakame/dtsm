@@ -180,3 +180,4 @@ If you are native english speaker. I wish received a pull request for document a
  * create pull request
    * generate self check todo list
  * Windows support
+ * generate bundle.d.ts
