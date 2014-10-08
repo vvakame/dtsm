@@ -2,6 +2,7 @@
 /// <reference path="../node_modules/packagemanager-backend/packagemanager-backend.d.ts" />
 
 /// <reference path="../typings/node/node.d.ts" />
+/// <reference path="../typings/insight/insight.d.ts" />
 /// <reference path="../typings/es6-promise/es6-promise.d.ts" />
 /// <reference path="../typings/mkdirp/mkdirp.d.ts" />
 /// <reference path="../typings/rimraf/rimraf.d.ts" />
@@ -19,11 +20,13 @@ import _path = require("path");
 import fsgit = require("fs-git");
 import _pmb = require("packagemanager-backend");
 
+export import Tracker = require("./tracker");
+
 export interface IOptions {
     configPath?:string;
     baseRepo?:string;
     forceOnline?:boolean;
-    track?:(...args:string[])=>void;
+    insightOptout?:boolean;
 }
 
 export interface IRecipe {
@@ -56,16 +59,19 @@ export class Manager {
     otherBaseRepo = false;
 
     pmb:_pmb.PackageManagerBackend;
-    track:(...args:string[])=>void = ()=> {
-    };
+    tracker:Tracker;
 
     constructor(public options:IOptions = {}) {
         this.configPath = options.configPath || this.configPath;
         this.baseRepo = options.baseRepo || this.baseRepo;
         this.forceOnline = options.forceOnline || this.forceOnline;
-        this.track = options.track || this.track;
-
-        this.track();
+        this.tracker = new Tracker();
+        if (typeof options.insightOptout !== "undefined") {
+            this.tracker.optOut = options.insightOptout;
+        }
+        if (this.tracker.optOut === false) {
+            this.tracker.track();
+        }
 
         var recipe = this._load(this.configPath);
         if (recipe && recipe.baseRepo !== this.baseRepo) {
@@ -94,7 +100,7 @@ export class Manager {
     }
 
     init(path:string = this.configPath):string {
-        this.track("init");
+        this.tracker.track("init");
         var content = this._load(path);
         content = content || <any>{};
         content.baseRepo = content.baseRepo || this.baseRepo;
@@ -124,7 +130,7 @@ export class Manager {
     }
 
     search(phrase:string):Promise<fsgit.IFileInfo[]> {
-        this.track("search", phrase);
+        this.tracker.track("search", phrase);
         return this.pmb
             .search({
                 globPatterns: [
@@ -139,7 +145,7 @@ export class Manager {
     install(opts:{save:boolean;dryRun:boolean;}, phrases:string[]):Promise<_pmb.PackageManagerBackend.IResult> {
         if (phrases) {
             phrases.forEach(phrase=> {
-                this.track("install", phrase);
+                this.tracker.track("install", phrase);
             });
         }
         if (!this.configPath) {
@@ -207,7 +213,7 @@ export class Manager {
     }
 
     installFromFile(opts:{dryRun?:boolean;} = {}):Promise<_pmb.PackageManagerBackend.IResult> {
-        this.track("installFromFile");
+        this.tracker.track("installFromFile");
 
         if (this.otherBaseRepo) {
             return Promise.reject("do not install from file with --remote option");
@@ -336,7 +342,7 @@ export class Manager {
     }
 
     fetch():Promise<void> {
-        this.track("fetch");
+        this.tracker.track("fetch");
         return this.pmb
             .fetch(this.baseRepo)
             .then(repo => repo.gitFetchAll())

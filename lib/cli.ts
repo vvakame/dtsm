@@ -1,5 +1,4 @@
 /// <reference path="../typings/update-notifier/update-notifier.d.ts" />
-/// <reference path="../typings/insight/insight.d.ts" />
 /// <reference path="../typings/commander/commander.d.ts" />
 
 import updateNotifier = require("update-notifier");
@@ -16,14 +15,6 @@ if (notifier.update) {
 import readline = require("readline");
 
 import dtsm = require("./index");
-
-import Insight = require("insight");
-var insight = new Insight({
-    // Google Analytics tracking code
-    trackingCode: "UA-6628015-5",
-    packageName: pkg.name,
-    packageVersion: pkg.version
-});
 
 var program:IExportedCommand = require("commander");
 
@@ -48,35 +39,28 @@ function setup():Promise<dtsm.Manager> {
     var configPath:string = program.config;
     var remoteUri:string = program.remote;
     var insightStr = program.insight;
+    var insightOptout:boolean;
 
-    var promise:Promise<void>;
     if (typeof insightStr === "string") {
         if (insightStr !== "true" && insightStr !== "false") {
             return Promise.reject("--insight options required \"true\" or \"false\"");
         } else if (insightStr === "true") {
-            insight.config.set('optOut', true);
+            insightOptout = false; // inverse
         } else {
-            insight.config.set('optOut', false);
+            insightOptout = true; // inverse
         }
-    }
-    // ask for permission the first time
-    if (insight.optOut === undefined) {
-        promise = new Promise((resolve:(value?:any)=>void, reject:(error:any)=>void)=> {
-            insight.askPermission(null, ()=> {
-                resolve();
-            });
-        });
-    } else {
-        promise = Promise.resolve(<any>null);
     }
 
     var options:dtsm.IOptions = {
         configPath: configPath || "dtsm.json",
         baseRepo: remoteUri,
         forceOnline: forceOnline,
-        track: insight.track.bind(insight)
+        insightOptout: insightOptout
     };
-    return promise.then(()=> new dtsm.Manager(options));
+    var manager = new dtsm.Manager(options);
+    return manager.tracker
+        .askPermissionIfNeeded()
+        .then(()=> manager);
 }
 
 function errorHandler(err:any) {
