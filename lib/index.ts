@@ -31,6 +31,7 @@ export interface IRecipe {
     baseRepo:string;
     baseRef:string;
     path:string;
+    bundle?:string;
     dependencies:{[path:string]:_pmb.PackageManagerBackend.IDependency};
 }
 
@@ -50,6 +51,7 @@ export class Manager {
     baseRepo = "https://github.com/borisyankov/DefinitelyTyped.git";
     baseRef = "master";
     path = "typings";
+    bundle = this.path + "/bundle.d.ts";
 
     otherBaseRepo = false;
 
@@ -98,6 +100,7 @@ export class Manager {
         content.baseRepo = content.baseRepo || this.baseRepo;
         content.baseRef = content.baseRef || this.baseRef;
         content.path = content.path || this.path;
+        content.bundle = typeof content.bundle !== "undefined" ? content.bundle : this.bundle; // for content.bundle === null
         content.dependencies = content.dependencies || {};
 
         return this._save(path, content);
@@ -191,6 +194,7 @@ export class Manager {
                     baseRepo: content.baseRepo,
                     baseRef: content.baseRef,
                     path: content.path,
+                    bundle: content.bundle,
                     dependencies: {}
                 };
                 fileList.forEach(fileInfo => {
@@ -255,6 +259,20 @@ export class Manager {
                     if (!opts.dryRun) {
                         mkdirp.sync(_path.resolve(path, "../"));
                         fs.writeFileSync(path, depResult.content.toString("utf8"));
+                        if (!recipe.bundle) {
+                            return;
+                        }
+                        var bundleContent = "";
+                        if (fs.existsSync(recipe.bundle)) {
+                            bundleContent = fs.readFileSync(recipe.bundle, "utf8");
+                        } else {
+                            mkdirp.sync(_path.resolve(recipe.bundle, "../"));
+                        }
+                        var referencePath = _path.relative(_path.resolve(recipe.bundle, "../"), _path.resolve(recipe.path, depName));
+                        var referenceComment = "/// <reference path=\"" + referencePath + "\" />\n";
+                        if (bundleContent.indexOf(referenceComment) === -1) {
+                            fs.appendFileSync(recipe.bundle, referenceComment, {encoding: "utf8"});
+                        }
                     }
                 });
 

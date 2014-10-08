@@ -2,6 +2,7 @@
   "baseRepo": "https://github.com/borisyankov/DefinitelyTyped.git",
   "baseRef": "master",
   "path": "typings",
+  "bundle": null,
   "dependencies": {
     "update-notifier/update-notifier.d.ts": {
       "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
