@@ -25,25 +25,34 @@ describe("Manager", ()=> {
         });
 
         it("can create new dtsm.json", ()=> {
-            var manager = new dtsm.Manager();
-            manager.init(dtsmFilePath);
-            assert(fs.existsSync(dtsmFilePath));
+            return dtsm.Manager
+                .createManager()
+                .then(manager => {
+                    manager.init(dtsmFilePath);
+                    assert(fs.existsSync(dtsmFilePath));
+                });
         });
     });
 
     describe("#search", ()=> {
         it("can find single file", ()=> {
-            var manager = new dtsm.Manager();
-            return manager.search("gae.channel").then(fileList => {
-                assert(fileList.length === 1);
-            });
+            return dtsm.Manager
+                .createManager()
+                .then(manager => {
+                    return manager.search("gae.channel").then(fileList => {
+                        assert(fileList.length === 1);
+                    });
+                });
         });
 
         it("can find multiple files", ()=> {
-            var manager = new dtsm.Manager();
-            return manager.search("angular").then(fileList => {
-                assert(1 < fileList.length);
-            });
+            return dtsm.Manager
+                .createManager()
+                .then(manager => {
+                    return manager.search("angular").then(fileList => {
+                        assert(1 < fileList.length);
+                    });
+                });
         });
     });
 
@@ -58,37 +67,46 @@ describe("Manager", ()=> {
         });
 
         it("can install single file without save options", ()=> {
-            var manager = new dtsm.Manager();
-            return manager.install({save: false, dryRun: false}, ["jquery/jquery.d.ts"]).then(result => {
-                assert(Object.keys(result.dependencies).length === 1);
-                assert(!result.dependencies["jquery/jquery.d.ts"].error);
-                assert(!fs.existsSync(dtsmFilePath));
-            });
+            return dtsm.Manager
+                .createManager()
+                .then(manager => {
+                    return manager.install({save: false, dryRun: false}, ["jquery/jquery.d.ts"]).then(result => {
+                        assert(Object.keys(result.dependencies).length === 1);
+                        assert(!result.dependencies["jquery/jquery.d.ts"].error);
+                        assert(!fs.existsSync(dtsmFilePath));
+                    });
+                });
         });
 
         it("can install single file with save options", ()=> {
-            var manager = new dtsm.Manager({configPath: dtsmFilePath});
-            manager.init(dtsmFilePath);
+            return dtsm.Manager
+                .createManager({configPath: dtsmFilePath})
+                .then(manager => {
+                    manager.init(dtsmFilePath);
 
-            return manager.install({save: true, dryRun: false}, ["jquery/jquery.d.ts"]).then(result => {
-                assert(Object.keys(result.dependencies).length === 1);
-                assert(!result.dependencies["jquery/jquery.d.ts"].error);
-                assert(fs.existsSync(dtsmFilePath));
+                    return manager.install({save: true, dryRun: false}, ["jquery/jquery.d.ts"]).then(result => {
+                        assert(Object.keys(result.dependencies).length === 1);
+                        assert(!result.dependencies["jquery/jquery.d.ts"].error);
+                        assert(fs.existsSync(dtsmFilePath));
 
-                var json = fs.readFileSync(dtsmFilePath, "utf8");
-                var data = JSON.parse(json);
-                assert(data.dependencies["jquery/jquery.d.ts"]);
-            });
+                        var json = fs.readFileSync(dtsmFilePath, "utf8");
+                        var data = JSON.parse(json);
+                        assert(data.dependencies["jquery/jquery.d.ts"]);
+                    });
+                });
         });
 
         it("can't install files if it found more than 1 file", ()=> {
-            var manager = new dtsm.Manager();
-            return manager.install({save: false, dryRun: false}, ["angul"]).then(result=> {
-                throw new Error("unexpected");
-            }, ()=> {
-                // TODO
-                return "OK";
-            });
+            return dtsm.Manager
+                .createManager()
+                .then(manager => {
+                    return manager.install({save: false, dryRun: false}, ["angul"]).then(result=> {
+                        throw new Error("unexpected");
+                    }, ()=> {
+                        // TODO
+                        return "OK";
+                    });
+                });
         });
     });
 
@@ -105,43 +123,63 @@ describe("Manager", ()=> {
 
         it("can install files from recipe", ()=> {
             assert(!fs.existsSync(targetDir));
-            var manager = new dtsm.Manager({configPath: dtsmFilePath});
-            return manager.installFromFile().then(result => {
-                assert(1 < Object.keys(result.dependencies).length); // atom.d.ts has meny dependencies
-                assert(fs.existsSync("test-tmp/installFromFile/atom/atom.d.ts"));
-            });
+
+            return dtsm.Manager
+                .createManager({configPath: dtsmFilePath})
+                .then(manager => {
+                    return manager.installFromFile().then(result => {
+                        assert(1 < Object.keys(result.dependencies).length); // atom.d.ts has meny dependencies
+                        assert(fs.existsSync("test-tmp/installFromFile/atom/atom.d.ts"));
+                    });
+                });
         });
     });
 
     describe.skip("#uninstall", ()=> {
         it("can uninstall single file", ()=> {
-            var manager = new dtsm.Manager();
-            return manager.uninstall({path: "test-tmp/uninstall/dtsm.json", save: false}, "atom").then(fileList => {
-                assert(fileList.length === 1);
-            });
+            return dtsm.Manager
+                .createManager()
+                .then(manager => {
+                    return manager.uninstall({
+                        path: "test-tmp/uninstall/dtsm.json",
+                        save: false
+                    }, "atom").then(fileList => {
+                        assert(fileList.length === 1);
+                    });
+                });
         });
 
         it("can uninstall single file by ambiguous matching", ()=> {
-            var manager = new dtsm.Manager();
-            return manager.uninstall({path: "test-tmp/uninstall/dtsm.json", save: false}, "angular").then(fileList => {
-                assert(fileList.length === 1);
-            });
+            return dtsm.Manager
+                .createManager()
+                .then(manager => {
+                    return manager.uninstall({
+                        path: "test-tmp/uninstall/dtsm.json",
+                        save: false
+                    }, "angular").then(fileList => {
+                        assert(fileList.length === 1);
+                    });
+                });
         });
     });
 
     describe.skip("#outdated", ()=> {
         it("can detect outdated files", ()=> {
-            var manager = new dtsm.Manager();
-            return manager.outdated().then(fileList => {
-                assert(fileList);
-            });
+            return dtsm.Manager
+                .createManager()
+                .then(manager => {
+                    return manager.outdated().then(fileList => {
+                        assert(fileList);
+                    });
+                });
         });
     });
 
     describe("#fetch", ()=> {
         it("can fetch from remote repos", ()=> {
-            var manager = new dtsm.Manager();
-            return manager.fetch();
+            return dtsm.Manager
+                .createManager()
+                .then(manager => manager.fetch());
         });
     });
 });

@@ -51,16 +51,19 @@ function setup():Promise<dtsm.Manager> {
         }
     }
 
-    var options:dtsm.IOptions = {
+    var options:dtsm.Options = {
         configPath: configPath || "dtsm.json",
         baseRepo: remoteUri,
         forceOnline: forceOnline,
         insightOptout: insightOptout
     };
-    var manager = new dtsm.Manager(options);
-    return manager.tracker
-        .askPermissionIfNeeded()
-        .then(()=> manager);
+    return dtsm.Manager
+        .createManager(options)
+        .then(manager => {
+            return manager.tracker
+                .askPermissionIfNeeded()
+                .then(()=> manager);
+        });
 }
 
 function errorHandler(err:any) {
@@ -103,19 +106,19 @@ program
             .then(manager => {
                 return manager.search(phrase || "");
             })
-            .then(fileList => {
+            .then(resultList => {
                 if (opts.raw) {
-                    fileList.forEach(fileInfo => {
-                        console.log(fileInfo.path);
+                    resultList.forEach(result => {
+                        console.log(result.fileInfo.path);
                     });
                 } else {
-                    if (fileList.length === 0) {
+                    if (resultList.length === 0) {
                         console.log("No results.");
                     } else {
                         console.log("Search results.");
                         console.log("");
-                        fileList.forEach(fileInfo => {
-                            console.log("\t" + fileInfo.path);
+                        resultList.forEach(result => {
+                            console.log("\t" + result.fileInfo.path);
                         });
                     }
                 }

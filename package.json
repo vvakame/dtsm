@@ -24,13 +24,13 @@
   "license": "MIT",
   "dependencies": {
     "commander": "2.5.0",
-    "fs-git": "0.1.4",
+    "fs-git": "0.2.0",
     "insight": "0.4.3",
     "mkdirp": "0.5.0",
-    "packagemanager-backend": "0.1.8",
+    "packagemanager-backend": "0.2.0",
     "rimraf": "2.2.8",
     "update-notifier": "0.2.2",
-    "ypromise": "0.2.3"
+    "es6-promise": "2.0.1"
   },
   "devDependencies": {
     "espower-loader": "0.10.0",
