@@ -15,7 +15,12 @@ try {
 require("es6-promise").polyfill();
 
 export import Tracker = require("./tracker");
-export import Manager = require("./manager");
+
+/* tslint:disable:no-unused-variable */
+import ma = require("./manager");
+export import createManager = ma.createManager;
+export import Manager = ma.Manager;
+/* tslint:enable:no-unused-variable */
 
 /* tslint:disable:no-unused-variable */
 import m = require("./model");

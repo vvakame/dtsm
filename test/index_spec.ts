@@ -25,7 +25,7 @@ describe("Manager", ()=> {
         });
 
         it("can create new dtsm.json", ()=> {
-            return dtsm.Manager
+            return dtsm
                 .createManager()
                 .then(manager => {
                     manager.init(dtsmFilePath);
@@ -36,7 +36,7 @@ describe("Manager", ()=> {
 
     describe("#search", ()=> {
         it("can find single file", ()=> {
-            return dtsm.Manager
+            return dtsm
                 .createManager()
                 .then(manager => {
                     return manager.search("gae.channel").then(fileList => {
@@ -46,7 +46,7 @@ describe("Manager", ()=> {
         });
 
         it("can find multiple files", ()=> {
-            return dtsm.Manager
+            return dtsm
                 .createManager()
                 .then(manager => {
                     return manager.search("angular").then(fileList => {
@@ -67,7 +67,7 @@ describe("Manager", ()=> {
         });
 
         it("can install single file without save options", ()=> {
-            return dtsm.Manager
+            return dtsm
                 .createManager()
                 .then(manager => {
                     return manager.install({save: false, dryRun: false}, ["jquery/jquery.d.ts"]).then(result => {
@@ -79,7 +79,7 @@ describe("Manager", ()=> {
         });
 
         it("can install single file with save options", ()=> {
-            return dtsm.Manager
+            return dtsm
                 .createManager({configPath: dtsmFilePath})
                 .then(manager => {
                     manager.init(dtsmFilePath);
@@ -97,7 +97,7 @@ describe("Manager", ()=> {
         });
 
         it("can't install files if it found more than 1 file", ()=> {
-            return dtsm.Manager
+            return dtsm
                 .createManager()
                 .then(manager => {
                     return manager.install({save: false, dryRun: false}, ["angul"]).then(result=> {
@@ -124,7 +124,7 @@ describe("Manager", ()=> {
         it("can install files from recipe", ()=> {
             assert(!fs.existsSync(targetDir));
 
-            return dtsm.Manager
+            return dtsm
                 .createManager({configPath: dtsmFilePath})
                 .then(manager => {
                     return manager.installFromFile().then(result => {
@@ -137,7 +137,7 @@ describe("Manager", ()=> {
 
     describe.skip("#uninstall", ()=> {
         it("can uninstall single file", ()=> {
-            return dtsm.Manager
+            return dtsm
                 .createManager()
                 .then(manager => {
                     return manager.uninstall({
@@ -150,7 +150,7 @@ describe("Manager", ()=> {
         });
 
         it("can uninstall single file by ambiguous matching", ()=> {
-            return dtsm.Manager
+            return dtsm
                 .createManager()
                 .then(manager => {
                     return manager.uninstall({
@@ -165,7 +165,7 @@ describe("Manager", ()=> {
 
     describe.skip("#outdated", ()=> {
         it("can detect outdated files", ()=> {
-            return dtsm.Manager
+            return dtsm
                 .createManager()
                 .then(manager => {
                     return manager.outdated().then(fileList => {
@@ -177,7 +177,7 @@ describe("Manager", ()=> {
 
     describe("#fetch", ()=> {
         it("can fetch from remote repos", ()=> {
-            return dtsm.Manager
+            return dtsm
                 .createManager()
                 .then(manager => manager.fetch());
         });

@@ -58,7 +58,8 @@ describe("command line interface", ()=> {
                     assert(fs.existsSync(targetFile));
 
                     var data = JSON.parse(fs.readFileSync(targetFile, "utf8"));
-                    assert(data.baseRepo === "https://github.com/vvakame/gapidts.git");
+                    assert(data.repos.length === 1);
+                    assert(data.repos[0].url === "https://github.com/vvakame/gapidts.git");
 
                     done();
                 });

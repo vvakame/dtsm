@@ -8,16 +8,14 @@ export interface Console {
 
 export interface Options {
     configPath?:string;
-    baseRepo?:string;
-    forceOnline?:boolean;
+    repos?:pmb.RepositorySpec[];
+    offline?:boolean;
     insightOptout?:boolean;
-    logger?: Console;
 }
 
 export interface Recipe {
     rootDir?:string;
-    baseRepo:string;
-    baseRef:string;
+    repos?:pmb.RepositorySpec[];
     path:string;
     bundle?:string;
     dependencies:{[path:string]:pmb.Dependency};

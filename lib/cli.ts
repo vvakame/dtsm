@@ -15,11 +15,12 @@ if (notifier.update) {
 import readline = require("readline");
 
 import dtsm = require("./index");
+import pmb = require("packagemanager-backend");
 
 var program:IExportedCommand = require("commander");
 
 interface IExportedCommand extends commander.IExportedCommand {
-    forceOnline:boolean;
+    offline:boolean;
     config:string;
     remote:string;
     insight:string;
@@ -28,14 +29,14 @@ interface IExportedCommand extends commander.IExportedCommand {
 program
     .version(pkg.version, "-v, --version")
     .option("--insight <use>", "send usage opt in/out. in = `--insight true`, out = `--insight false`")
-    .option("--force-online", "force turn on online check")
+    .option("--offline", "offline first")
     .option("--remote <uri>", "uri of remote repository")
     .option("--config <path>", "path to json file");
 
 function setup():Promise<dtsm.Manager> {
     "use strict";
 
-    var forceOnline = program.forceOnline;
+    var offline = program.offline;
     var configPath:string = program.config;
     var remoteUri:string = program.remote;
     var insightStr = program.insight;
@@ -51,13 +52,19 @@ function setup():Promise<dtsm.Manager> {
         }
     }
 
+    var repos:pmb.RepositorySpec[] = [];
+    if (remoteUri) {
+        repos.push({
+            url: remoteUri
+        });
+    }
     var options:dtsm.Options = {
         configPath: configPath || "dtsm.json",
-        baseRepo: remoteUri,
-        forceOnline: forceOnline,
+        repos: repos,
+        offline: offline,
         insightOptout: insightOptout
     };
-    return dtsm.Manager
+    return dtsm
         .createManager(options)
         .then(manager => {
             return manager.tracker
@@ -95,14 +102,6 @@ program
     .option("--raw", "output search result by raw format")
     .action((phrase:string, opts:{raw:boolean;})=> {
         setup()
-            .then(manager => {
-                manager.checkOutdated(outdated => {
-                    if (outdated) {
-                        console.warn("caution: repository info is maybe outdated. please exec `dtsm fetch` command");
-                    }
-                });
-                return manager;
-            })
             .then(manager => {
                 return manager.search(phrase || "");
             })
@@ -151,19 +150,7 @@ program
         var stdin = !!opts.stdin;
 
         setup()
-            .then(manager => {
-                if (stdin || targets.length !== 0) {
-                    // do not check installFromFile pattern
-                    manager.checkOutdated(outdated => {
-                        if (outdated) {
-                            console.warn("caution: repository info is maybe outdated. please exec `dtsm fetch` command");
-                        }
-                    });
-                }
-                return manager;
-            })
             .then(manager=> {
-
                 if (!stdin && targets.length === 0) {
                     manager.installFromFile({dryRun: dryRun})
                         .then(result => {

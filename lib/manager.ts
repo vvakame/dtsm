@@ -6,31 +6,47 @@ import fsgit = require("fs-git");
 import pmb = require("packagemanager-backend");
 
 import m = require("./model");
+import utils = require("./utils");
 import Tracker = require("./tracker");
 
-class Manager {
+export function createManager(options:m.Options = {}):Promise<Manager> {
+    "use strict";
 
-    static createManager(options:m.Options = {}):Promise<Manager> {
-        return new Manager(options).setupBackend();
-    }
+    return new Manager(options)._setupBackend();
+}
 
-    configPath = "dtsm.json";
-    forceOnline = false;
-    rootDir = "~/.dtsm";
-    baseRepo = "https://github.com/borisyankov/DefinitelyTyped.git";
-    baseRef = "master";
-    path = "typings";
-    bundle = this.path + "/bundle.d.ts";
+export class Manager {
+    static defaultConfigFile = process.cwd() + "/dtsm.json";
+    static defaultRootDir = "~/.dtsm";
+    static defaultRepo = "https://github.com/borisyankov/DefinitelyTyped.git";
+    static defaultRef = "master";
+    static defaultPath = "typings";
+    static defaultBundleFile = "bundle.d.ts";
 
-    otherBaseRepo = false;
+    configPath = Manager.defaultConfigFile;
+    offline = false;
+    rootDir = Manager.defaultRootDir;
+    repos:pmb.RepositorySpec[] = [];
+    path = Manager.defaultPath;
+    bundle = this.path + "/" + Manager.defaultBundleFile;
 
     backend:pmb.Manager<m.GlobalConfig>;
     tracker:Tracker;
+    savedRecipe:m.Recipe;
 
-    constructor(public options:m.Options = {}) {
+    constructor(options:m.Options = {}) {
+        options = utils.deepClone(options);
+
         this.configPath = options.configPath || this.configPath;
-        this.baseRepo = options.baseRepo || this.baseRepo;
-        this.forceOnline = options.forceOnline || this.forceOnline;
+        this.repos = options.repos || this.repos;
+        this.repos = this.repos.map(repo => repo); // copy
+        if (this.repos.length === 0) {
+            this.repos.push({
+                url: Manager.defaultRepo,
+                ref: Manager.defaultRef
+            });
+        }
+        this.offline = options.offline || this.offline;
         this.tracker = new Tracker();
         if (typeof options.insightOptout !== "undefined") {
             this.tracker.optOut = options.insightOptout;
@@ -39,39 +55,38 @@ class Manager {
             this.tracker.track();
         }
 
-        var recipe = this._load(this.configPath);
-        if (recipe && recipe.baseRepo !== this.baseRepo) {
-            // if recipe's baseRepo and command-line option's baseRepo is not match, some actions are limeted.
-            this.otherBaseRepo = true;
-        }
-        if (!options.baseRepo) {
-            if (recipe) {
-                this.rootDir = recipe.rootDir || this.rootDir;
-                this.baseRepo = recipe.baseRepo || this.baseRepo;
-                this.baseRef = recipe.baseRef || this.baseRef;
-                this.path = recipe.path || this.path;
+        this.savedRecipe = this._load();
+        if (this.savedRecipe) {
+            // for backward compatible
+            var _recipe:any = this.savedRecipe;
+            if (_recipe.baseRepo) {
+                var baseRepo:string = _recipe.baseRepo;
+                var baseRef:string = _recipe.baseRef;
+                delete _recipe.baseRepo;
+                delete _recipe.baseRef;
+                this.savedRecipe.repos = this.savedRecipe.repos || [];
+                this.savedRecipe.repos.unshift({
+                    url: baseRepo,
+                    ref: baseRef
+                });
             }
-        }
-        if (!options.logger) {
-            options.logger = {
-                error: console.error.bind(console),
-                warn: console.warn.bind(console),
-                log: () => {
-                }
-            };
+
+            // for options
+            if (this.repos.length === 0) {
+                this.repos = this.savedRecipe.repos;
+            } else if (options.repos && options.repos.length === 0) {
+                this.repos = this.savedRecipe.repos;
+            }
+            this.rootDir = this.savedRecipe.rootDir || this.rootDir;
+            this.path = this.savedRecipe.path || this.path;
         }
     }
 
-    setupBackend():Promise<Manager> {
+    _setupBackend():Promise<Manager> {
         return pmb.Manager
             .createManager<m.GlobalConfig>({
             rootDir: this.rootDir,
-            repos: [
-                {
-                    url: this.baseRepo,
-                    ref: this.baseRef
-                }
-            ]
+            repos: this.repos
         })
             .then(backend => {
                 this.backend = backend;
@@ -79,28 +94,41 @@ class Manager {
             });
     }
 
-    init(path:string = this.configPath):string {
-        this.tracker.track("init");
-        var content = this._load(path);
-        content = content || <any>{};
-        content.baseRepo = content.baseRepo || this.baseRepo;
-        content.baseRef = content.baseRef || this.baseRef;
-        content.path = content.path || this.path;
-        content.bundle = typeof content.bundle !== "undefined" ? content.bundle : this.bundle; // for content.bundle === null
-        content.dependencies = content.dependencies || {};
-
-        return this._save(path, content);
+    _setupDefaultRecipe() {
+        this.savedRecipe = this.savedRecipe || <any>{};
+        this.savedRecipe.repos = this.savedRecipe.repos || this.repos;
+        this.savedRecipe.path = this.savedRecipe.path || this.path;
+        this.savedRecipe.bundle = typeof this.savedRecipe.bundle !== "undefined" ? this.savedRecipe.bundle : this.bundle; // for this.recipe.bundle === null
+        this.savedRecipe.dependencies = this.savedRecipe.dependencies || {};
     }
 
-    _load(path:string):m.Recipe {
+    init(path:string = this.configPath):string {
+        this.tracker.track("init");
+        this._setupDefaultRecipe();
+
+        return this._save(path);
+    }
+
+    _load(path:string = this.configPath):m.Recipe {
         if (fs.existsSync(path)) {
-            return JSON.parse(fs.readFileSync(path, "utf8"));
+            var recipe:m.Recipe = JSON.parse(fs.readFileSync(path, "utf8"));
+
+            // backward compatible
+            if (!recipe.repos || recipe.repos.length === 0) {
+                recipe.repos = [{
+                    url: (<any>recipe).baseRepo,
+                    ref: (<any>recipe).baseRef
+                }];
+            }
+            delete (<any>recipe).baseRepo;
+            delete (<any>recipe).baseRef;
+            return recipe;
         } else {
             return null;
         }
     }
 
-    _save(path:string, recipe:m.Recipe):string {
+    _save(path:string = this.configPath, recipe:m.Recipe = this.savedRecipe):string {
         var jsonContent = JSON.stringify(recipe, null, 2);
 
         mkdirp.sync(_path.resolve(path, "../"));
@@ -111,12 +139,23 @@ class Manager {
 
     search(phrase:string):Promise<pmb.SearchResult[]> {
         this.tracker.track("search", phrase);
-        return this.backend
-            .search({
-                globPatterns: [
-                    "**/*.d.ts",
-                    "!_infrastructure/**/*"
-                ]
+        var promises:Promise<any>[];
+        if (this.offline) {
+            promises = [Promise.resolve(null)];
+        } else {
+            promises = this.backend.repos.map(repo => {
+                return this._fetchIfOutdated(repo);
+            });
+        }
+        return Promise.all(promises)
+            .then(()=> {
+                return this.backend
+                    .search({
+                        globPatterns: [
+                            "**/*.d.ts",
+                            "!_infrastructure/**/*"
+                        ]
+                    });
             })
             .then((resultList:pmb.SearchResult[])=> resultList.filter(result => result.fileInfo.path.indexOf(phrase) !== -1))
             .then((resultList:pmb.SearchResult[])=> this._addWeightingAndSort(phrase, resultList).map(data => data.result));
@@ -131,10 +170,10 @@ class Manager {
         if (!this.configPath) {
             return Promise.reject("path is required");
         }
-        var content = this._load(this.configPath);
-        if (!content && opts.save) {
+        if (!fs.existsSync(this.configPath) && opts.save) {
             return Promise.reject(this.configPath + " is not exists");
         }
+        this._setupDefaultRecipe();
 
         var promises = phrases.map(phrase => {
             return this.search(phrase).then(resultList => {
@@ -158,36 +197,36 @@ class Manager {
                     return resultList;
                 }
                 resultList.forEach(result => {
-                    var fileInfo = result.fileInfo;
-                    if (content.dependencies[fileInfo.path]) {
+                    var depName = result.fileInfo.path;
+                    if (this.savedRecipe.dependencies[depName]) {
                         return;
                     }
-                    content.dependencies[fileInfo.path] = {
-                        repo: this.otherBaseRepo ? this.baseRepo : void 0,
-                        ref: fileInfo.ref
+                    this.savedRecipe.dependencies[depName] = {
+                        repo: result.repo.spec.url,
+                        ref: result.fileInfo.ref
                     };
+                    if (this.savedRecipe) {
+                        if (this.savedRecipe.repos && this.savedRecipe.repos[0].url === this.savedRecipe.dependencies[depName].repo) {
+                            delete this.savedRecipe.dependencies[depName].repo;
+                        }
+                    }
                 });
-                this._save(this.configPath, content);
+                this._save();
 
                 return resultList;
             })
             .then((resultList:pmb.SearchResult[])=> {
-                content = content || <any>{};
-                content.baseRepo = this.baseRepo;
-                content.baseRef = this.baseRef;
-                content.path = this.path;
-                content.dependencies = content.dependencies || {};
                 var diff:m.Recipe = {
-                    baseRepo: content.baseRepo,
-                    baseRef: content.baseRef,
-                    path: content.path,
-                    bundle: content.bundle,
+                    repos: this.savedRecipe.repos,
+                    path: this.savedRecipe.path,
+                    bundle: this.savedRecipe.bundle,
                     dependencies: {}
                 };
                 resultList.forEach(result => {
-                    var fileInfo = result.fileInfo;
-                    diff.dependencies[fileInfo.path] = content.dependencies[fileInfo.path] || {
-                        ref: fileInfo.ref
+                    var depName = result.fileInfo.path;
+                    diff.dependencies[depName] = this.savedRecipe.dependencies[depName] || {
+                        repo: result.repo.spec.url,
+                        ref: result.fileInfo.ref
                     };
                 });
                 return this._installFromOptions(diff, opts);
@@ -197,14 +236,10 @@ class Manager {
     installFromFile(opts:{dryRun?:boolean;} = {}):Promise<pmb.Result> {
         this.tracker.track("installFromFile");
 
-        if (this.otherBaseRepo) {
-            return Promise.reject("do not install from file with --remote option");
-        }
-
         if (!this.configPath) {
             return Promise.reject("configPath is required");
         }
-        var content = this._load(this.configPath);
+        var content = this._load();
         if (!content) {
             return Promise.reject(this.configPath + " is not exists");
         }
@@ -213,10 +248,12 @@ class Manager {
     }
 
     _installFromOptions(recipe:m.Recipe, opts:{dryRun?:boolean;} = {}):Promise<pmb.Result> {
+        var baseRepo = recipe && recipe.repos && recipe.repos[0] || this.repos[0];
         return this.backend
             .getByRecipe({
-                baseRepo: recipe.baseRepo,
-                baseRef: recipe.baseRef,
+                // TODO
+                baseRepo: baseRepo.url,
+                baseRef: baseRepo.ref,
                 path: recipe.path,
                 dependencies: recipe.dependencies,
                 postProcessForDependency: (recipe:pmb.Recipe, dep:pmb.Dependency, content:any) => {
@@ -326,18 +363,35 @@ class Manager {
 
     fetch():Promise<void> {
         this.tracker.track("fetch");
-        return this.backend
-            .fetchAllRepos()
+        var promises = this.backend.repos.map(repo => {
+            return this._fetchRepo(repo);
+        });
+        return Promise.all(promises).then(()=> <any>null);
+    }
+
+    _fetchIfOutdated(repo:pmb.Repo) {
+        if (this._checkOutdated(repo.spec.url)) {
+            return this._fetchRepo(repo);
+        } else {
+            return Promise.resolve(repo);
+        }
+    }
+
+    _fetchRepo(repo:pmb.Repo) {
+        console.log("fetching " + repo.spec.url);
+        return Promise
+            .resolve(null)
+            .then(()=> repo.fetchAll())
             .then(()=> {
-                this.backend.repos.forEach((repo:pmb.Repo) => this._setLastFetchAt(repo.spec.url));
-                return Promise.resolve(<any>null);
+                this._setLastFetchAt(repo.spec.url);
+                return repo;
             });
     }
 
-    checkOutdated(callback:(outdated:boolean)=>void) {
-        var fetchAt = this._getLastFetchAt(this.baseRepo);
-        var now = new Date().getTime();
-        callback(fetchAt < (now - 3 * 24 * 60 * 1000));
+    _checkOutdated(repoUrl:string):boolean {
+        var fetchAt = this._getLastFetchAt(repoUrl);
+        // 15min
+        return fetchAt + 15 * 60 * 1000 < Date.now();
     }
 
     _getLastFetchAt(repoID:string):number {
@@ -347,7 +401,7 @@ class Manager {
         return repo.fetchAt;
     }
 
-    _setLastFetchAt(repoID:string, fetchAt:number = new Date().getTime()):void {
+    _setLastFetchAt(repoID:string, fetchAt:number = Date.now()):void {
         var config:m.GlobalConfig = this.backend.loadConfig() || <any>{};
         config.repositories = config.repositories || {};
         config.repositories[repoID] = {
@@ -356,5 +410,3 @@ class Manager {
         this.backend.saveConfig(config);
     }
 }
-
-export = Manager;
