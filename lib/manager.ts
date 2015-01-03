@@ -257,15 +257,10 @@ export class Manager {
                 path: recipe.path,
                 dependencies: recipe.dependencies,
                 postProcessForDependency: (recipe:pmb.Recipe, dep:pmb.Dependency, content:any) => {
-                    var reference = /\/\/\/\s+<reference\s+path=["']([^"']*)["']\s*\/>/;
-                    var body:string = content.toString("utf8");
-                    body
-                        .split("\n")
-                        .map(line => line.match(reference))
-                        .filter(matches => !!matches)
-                        .forEach(matches => {
-                            this.backend.pushAdditionalDependency(recipe, dep, matches[1]);
-                        });
+                    var dependencies = utils.extractDependencies(content.toString("utf8"));
+                    dependencies.forEach(detected => {
+                        this.backend.pushAdditionalDependency(recipe, dep, detected);
+                    });
                 }
             }).then((result:pmb.Result) => {
                 var errors:any[] = Object.keys(result.dependencies).map(depName => {

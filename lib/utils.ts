@@ -15,3 +15,14 @@ export function deepClone(obj:any) {
         return obj;
     }
 }
+
+export function extractDependencies(sourceCode:string):string[] {
+    "use strict";
+
+    var referenceRegExp = /^\/\/\/\s*<reference\s+path\s*=\s*("|')(.+?)\1.*?\/>/;
+    return sourceCode
+        .split("\n")
+        .map(line => line.match(referenceRegExp))
+        .filter(matches => !!matches)
+        .map(matches => matches[2]);
+}

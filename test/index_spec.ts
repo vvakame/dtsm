@@ -6,6 +6,7 @@
 /// <reference path="../typings/nexpect/nexpect.d.ts" />
 
 /// <reference path="./cli_spec.ts" />
+/// <reference path="./utils_spec.ts" />
 
 import fs = require("fs");
 import rimraf = require("rimraf");
