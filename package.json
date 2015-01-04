@@ -15,13 +15,16 @@
     "url": "https://github.com/vvakame/dtsm/issues"
   },
   "homepage": "https://github.com/vvakame/dtsm",
+  "license": {
+    "type": "MIT",
+    "url": "http://vvakame.mit-license.org/"
+  },
   "scripts": {
     "test": "grunt test"
   },
   "directories": {
     "test": "test"
   },
-  "license": "MIT",
   "dependencies": {
     "commander": "2.5.0",
     "fs-git": "0.2.0",
