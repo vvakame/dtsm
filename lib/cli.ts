@@ -1,5 +1,5 @@
 /// <reference path="../typings/update-notifier/update-notifier.d.ts" />
-/// <reference path="../typings/commander/commander.d.ts" />
+/// <reference path="../node_modules/commandpost/commandpost.d.ts" />
 
 import updateNotifier = require("update-notifier");
 var pkg = require("../package.json");
@@ -17,29 +17,33 @@ import readline = require("readline");
 import dtsm = require("./index");
 import pmb = require("packagemanager-backend");
 
-var program:IExportedCommand = require("commander");
+import commandpost = require("commandpost");
 
-interface IExportedCommand extends commander.IExportedCommand {
+interface RootOptions {
     offline:boolean;
-    config:string;
-    remote:string;
-    insight:string;
+    config:string[];
+    remote:string[];
+    insight:string[];
 }
 
-program
+var root = commandpost
+    .create<RootOptions, {}>("dtsm")
     .version(pkg.version, "-v, --version")
     .option("--insight <use>", "send usage opt in/out. in = `--insight true`, out = `--insight false`")
     .option("--offline", "offline first")
     .option("--remote <uri>", "uri of remote repository")
-    .option("--config <path>", "path to json file");
+    .option("--config <path>", "path to json file")
+    .action(()=> {
+        process.stdout.write(root.helpText() + '\n');
+    });
 
-function setup():Promise<dtsm.Manager> {
+function setup(opts:RootOptions):Promise<dtsm.Manager> {
     "use strict";
 
-    var offline = program.offline;
-    var configPath:string = program.config;
-    var remoteUri:string = program.remote;
-    var insightStr = program.insight;
+    var offline = opts.offline;
+    var configPath:string = opts.config[0];
+    var remoteUri:string = opts.remote[0];
+    var insightStr = opts.insight[0];
     var insightOptout:boolean;
 
     if (typeof insightStr === "string") {
@@ -82,11 +86,11 @@ function errorHandler(err:any) {
     });
 }
 
-program
-    .command("init")
+root
+    .subCommand("init")
     .description("make new dtsm.json")
-    .action((opts:{})=> {
-        setup()
+    .action(()=> {
+        setup(root.parsedOpts)
             .then(manager => {
                 var jsonContent = manager.init();
 
@@ -96,14 +100,22 @@ program
             .catch(errorHandler);
     });
 
-program
-    .command("search [phrase]")
+interface SearchOptions {
+    raw:boolean;
+}
+
+interface SearchArguments {
+    phrase: string;
+}
+
+root
+    .subCommand<SearchOptions,SearchArguments>("search [phrase]")
     .description("search .d.ts files")
     .option("--raw", "output search result by raw format")
-    .action((phrase:string, opts:{raw:boolean;})=> {
-        setup()
+    .action((opts, args) => {
+        setup(root.parsedOpts)
             .then(manager => {
-                return manager.search(phrase || "");
+                return manager.search(args.phrase || "");
             })
             .then(resultList => {
                 if (opts.raw) {
@@ -125,11 +137,11 @@ program
             .catch(errorHandler);
     });
 
-program
-    .command("fetch")
+root
+    .subCommand("fetch")
     .description("fetch all data from remote repos")
-    .action((opts:{})=> {
-        setup()
+    .action(()=> {
+        setup(root.parsedOpts)
             .then(manager=> {
                 console.log("fetching...");
                 return manager.fetch();
@@ -137,30 +149,37 @@ program
             .catch(errorHandler);
     });
 
-program
-    .command("install files...")
+interface InstallOptions {
+    save:boolean;
+    dryRun: boolean;
+    stdin: boolean;
+}
+
+interface InstallArguments {
+    files: string[];
+}
+
+root
+    .subCommand<InstallOptions, InstallArguments>("install [files...]")
     .description("install .d.ts files")
     .option("--save", "save .d.ts file path into dtsm.json")
     .option("--dry-run", "save .d.ts file path into dtsm.json")
     .option("--stdin", "use input from stdin")
-    .action((...targets:string[])=> {
-        var opts:{save:boolean;dryRun:boolean;stdin:boolean;} = <any>targets.pop();
-        var save = !!opts.save;
-        var dryRun = !!opts.dryRun;
-        var stdin = !!opts.stdin;
+    .action((opts, args) => {
+        // .action((...targets:string[])=> {
 
-        setup()
+        setup(root.parsedOpts)
             .then(manager=> {
-                if (!stdin && targets.length === 0) {
-                    manager.installFromFile({dryRun: dryRun})
+                if (!opts.stdin && args.files.length === 0) {
+                    manager.installFromFile({dryRun: opts.dryRun})
                         .then(result => {
                             Object.keys(result.dependencies).forEach(depName => {
                                 console.log(depName);
                             });
                         })
                         .catch(errorHandler);
-                } else if (targets.length !== 0) {
-                    manager.install({save: save, dryRun: dryRun}, targets)
+                } else if (args.files.length !== 0) {
+                    manager.install({save: opts.save, dryRun: opts.dryRun}, args.files)
                         .then(result => {
                             Object.keys(result.dependencies).forEach(depName => {
                                 console.log(depName);
@@ -173,7 +192,7 @@ program
                         output: process.stdout
                     });
                     rl.on("line", (line:string)=> {
-                        manager.install({save: save, dryRun: dryRun}, [line])
+                        manager.install({save: opts.save, dryRun: opts.dryRun}, [line])
                             .then(result => {
                                 Object.keys(result.dependencies).forEach(depName => {
                                     console.log(depName);
@@ -186,4 +205,4 @@ program
             .catch(errorHandler);
     });
 
-program.parse(process.argv);
+commandpost.exec(root, process.argv);

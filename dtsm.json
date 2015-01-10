@@ -10,9 +10,6 @@
     "insight/insight.d.ts": {
       "ref": "1fb0d8c3e30156e69a86271d0532d68d71e0735c"
     },
-    "commander/commander.d.ts": {
-      "ref": "1fb0d8c3e30156e69a86271d0532d68d71e0735c"
-    },
     "es6-promise/es6-promise.d.ts": {
       "ref": "1fb0d8c3e30156e69a86271d0532d68d71e0735c"
     },
