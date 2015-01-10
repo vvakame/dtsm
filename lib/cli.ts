@@ -37,55 +37,6 @@ var root = commandpost
         process.stdout.write(root.helpText() + '\n');
     });
 
-function setup(opts:RootOptions):Promise<dtsm.Manager> {
-    "use strict";
-
-    var offline = opts.offline;
-    var configPath:string = opts.config[0];
-    var remoteUri:string = opts.remote[0];
-    var insightStr = opts.insight[0];
-    var insightOptout:boolean;
-
-    if (typeof insightStr === "string") {
-        if (insightStr !== "true" && insightStr !== "false") {
-            return Promise.reject("--insight options required \"true\" or \"false\"");
-        } else if (insightStr === "true") {
-            insightOptout = false; // inverse
-        } else {
-            insightOptout = true; // inverse
-        }
-    }
-
-    var repos:pmb.RepositorySpec[] = [];
-    if (remoteUri) {
-        repos.push({
-            url: remoteUri
-        });
-    }
-    var options:dtsm.Options = {
-        configPath: configPath || "dtsm.json",
-        repos: repos,
-        offline: offline,
-        insightOptout: insightOptout
-    };
-    return dtsm
-        .createManager(options)
-        .then(manager => {
-            return manager.tracker
-                .askPermissionIfNeeded()
-                .then(()=> manager);
-        });
-}
-
-function errorHandler(err:any) {
-    "use strict";
-
-    console.error(err);
-    return Promise.resolve(null).then(()=> {
-        process.exit(1);
-    });
-}
-
 root
     .subCommand("init")
     .description("make new dtsm.json")
@@ -109,7 +60,7 @@ interface SearchArguments {
 }
 
 root
-    .subCommand<SearchOptions,SearchArguments>("search [phrase]")
+    .subCommand<SearchOptions, SearchArguments>("search [phrase]")
     .description("search .d.ts files")
     .option("--raw", "output search result by raw format")
     .action((opts, args) => {
@@ -143,7 +94,7 @@ root
     .action(()=> {
         setup(root.parsedOpts)
             .then(manager=> {
-                console.log("fetching...");
+                process.stdout.write("fetching...\n");
                 return manager.fetch();
             })
             .catch(errorHandler);
@@ -206,3 +157,52 @@ root
     });
 
 commandpost.exec(root, process.argv);
+
+function setup(opts:RootOptions):Promise<dtsm.Manager> {
+    "use strict";
+
+    var offline = opts.offline;
+    var configPath:string = opts.config[0];
+    var remoteUri:string = opts.remote[0];
+    var insightStr = opts.insight[0];
+    var insightOptout:boolean;
+
+    if (typeof insightStr === "string") {
+        if (insightStr !== "true" && insightStr !== "false") {
+            return Promise.reject("--insight options required \"true\" or \"false\"");
+        } else if (insightStr === "true") {
+            insightOptout = false; // inverse
+        } else {
+            insightOptout = true; // inverse
+        }
+    }
+
+    var repos:pmb.RepositorySpec[] = [];
+    if (remoteUri) {
+        repos.push({
+            url: remoteUri
+        });
+    }
+    var options:dtsm.Options = {
+        configPath: configPath || "dtsm.json",
+        repos: repos,
+        offline: offline,
+        insightOptout: insightOptout
+    };
+    return dtsm
+        .createManager(options)
+        .then(manager => {
+            return manager.tracker
+                .askPermissionIfNeeded()
+                .then(()=> manager);
+        });
+}
+
+function errorHandler(err:any) {
+    "use strict";
+
+    console.error(err);
+    return Promise.resolve(null).then(()=> {
+        process.exit(1);
+    });
+}
