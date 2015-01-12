@@ -210,26 +210,6 @@ describe("command line interface", ()=> {
                 });
         });
 
-        it("can install .d.ts file with --stdin option", done=> {
-            assert(!fs.existsSync(testWorkingDir + "/typings/atom/atom.d.ts"));
-            var p = nexpect
-                .spawn(command, ["install", "--stdin"], {
-                    cwd: testWorkingDir
-                })
-                .run((err, stdout, exit) => {
-                    assert(!err);
-                    assert(exit === 0);
-
-                    assert(stdout.some(line => line.indexOf("atom/atom.d.ts") !== -1));
-                    assert(stdout.some(line => line.indexOf("space-pen/space-pen.d.ts") !== -1));
-
-                    done();
-                });
-            // can't use nexpect sendline and sendEof :/
-            p.stdin.write("atom\n");
-            p.stdin.end();
-        });
-
         it("can install .d.ts file with --save option", done=> {
             var targetFile = testWorkingDir + "/dtsm.json";
 

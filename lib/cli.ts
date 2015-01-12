@@ -12,8 +12,6 @@ if (notifier.update) {
     notifier.notify();
 }
 
-import readline = require("readline");
-
 import dtsm = require("./index");
 import pmb = require("packagemanager-backend");
 import is = require("./incrementalsearch");
@@ -124,7 +122,7 @@ root
 interface InstallOptions {
     save:boolean;
     dryRun: boolean;
-    stdin: boolean;
+    interactive: boolean;
 }
 
 interface InstallArguments {
@@ -136,42 +134,52 @@ root
     .description("install .d.ts files")
     .option("--save", "save .d.ts file path into dtsm.json")
     .option("--dry-run", "save .d.ts file path into dtsm.json")
-    .option("--stdin", "use input from stdin")
+    .option("-i, --interactive", "do incremental searching. use `peco` default")
     .action((opts, args) => {
         // .action((...targets:string[])=> {
 
         setup(root.parsedOpts)
             .then(manager=> {
-                if (!opts.stdin && args.files.length === 0) {
-                    manager.installFromFile({dryRun: opts.dryRun})
+                if (!opts.interactive && args.files.length === 0) {
+                    return manager.installFromFile({dryRun: opts.dryRun})
                         .then(result => {
                             Object.keys(result.dependencies).forEach(depName => {
                                 console.log(depName);
                             });
-                        })
-                        .catch(errorHandler);
+                        });
                 } else if (args.files.length !== 0) {
-                    manager.install({save: opts.save, dryRun: opts.dryRun}, args.files)
+                    return manager.install({save: opts.save, dryRun: opts.dryRun}, args.files)
                         .then(result => {
                             Object.keys(result.dependencies).forEach(depName => {
                                 console.log(depName);
                             });
-                        })
-                        .catch(errorHandler);
+                        });
                 } else {
-                    var rl = readline.createInterface({
-                        input: process.stdin,
-                        output: process.stdout
-                    });
-                    rl.on("line", (line:string)=> {
-                        manager.install({save: opts.save, dryRun: opts.dryRun}, [line])
-                            .then(result => {
-                                Object.keys(result.dependencies).forEach(depName => {
-                                    console.log(depName);
+                    return manager.search("")
+                        .then(resultList => {
+                            var candidates = resultList.map(result => result.fileInfo.path);
+                            if (candidates.length === 0) {
+                                return Promise.resolve(resultList);
+                            }
+                            return is
+                                .exec(candidates, "peco")
+                                .then(selected => {
+                                    return selected
+                                        .map(path => {
+                                            return resultList.filter(result => result.fileInfo.path === path)[0];
+                                        })
+                                        .filter(result => !!result);
                                 });
-                            })
-                            .catch(errorHandler);
-                    });
+                        })
+                        .then(resultList => {
+                            var files = resultList.map(result => result.fileInfo.path);
+                            return manager.install({save: opts.save, dryRun: opts.dryRun}, files)
+                                .then(result => {
+                                    Object.keys(result.dependencies).forEach(depName => {
+                                        console.log(depName);
+                                    });
+                                });
+                        });
                 }
             })
             .catch(errorHandler);
