@@ -16,6 +16,7 @@ import readline = require("readline");
 
 import dtsm = require("./index");
 import pmb = require("packagemanager-backend");
+import is = require("./incrementalsearch");
 
 import commandpost = require("commandpost");
 
@@ -53,6 +54,7 @@ root
 
 interface SearchOptions {
     raw:boolean;
+    interactive:boolean;
 }
 
 interface SearchArguments {
@@ -63,10 +65,29 @@ root
     .subCommand<SearchOptions, SearchArguments>("search [phrase]")
     .description("search .d.ts files")
     .option("--raw", "output search result by raw format")
+    .option("-i, --interactive", "do incremental searching. use `peco` default")
     .action((opts, args) => {
         setup(root.parsedOpts)
             .then(manager => {
                 return manager.search(args.phrase || "");
+            })
+            .then(resultList => {
+                if (!opts.interactive) {
+                    return Promise.resolve(resultList);
+                }
+                var candidates = resultList.map(result => result.fileInfo.path);
+                if (candidates.length === 0) {
+                    return Promise.resolve(resultList);
+                }
+                return is
+                    .exec(candidates, "peco")
+                    .then(selected => {
+                        return selected
+                            .map(path => {
+                                return resultList.filter(result => result.fileInfo.path === path)[0];
+                            })
+                            .filter(result => !!result);
+                    });
             })
             .then(resultList => {
                 if (opts.raw) {

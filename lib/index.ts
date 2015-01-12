@@ -6,6 +6,7 @@
 /// <reference path="../typings/es6-promise/es6-promise.d.ts" />
 /// <reference path="../typings/mkdirp/mkdirp.d.ts" />
 /// <reference path="../typings/rimraf/rimraf.d.ts" />
+/// <reference path="../typings/which/which.d.ts" />
 
 try {
     // optional
