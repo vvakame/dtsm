@@ -67,14 +67,18 @@ $ tree typings
 $ dtsm init
 write to dtsm.json
 {
-  "baseRepo": "https://github.com/borisyankov/DefinitelyTyped.git",
-  "baseRef": "master",
+  "repos": [
+    {
+      "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "ref": "master"
+    }
+  ],
   "path": "typings",
+  "bundle": "typings/bundle.d.ts",
   "dependencies": {}
 }
 
 $ dtsm install --save atom
-dtsm install --save atom
 atom/atom.d.ts
 q/Q.d.ts
 jquery/jquery.d.ts
@@ -83,17 +87,22 @@ emissary/emissary.d.ts
 pathwatcher/pathwatcher.d.ts
 text-buffer/text-buffer.d.ts
 status-bar/status-bar.d.ts
-node/node.d.ts
 mixto/mixto.d.ts
+node/node.d.ts
 
 $ cat dtsm.json
 {
-  "baseRepo": "https://github.com/borisyankov/DefinitelyTyped.git",
-  "baseRef": "master",
+  "repos": [
+    {
+      "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "ref": "master"
+    }
+  ],
   "path": "typings",
+  "bundle": "typings/bundle.d.ts",
   "dependencies": {
     "atom/atom.d.ts": {
-      "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
+      "ref": "0605ebbdbdd8183c70b4a14e1e34ecb3f2b446bf"
     }
   }
 }
@@ -122,7 +131,7 @@ $ ls -la | grep typings
 
 ```
 # search for another repository
-$ dtsm search --remote https://github.com/vvakame/gapidts bigquery
+$ dtsm --remote https://github.com/vvakame/gapidts.git search bigquery
 Search results.
 
 	test/valid/bigquery-v2-browser.d.ts
@@ -136,16 +145,21 @@ Search results.
 ```
 $ cat dtsm.json
 {
-  "baseRepo": "https://github.com/borisyankov/DefinitelyTyped.git",
-  "baseRef": "master",
+  "repos": [
+    {
+      "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "ref": "master"
+    }
+  ],
   "path": "typings",
+  "bundle": "typings/bundle.d.ts",
   "dependencies": {
     "jquery/jquery.d.ts": {
-      "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
+      "ref": "0605ebbdbdd8183c70b4a14e1e34ecb3f2b446bf"
     },
-    "gapi/bigquery-v2-browser.d.ts": {
-      "repo": "https://github.com/vvakame/gapidts",
-      "ref": "8311d2e889b5a6637ebe092012cd647c44a8f6f4",
+    "gapidts/bigquery-v2-browser.d.ts": {
+      "repo": "https://github.com/vvakame/gapidts.git",
+      "ref": "4edbcca555936a931407d667f8687f175ecbd5ed",
       "path": "test/valid/bigquery-v2-browser.d.ts"
     }
   }
@@ -163,7 +177,8 @@ gapi/googleapis-browser-common.d.ts
 If you use [peco](https://github.com/peco/peco), you can install .d.ts file interactive.
 
 ```
-$ dtsm search --raw | peco | dtsm install --stdin
+$ dtsm search -i
+$ dtsm install -i
 ```
 
 ## Contributing
