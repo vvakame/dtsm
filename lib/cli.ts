@@ -185,7 +185,9 @@ root
             .catch(errorHandler);
     });
 
-commandpost.exec(root, process.argv);
+commandpost
+    .exec(root, process.argv)
+    .catch(errorHandler);
 
 function setup(opts:RootOptions):Promise<dtsm.Manager> {
     "use strict";
@@ -230,7 +232,11 @@ function setup(opts:RootOptions):Promise<dtsm.Manager> {
 function errorHandler(err:any) {
     "use strict";
 
-    console.error(err);
+    if (err instanceof Error) {
+        console.error(err.stack);
+    } else {
+        console.error(err);
+    }
     return Promise.resolve(null).then(()=> {
         process.exit(1);
     });
