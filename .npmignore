@@ -5,6 +5,7 @@
 
 # for npm
 node_modules/
+npm-shrinkwrap.json
 
 # for grunt
 typings/
@@ -24,7 +25,6 @@ example/
 circle.yml
 setup.sh
 Gruntfile.js
-tsd.json
 tslint.json
 
 npm-debug.log
