@@ -26,12 +26,12 @@
     "test": "test"
   },
   "dependencies": {
-    "commandpost": "0.1.0",
+    "commandpost": "0.1.1",
     "es6-promise": "2.0.1",
-    "fs-git": "0.2.0",
+    "fs-git": "0.2.1",
     "insight": "0.5.2",
     "mkdirp": "0.5.0",
-    "packagemanager-backend": "0.2.0",
+    "packagemanager-backend": "0.2.2",
     "rimraf": "2.2.8",
     "update-notifier": "0.3.0",
     "which": "1.0.8"
@@ -45,10 +45,10 @@
     "grunt-ts": "2.0.1",
     "grunt-tslint": "1.0.1",
     "grunt-typedoc": "0.2.1",
-    "load-grunt-tasks": "2.0.0",
+    "load-grunt-tasks": "3.0.0",
     "mocha": "2.1.0",
     "nexpect": "0.4.2",
-    "power-assert": "0.10.0",
+    "power-assert": "0.10.1",
     "source-map-support": "0.2.9",
     "time-grunt": "1.0.0",
     "typescript": "1.4.1"
