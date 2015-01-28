@@ -103,6 +103,9 @@ describe("Manager", ()=> {
                 .then(manager => {
                     return manager.install({save: false, dryRun: false}, ["angul"]).then(result=> {
                         throw new Error("unexpected");
+                        /* tslint:disable:no-unreachable */
+                        return "";
+                        /* tslint:enable:no-unreachable */
                     }, ()=> {
                         // TODO
                         return "OK";
