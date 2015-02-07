@@ -641,6 +641,37 @@
               "version": "0.2.1",
               "from": "fs-git@0.2.1",
               "resolved": "https://registry.npmjs.org/fs-git/-/fs-git-0.2.1.tgz"
+            },
+            "packagemanager-backend": {
+              "version": "0.2.2",
+              "from": "packagemanager-backend@0.2.2",
+              "resolved": "https://registry.npmjs.org/packagemanager-backend/-/packagemanager-backend-0.2.2.tgz",
+              "dependencies": {
+                "minimatch": {
+                  "version": "2.0.1",
+                  "from": "minimatch@2.0.1",
+                  "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-2.0.1.tgz",
+                  "dependencies": {
+                    "brace-expansion": {
+                      "version": "1.1.0",
+                      "from": "brace-expansion@^1.0.0",
+                      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.0.tgz",
+                      "dependencies": {
+                        "balanced-match": {
+                          "version": "0.2.0",
+                          "from": "balanced-match@^0.2.0",
+                          "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-0.2.0.tgz"
+                        },
+                        "concat-map": {
+                          "version": "0.0.1",
+                          "from": "concat-map@0.0.1",
+                          "resolved": "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -1555,7 +1586,7 @@
         },
         "escape-string-regexp": {
           "version": "1.0.2",
-          "from": "escape-string-regexp@^1.0.0",
+          "from": "escape-string-regexp@1.0.2",
           "resolved": "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.2.tgz"
         },
         "glob": {
@@ -1622,15 +1653,9 @@
       "resolved": "https://registry.npmjs.org/nexpect/-/nexpect-0.5.0.tgz"
     },
     "packagemanager-backend": {
-      "version": "0.2.2",
-      "from": "packagemanager-backend@0.2.2",
-      "resolved": "https://registry.npmjs.org/packagemanager-backend/-/packagemanager-backend-0.2.2.tgz",
+      "version": "0.3.0",
+      "from": "packagemanager-backend@0.3.0",
       "dependencies": {
-        "fs-git": {
-          "version": "0.2.1",
-          "from": "fs-git@0.2.1",
-          "resolved": "https://registry.npmjs.org/fs-git/-/fs-git-0.2.1.tgz"
-        },
         "minimatch": {
           "version": "2.0.1",
           "from": "minimatch@2.0.1",
@@ -1846,7 +1871,7 @@
         },
         "hooker": {
           "version": "0.2.3",
-          "from": "hooker@~0.2.3",
+          "from": "hooker@^0.2.3",
           "resolved": "https://registry.npmjs.org/hooker/-/hooker-0.2.3.tgz"
         },
         "pretty-ms": {

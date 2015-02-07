@@ -31,7 +31,7 @@
     "fs-git": "0.3.0",
     "insight": "0.5.2",
     "mkdirp": "0.5.0",
-    "packagemanager-backend": "0.2.2",
+    "packagemanager-backend": "0.3.0",
     "rimraf": "2.2.8",
     "update-notifier": "0.3.0",
     "which": "1.0.8"
