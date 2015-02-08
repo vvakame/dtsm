@@ -281,4 +281,66 @@ describe("command line interface", ()=> {
                 });
         });
     });
+
+
+    describe("update sub-command", () => {
+
+        it("can update definition files", ()=> {
+            var targetFile = testWorkingDir + "/dtsm.json";
+
+            assert(!fs.existsSync(targetFile));
+            return new Promise((resolve, reject) => {
+                nexpect
+                    .spawn(command, ["--config", targetFile, "init"], {
+                        cwd: testWorkingDir
+                    })
+                    .run((err, stdout, exit) => {
+                        assert(!err);
+                        if (err) {
+                            reject(err);
+                            return;
+                        }
+                        assert(exit === 0);
+                        assert(fs.existsSync(targetFile));
+                        resolve();
+                    });
+            })
+                .then(()=> {
+                    return new Promise((resolve, reject) => {
+                        nexpect
+                            .spawn(command, ["--config", targetFile, "install", "es6-promise"], {
+                                cwd: testWorkingDir
+                            })
+                            .run((err, stdout, exit) => {
+                                assert(!err);
+                                if (err) {
+                                    reject(err);
+                                    return;
+                                }
+                                assert(exit === 0);
+                                assert(fs.existsSync(targetFile));
+                                resolve();
+                            });
+                    });
+                })
+                .then(()=> {
+                    new Promise((resolve, reject) => {
+                        nexpect
+                            .spawn(command, ["--config", targetFile, "update", "--save"], {
+                                cwd: testWorkingDir
+                            })
+                            .run((err, stdout, exit) => {
+                                assert(!err);
+                                if (err) {
+                                    reject(err);
+                                    return;
+                                }
+                                assert(exit === 0);
+                                assert(fs.existsSync(targetFile));
+                                resolve();
+                            });
+                    });
+                });
+        });
+    });
 });

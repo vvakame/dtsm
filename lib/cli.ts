@@ -185,6 +185,29 @@ root
             .catch(errorHandler);
     });
 
+interface UpdateOptions {
+    save:boolean;
+    dryRun: boolean;
+}
+
+root
+    .subCommand<UpdateOptions, {}>("update")
+    .description("update definition files version")
+    .option("--save", "save updated ref into dtsm.json")
+    .option("--dry-run", "save .d.ts file path into dtsm.json")
+    .action((opts, args)=> {
+        setup(root.parsedOpts)
+            .then(manager=> {
+                return manager.update({save: opts.save, dryRun: opts.dryRun});
+            })
+            .then(result => {
+                Object.keys(result.dependencies).forEach(depName => {
+                    console.log(depName);
+                });
+            })
+            .catch(errorHandler);
+    });
+
 commandpost
     .exec(root, process.argv)
     .catch(errorHandler);

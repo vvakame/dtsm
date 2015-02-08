@@ -346,6 +346,49 @@ export class Manager {
             .sort((a, b) => b.weight - a.weight);
     }
 
+    update(opts:{save?:boolean;dryRun?:boolean}):Promise<pmb.Result> {
+        this.tracker.track("update");
+
+        if (!this.configPath) {
+            return Promise.reject("configPath is required");
+        }
+        this._setupDefaultRecipe();
+        var content = this._load();
+        if (!content) {
+            return Promise.reject(this.configPath + " is not exists");
+        }
+
+        Object.keys(content.dependencies).map(depName => {
+            var dep = content.dependencies[depName];
+            dep.ref = null;
+        });
+
+        return this._installFromOptions(content)
+            .then(result => {
+                var recipe = content;
+                Object.keys(result.dependencies).forEach(depName => {
+                    var depResult = result.dependencies[depName];
+
+                    var path = _path.resolve(recipe.path, depName);
+                    if (!opts.dryRun) {
+                        mkdirp.sync(_path.resolve(path, "../"));
+                        fs.writeFileSync(path, depResult.content.toString("utf8"));
+
+                        if (opts.save) {
+                            Object.keys(this.savedRecipe.dependencies).filter(savedDepName => {
+                                return depName === savedDepName;
+                            }).forEach(savedDepName => {
+                                var savedDep = this.savedRecipe.dependencies[savedDepName];
+                                savedDep.ref = depResult.fileInfo.ref;
+                            });
+                            this._save();
+                        }
+                    }
+                });
+                return result;
+            });
+    }
+
     uninstall(opts:{path:string; save:boolean;}, phrase:string):Promise<fsgit.FileInfo[]> {
         // TODO
         return null;

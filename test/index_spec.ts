@@ -12,6 +12,7 @@ import fs = require("fs");
 import rimraf = require("rimraf");
 
 import dtsm = require("../lib/index");
+import fsgit = require("fs-git");
 
 describe("Manager", ()=> {
 
@@ -134,6 +135,44 @@ describe("Manager", ()=> {
                     return manager.installFromFile().then(result => {
                         assert(1 < Object.keys(result.dependencies).length); // atom.d.ts has meny dependencies
                         assert(fs.existsSync("test-tmp/installFromFile/atom/atom.d.ts"));
+                    });
+                });
+        });
+    });
+
+    describe("#update", ()=> {
+
+        var dtsmFilePath = "./test/fixture/dtsm-update.json";
+        var targetDir:string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
+
+        beforeEach(()=> {
+            if (fs.existsSync(targetDir)) {
+                rimraf.sync(targetDir);
+            }
+        });
+
+        it("can update files", ()=> {
+            assert(!fs.existsSync(targetDir));
+
+            return dtsm
+                .createManager({configPath: dtsmFilePath})
+                .then(manager => {
+                    return manager.update({}).then(result => {
+                        assert(1 === Object.keys(result.dependencies).length);
+                        var dtsPath = "test-tmp/update/es6-promise/es6-promise.d.ts";
+                        assert(fs.existsSync(dtsPath));
+
+                        // check content
+                        var updatedContent = fs.readFileSync(dtsPath, "utf8");
+                        var depName = "es6-promise/es6-promise.d.ts";
+                        var dep = result.dependencies[depName];
+                        var originalRef:string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).dependencies[depName].ref;
+                        return fsgit
+                            .open(dep.repo.targetDir, originalRef)
+                            .then(repo => repo.readFile(depName, {encoding: "utf8"}))
+                            .then(oldContent => {
+                                assert(oldContent !== updatedContent);
+                            });
                     });
                 });
         });
