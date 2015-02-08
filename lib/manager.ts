@@ -168,7 +168,7 @@ export class Manager {
             });
         }
         if (!this.configPath) {
-            return Promise.reject("path is required");
+            return Promise.reject("configPath is required");
         }
         if (!fs.existsSync(this.configPath) && opts.save) {
             return Promise.reject(this.configPath + " is not exists");
@@ -272,31 +272,22 @@ export class Manager {
                     return Promise.reject(errors);
                 }
 
+                if (opts.dryRun) {
+                    return result;
+                }
+
+                // create definition files and bundle file
                 Object.keys(result.dependencies).forEach(depName => {
                     var depResult = result.dependencies[depName];
+                    this._writeDefinitionFile(recipe, depName, depResult);
 
-                    var path = _path.resolve(recipe.path, depName);
-                    if (!opts.dryRun) {
-                        mkdirp.sync(_path.resolve(path, "../"));
-                        fs.writeFileSync(path, depResult.content.toString("utf8"));
-                        if (!recipe.bundle) {
-                            return;
-                        }
-                        var bundleContent = "";
-                        if (fs.existsSync(recipe.bundle)) {
-                            bundleContent = fs.readFileSync(recipe.bundle, "utf8");
-                        } else {
-                            mkdirp.sync(_path.resolve(recipe.bundle, "../"));
-                        }
-                        var referencePath = _path.relative(_path.resolve(recipe.bundle, "../"), _path.resolve(recipe.path, depName));
-                        var referenceComment = "/// <reference path=\"" + referencePath + "\" />\n";
-                        if (bundleContent.indexOf(referenceComment) === -1) {
-                            fs.appendFileSync(recipe.bundle, referenceComment, {encoding: "utf8"});
-                        }
+                    if (!recipe.bundle) {
+                        return;
                     }
+                    this._addReferenceToBundle(recipe, depName);
                 });
 
-                return Promise.resolve(result);
+                return result;
             });
     }
 
@@ -353,40 +344,50 @@ export class Manager {
             return Promise.reject("configPath is required");
         }
         this._setupDefaultRecipe();
-        var content = this._load();
-        if (!content) {
-            return Promise.reject(this.configPath + " is not exists");
-        }
 
-        Object.keys(content.dependencies).map(depName => {
-            var dep = content.dependencies[depName];
-            dep.ref = null;
+        // reset ref settings
+        Object.keys(this.savedRecipe.dependencies).map(depName => {
+            this.savedRecipe.dependencies[depName].ref = null;
         });
 
-        return this._installFromOptions(content)
+        return this._installFromOptions(this.savedRecipe, opts)
             .then(result => {
-                var recipe = content;
+                if (opts.dryRun) {
+                    return result;
+                }
+
                 Object.keys(result.dependencies).forEach(depName => {
                     var depResult = result.dependencies[depName];
-
-                    var path = _path.resolve(recipe.path, depName);
-                    if (!opts.dryRun) {
-                        mkdirp.sync(_path.resolve(path, "../"));
-                        fs.writeFileSync(path, depResult.content.toString("utf8"));
-
-                        if (opts.save) {
-                            Object.keys(this.savedRecipe.dependencies).filter(savedDepName => {
-                                return depName === savedDepName;
-                            }).forEach(savedDepName => {
-                                var savedDep = this.savedRecipe.dependencies[savedDepName];
-                                savedDep.ref = depResult.fileInfo.ref;
-                            });
-                            this._save();
-                        }
+                    this._writeDefinitionFile(this.savedRecipe, depName, depResult);
+                    if (this.savedRecipe.dependencies[depName]) {
+                        this.savedRecipe.dependencies[depName].ref = depResult.fileInfo.ref;
                     }
                 });
+                if (opts.save) {
+                    this._save();
+                }
                 return result;
             });
+    }
+
+    _writeDefinitionFile(recipe:m.Recipe, depName:string, depResult:pmb.DepResult) {
+        var path = _path.resolve(recipe.path, depName);
+        mkdirp.sync(_path.resolve(path, "../"));
+        fs.writeFileSync(path, depResult.content.toString("utf8"));
+    }
+
+    _addReferenceToBundle(recipe:m.Recipe, depName:string) {
+        var bundleContent = "";
+        if (fs.existsSync(recipe.bundle)) {
+            bundleContent = fs.readFileSync(recipe.bundle, "utf8");
+        } else {
+            mkdirp.sync(_path.resolve(recipe.bundle, "../"));
+        }
+        var referencePath = _path.relative(_path.resolve(recipe.bundle, "../"), _path.resolve(recipe.path, depName));
+        var referenceComment = "/// <reference path=\"" + referencePath + "\" />\n";
+        if (bundleContent.indexOf(referenceComment) === -1) {
+            fs.appendFileSync(recipe.bundle, referenceComment, {encoding: "utf8"});
+        }
     }
 
     uninstall(opts:{path:string; save:boolean;}, phrase:string):Promise<fsgit.FileInfo[]> {
