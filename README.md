@@ -183,6 +183,10 @@ $ dtsm install -i
 
 ![dtsm install -i](https://cloud.githubusercontent.com/assets/125332/5699331/88f612da-9a68-11e4-89c4-eaebaa4cb21b.gif)
 
+## Change log
+
+See [CHANGELOG](https://github.com/vvakame/dtsm/blob/master/CHANGELOG.md)
+
 ## Contributing
 
 This package's author vvakame is not native english speaker. My first language is Japanese.
