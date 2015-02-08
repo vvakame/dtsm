@@ -46,6 +46,9 @@ export class Manager {
                 ref: Manager.defaultRef
             });
         }
+        if (!this.repos[0].url) {
+            this.repos[0].url = Manager.defaultRepo;
+        }
         this.offline = options.offline || this.offline;
         this.tracker = new Tracker();
         if (typeof options.insightOptout !== "undefined") {

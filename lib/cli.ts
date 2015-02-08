@@ -23,6 +23,7 @@ interface RootOptions {
     config:string[];
     remote:string[];
     insight:string[];
+    ref:string[];
 }
 
 var root = commandpost
@@ -32,6 +33,7 @@ var root = commandpost
     .option("--offline", "offline first")
     .option("--remote <uri>", "uri of remote repository")
     .option("--config <path>", "path to json file")
+    .option("--ref <ref>", "ref of repository")
     .action(()=> {
         process.stdout.write(root.helpText() + '\n');
     });
@@ -218,6 +220,7 @@ function setup(opts:RootOptions):Promise<dtsm.Manager> {
     var offline = opts.offline;
     var configPath:string = opts.config[0];
     var remoteUri:string = opts.remote[0];
+    var specifiedRef:string = opts.ref[0];
     var insightStr = opts.insight[0];
     var insightOptout:boolean;
 
@@ -232,9 +235,10 @@ function setup(opts:RootOptions):Promise<dtsm.Manager> {
     }
 
     var repos:pmb.RepositorySpec[] = [];
-    if (remoteUri) {
+    if (remoteUri || specifiedRef) {
         repos.push({
-            url: remoteUri
+            url: remoteUri,
+            ref: specifiedRef
         });
     }
     var options:dtsm.Options = {
