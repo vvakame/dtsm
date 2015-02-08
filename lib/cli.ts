@@ -1,5 +1,14 @@
+/// <reference path="../typings/es6-promise/es6-promise.d.ts" />
 /// <reference path="../typings/update-notifier/update-notifier.d.ts" />
 /// <reference path="../node_modules/commandpost/commandpost.d.ts" />
+
+require("es6-promise").polyfill();
+
+try {
+    // optional
+    require("source-map-support").install();
+} catch (e) {
+}
 
 import updateNotifier = require("update-notifier");
 var pkg = require("../package.json");

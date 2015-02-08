@@ -8,6 +8,14 @@
 /// <reference path="./cli_spec.ts" />
 /// <reference path="./utils_spec.ts" />
 
+require("es6-promise").polyfill();
+
+try {
+    // optional
+    require("source-map-support").install();
+} catch (e) {
+}
+
 import fs = require("fs");
 import rimraf = require("rimraf");
 

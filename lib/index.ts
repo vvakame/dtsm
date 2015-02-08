@@ -8,13 +8,6 @@
 /// <reference path="../typings/rimraf/rimraf.d.ts" />
 /// <reference path="../typings/which/which.d.ts" />
 
-try {
-    // optional
-    require("source-map-support").install();
-} catch (e) {
-}
-require("es6-promise").polyfill();
-
 export import Tracker = require("./tracker");
 
 /* tslint:disable:no-unused-variable */
