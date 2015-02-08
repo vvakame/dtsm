@@ -219,6 +219,43 @@ root
             .catch(errorHandler);
     });
 
+root
+    .subCommand<{}, {}>("refs")
+    .description("show refs, it can use with --ref option")
+    .action((opts, args)=> {
+        setup(root.parsedOpts)
+            .then(manager=> manager.refs())
+            .then(refs => {
+                refs = refs.filter(ref => {
+                    // ignore github pull refs
+                    if (ref.name.indexOf("refs/pull/") === 0) {
+                        return false;
+                    }
+                    return true;
+                });
+                var branches = refs.filter(ref => ref.name.indexOf("refs/heads/") === 0);
+                var tags = refs.filter(ref => ref.name.indexOf("refs/tags/") === 0);
+
+                if (branches.length !== 0) {
+                    console.log("Branches:");
+                    branches.forEach(ref => {
+                        var branchName = ref.name.substr("refs/heads/".length);
+                        console.log("\t", branchName);
+                    });
+                    console.log("");
+                }
+                if (tags.length !== 0) {
+                    console.log("Tags:");
+                    tags.forEach(ref => {
+                        var tagName = ref.name.substr("refs/tags/".length);
+                        console.log("\t", tagName);
+                    });
+                    console.log("");
+                }
+            })
+            .catch(errorHandler);
+    });
+
 commandpost
     .exec(root, process.argv)
     .catch(errorHandler);

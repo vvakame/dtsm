@@ -289,28 +289,27 @@ describe("command line interface", ()=> {
             var targetFile = testWorkingDir + "/dtsm.json";
 
             assert(!fs.existsSync(targetFile));
-            return new Promise((resolve, reject) => {
-                nexpect
-                    .spawn(command, ["--config", targetFile, "init"], {
-                        cwd: testWorkingDir
-                    })
-                    .run((err, stdout, exit) => {
-                        assert(!err);
-                        if (err) {
-                            reject(err);
-                            return;
-                        }
-                        assert(exit === 0);
-                        assert(fs.existsSync(targetFile));
-                        resolve();
-                    });
-            })
+            return Promise.resolve(null)
                 .then(()=> {
                     return new Promise((resolve, reject) => {
                         nexpect
-                            .spawn(command, ["--config", targetFile, "install", "es6-promise"], {
-                                cwd: testWorkingDir
-                            })
+                            .spawn(command, ["--config", targetFile, "init"])
+                            .run((err, stdout, exit) => {
+                                assert(!err);
+                                if (err) {
+                                    reject(err);
+                                    return;
+                                }
+                                assert(exit === 0);
+                                assert(fs.existsSync(targetFile));
+                                resolve();
+                            });
+                    });
+                })
+                .then(()=> {
+                    return new Promise((resolve, reject) => {
+                        nexpect
+                            .spawn(command, ["--config", targetFile, "install", "es6-promise"])
                             .run((err, stdout, exit) => {
                                 assert(!err);
                                 if (err) {
@@ -326,9 +325,7 @@ describe("command line interface", ()=> {
                 .then(()=> {
                     new Promise((resolve, reject) => {
                         nexpect
-                            .spawn(command, ["--config", targetFile, "update", "--save"], {
-                                cwd: testWorkingDir
-                            })
+                            .spawn(command, ["--config", targetFile, "update", "--save"])
                             .run((err, stdout, exit) => {
                                 assert(!err);
                                 if (err) {
@@ -340,6 +337,24 @@ describe("command line interface", ()=> {
                                 resolve();
                             });
                     });
+                });
+        });
+    });
+
+    describe("refs sub-command", () => {
+
+        it("can show repository refs", done=> {
+            var targetFile = testWorkingDir + "/dtsm.json";
+
+            nexpect
+                .spawn(command, ["--config", targetFile, "refs"], {
+                    cwd: testWorkingDir
+                })
+                .run((err, stdout, exit) => {
+                    assert(!err);
+                    assert(exit === 0);
+
+                    done();
                 });
         });
     });

@@ -393,6 +393,22 @@ export class Manager {
         }
     }
 
+    refs():Promise<fsgit.RefInfo[]> {
+        var promises:Promise<any>[];
+        if (this.offline) {
+            promises = [Promise.resolve(null)];
+        } else {
+            promises = this.backend.repos.map(repo => {
+                return this._fetchIfOutdated(repo);
+            });
+        }
+        return Promise.all(promises)
+            .then(()=> {
+                var repo:pmb.Repo = this.backend.repos[0];
+                return repo.open().then(fs=> fs.showRef());
+            });
+    }
+
     uninstall(opts:{path:string; save:boolean;}, phrase:string):Promise<fsgit.FileInfo[]> {
         // TODO
         return null;
