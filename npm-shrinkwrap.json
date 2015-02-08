@@ -207,8 +207,8 @@
       }
     },
     "fs-git": {
-      "version": "0.4.0",
-      "from": "fs-git@0.4.0"
+      "version": "0.4.1",
+      "from": "fs-git@0.4.1"
     },
     "grunt": {
       "version": "0.4.5",
@@ -589,7 +589,7 @@
               "dependencies": {
                 "through": {
                   "version": "2.3.6",
-                  "from": "through@>=2.3.1 <2.4.0",
+                  "from": "through@>=2.3.4 <2.4.0",
                   "resolved": "https://registry.npmjs.org/through/-/through-2.3.6.tgz"
                 },
                 "duplexer": {
@@ -953,7 +953,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@>=0.2.0 <0.3.0",
+                  "from": "ansi-regex@>=0.2.1 <0.3.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
@@ -965,7 +965,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@>=0.2.0 <0.3.0",
+                  "from": "ansi-regex@>=0.2.1 <0.3.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
@@ -1169,7 +1169,7 @@
             },
             "through": {
               "version": "2.3.6",
-              "from": "through@>=2.3.1 <2.4.0",
+              "from": "through@>=2.3.4 <2.4.0",
               "resolved": "https://registry.npmjs.org/through/-/through-2.3.6.tgz"
             }
           }
@@ -1652,9 +1652,8 @@
       "resolved": "https://registry.npmjs.org/nexpect/-/nexpect-0.5.0.tgz"
     },
     "packagemanager-backend": {
-      "version": "0.3.2",
-      "from": "packagemanager-backend@0.3.2",
-      "resolved": "https://registry.npmjs.org/packagemanager-backend/-/packagemanager-backend-0.3.2.tgz",
+      "version": "0.3.3",
+      "from": "packagemanager-backend@0.3.3",
       "dependencies": {
         "minimatch": {
           "version": "2.0.1",
@@ -2000,7 +1999,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@>=0.2.1 <0.3.0",
+                  "from": "ansi-regex@>=0.2.0 <0.3.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
@@ -2012,7 +2011,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@>=0.2.1 <0.3.0",
+                  "from": "ansi-regex@>=0.2.0 <0.3.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
