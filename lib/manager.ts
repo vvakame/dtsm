@@ -236,7 +236,7 @@ export class Manager {
             });
     }
 
-    installFromFile(opts:{dryRun?:boolean;} = {}):Promise<pmb.Result> {
+    installFromFile(opts:{dryRun?:boolean;} = {}, retryWithFetch = true):Promise<pmb.Result> {
         this.tracker.track("installFromFile");
 
         if (!this.configPath) {
@@ -247,7 +247,15 @@ export class Manager {
             return Promise.reject(this.configPath + " is not exists");
         }
 
-        return this._installFromOptions(content, opts);
+        return this._installFromOptions(content, opts)
+            .catch(err => {
+                // error raised when specified ref is not fetched yet.
+                if (retryWithFetch) {
+                    return this.fetch().then(()=> this.installFromFile(opts, false));
+                } else {
+                    return Promise.reject(err);
+                }
+            });
     }
 
     _installFromOptions(recipe:m.Recipe, opts:{dryRun?:boolean;} = {}):Promise<pmb.Result> {
