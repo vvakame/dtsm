@@ -1,3 +1,12 @@
+<a name="0.6.1"></a>
+### 0.6.1 (2015-02-09)
+
+
+#### Bug Fixes
+
+* **dtsm:** fix install from file is failed when dtsm.json are hand assembled ([e0c7a9a9](https://github.com/vvakame/dtsm/commit/e0c7a9a98f7f3cc2b83462796242a8aa3f03d1f4))
+
+
 <a name="0.6.0"></a>
 ## 0.6.0 (2015-02-08)
 
