@@ -1,13 +1,22 @@
 {
-  "baseRepo": "https://github.com/borisyankov/DefinitelyTyped.git",
-  "baseRef": "master",
+  "repos": [
+    {
+      "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "ref": "master"
+    },
+    {
+      "url": "https://github.com/vvakame/gapidts.git",
+      "ref": "master"
+    }
+  ],
   "path": "typings",
+  "bundle": "typings/bundle.d.ts",
   "dependencies": {
     "jquery/jquery.d.ts": {
       "ref": "65a465cdec4884a55f0911d5501a6aaa6b919e8a"
     },
     "gapi/bigquery-v2-browser.d.ts": {
-      "repo": "https://github.com/vvakame/gapidts",
+      "repo": "https://github.com/vvakame/gapidts.git",
       "ref": "8311d2e889b5a6637ebe092012cd647c44a8f6f4",
       "path": "test/valid/bigquery-v2-browser.d.ts"
     }
