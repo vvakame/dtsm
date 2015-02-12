@@ -262,7 +262,6 @@ export class Manager {
         var baseRepo = recipe && recipe.repos && recipe.repos[0] || this.repos[0];
         return this.backend
             .getByRecipe({
-                // TODO
                 baseRepo: baseRepo.url,
                 baseRef: baseRepo.ref,
                 path: recipe.path,
@@ -415,16 +414,6 @@ export class Manager {
                 var repo:pmb.Repo = this.backend.repos[0];
                 return repo.open().then(fs=> fs.showRef());
             });
-    }
-
-    uninstall(opts:{path:string; save:boolean;}, phrase:string):Promise<fsgit.FileInfo[]> {
-        // TODO
-        return null;
-    }
-
-    outdated():Promise<fsgit.FileInfo[]> {
-        // TODO
-        return null;
     }
 
     fetch():Promise<void> {

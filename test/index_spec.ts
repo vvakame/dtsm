@@ -186,46 +186,6 @@ describe("Manager", ()=> {
         });
     });
 
-    describe.skip("#uninstall", ()=> {
-        it("can uninstall single file", ()=> {
-            return dtsm
-                .createManager()
-                .then(manager => {
-                    return manager.uninstall({
-                        path: "test-tmp/uninstall/dtsm.json",
-                        save: false
-                    }, "atom").then(fileList => {
-                        assert(fileList.length === 1);
-                    });
-                });
-        });
-
-        it("can uninstall single file by ambiguous matching", ()=> {
-            return dtsm
-                .createManager()
-                .then(manager => {
-                    return manager.uninstall({
-                        path: "test-tmp/uninstall/dtsm.json",
-                        save: false
-                    }, "angular").then(fileList => {
-                        assert(fileList.length === 1);
-                    });
-                });
-        });
-    });
-
-    describe.skip("#outdated", ()=> {
-        it("can detect outdated files", ()=> {
-            return dtsm
-                .createManager()
-                .then(manager => {
-                    return manager.outdated().then(fileList => {
-                        assert(fileList);
-                    });
-                });
-        });
-    });
-
     describe("#fetch", ()=> {
         it("can fetch from remote repos", ()=> {
             return dtsm

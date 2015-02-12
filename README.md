@@ -196,8 +196,6 @@ If you are native english speaker. I wish received a pull request for document a
 
  * write document
  * list sub-command
- * update sub-command
-   * --save option
  * create pull request
    * generate self check todo list
  * Windows support
