@@ -1,15 +1,20 @@
 {
-    "baseRepo": "https://github.com/borisyankov/DefinitelyTyped.git",
-    "baseRef": "master",
-    "path": "typings",
-    "dependencies": {
-        "node/node.d.ts": {
-            "ref": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"
-        },
-        "gapi/discovery-v1-nodejs.d.ts": {
-            "repo": "https://github.com/vvakame/gapidts.git",
-            "ref": "8311d2e889b5a6637ebe092012cd647c44a8f6f4",
-            "path": "test/valid/discovery-v1-nodejs.d.ts"
-        }
+  "repos": [
+    {
+      "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "ref": "master"
     }
+  ],
+  "path": "typings",
+  "bundle": "typings/bundle.d.ts",
+  "dependencies": {
+    "node/node.d.ts": {
+      "ref": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"
+    },
+    "gapi/discovery-v1-nodejs.d.ts": {
+      "repo": "https://github.com/vvakame/gapidts.git",
+      "ref": "8311d2e889b5a6637ebe092012cd647c44a8f6f4",
+      "path": "test/valid/discovery-v1-nodejs.d.ts"
+    }
+  }
 }

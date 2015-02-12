@@ -6,6 +6,7 @@
     }
   ],
   "path": "test-tmp/update",
+  "bundle": "test-tmp/update/bundle.d.ts",
   "dependencies": {
     "es6-promise/es6-promise.d.ts": {
       "ref": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"

@@ -1,6 +1,11 @@
 {
-  "baseRepo": "https://github.com/vvakame/gapidts.git",
-  "baseRef": "master",
+  "repos": [
+    {
+      "url": "https://github.com/vvakame/gapidts.git",
+      "ref": "master"
+    }
+  ],
   "path": "typings",
+  "bundle": "typings/bundle.d.ts",
   "dependencies": {}
 }
