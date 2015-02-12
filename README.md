@@ -123,6 +123,18 @@ node/node.d.ts
 
 $ ls -la | grep typings
   drwxr-xr-x   12 vvakame  staff   408 10  6 17:36 typings
+
+$ dtsm update --save
+atom/atom.d.ts
+q/Q.d.ts
+jquery/jquery.d.ts
+space-pen/space-pen.d.ts
+emissary/emissary.d.ts
+pathwatcher/pathwatcher.d.ts
+text-buffer/text-buffer.d.ts
+status-bar/status-bar.d.ts
+node/node.d.ts
+mixto/mixto.d.ts
 ```
 
 ## Advanced usage
@@ -148,6 +160,10 @@ $ cat dtsm.json
   "repos": [
     {
       "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "ref": "master"
+    },
+    {
+      "url": "https://github.com/vvakame/gapidts.git",
       "ref": "master"
     }
   ],
