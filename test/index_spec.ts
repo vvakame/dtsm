@@ -141,7 +141,7 @@ describe("Manager", ()=> {
                 .createManager({configPath: dtsmFilePath})
                 .then(manager => {
                     return manager.installFromFile().then(result => {
-                        assert(1 < Object.keys(result.dependencies).length); // atom.d.ts has meny dependencies
+                        assert(1 < result.dependenciesList.length); // atom.d.ts has meny dependencies
                         assert(fs.existsSync("test-tmp/installFromFile/atom/atom.d.ts"));
                     });
                 });
@@ -176,7 +176,7 @@ describe("Manager", ()=> {
                         var dep = result.dependencies[depName];
                         var originalRef:string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).dependencies[depName].ref;
                         return fsgit
-                            .open(dep.repo.targetDir, originalRef)
+                            .open(dep.repoInstance.targetDir, originalRef)
                             .then(repo => repo.readFile(depName, {encoding: "utf8"}))
                             .then(oldContent => {
                                 assert(oldContent !== updatedContent);

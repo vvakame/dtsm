@@ -9,34 +9,34 @@
   "bundle": null,
   "dependencies": {
     "update-notifier/update-notifier.d.ts": {
-      "ref": "42c8a3b74c05f6887ce21dd63c6234e424f9f8fe"
+      "ref": "7d298be1db15bbd1e17638b9c37423efc38fa602"
     },
     "insight/insight.d.ts": {
-      "ref": "42c8a3b74c05f6887ce21dd63c6234e424f9f8fe"
+      "ref": "7d298be1db15bbd1e17638b9c37423efc38fa602"
     },
     "es6-promise/es6-promise.d.ts": {
-      "ref": "42c8a3b74c05f6887ce21dd63c6234e424f9f8fe"
+      "ref": "7d298be1db15bbd1e17638b9c37423efc38fa602"
     },
     "mkdirp/mkdirp.d.ts": {
-      "ref": "42c8a3b74c05f6887ce21dd63c6234e424f9f8fe"
+      "ref": "7d298be1db15bbd1e17638b9c37423efc38fa602"
     },
     "rimraf/rimraf.d.ts": {
-      "ref": "42c8a3b74c05f6887ce21dd63c6234e424f9f8fe"
+      "ref": "7d298be1db15bbd1e17638b9c37423efc38fa602"
     },
     "node/node.d.ts": {
-      "ref": "42c8a3b74c05f6887ce21dd63c6234e424f9f8fe"
+      "ref": "7d298be1db15bbd1e17638b9c37423efc38fa602"
     },
     "mocha/mocha.d.ts": {
-      "ref": "42c8a3b74c05f6887ce21dd63c6234e424f9f8fe"
+      "ref": "7d298be1db15bbd1e17638b9c37423efc38fa602"
     },
     "power-assert/power-assert.d.ts": {
-      "ref": "42c8a3b74c05f6887ce21dd63c6234e424f9f8fe"
+      "ref": "7d298be1db15bbd1e17638b9c37423efc38fa602"
     },
     "nexpect/nexpect.d.ts": {
-      "ref": "42c8a3b74c05f6887ce21dd63c6234e424f9f8fe"
+      "ref": "7d298be1db15bbd1e17638b9c37423efc38fa602"
     },
     "which/which.d.ts": {
-      "ref": "42c8a3b74c05f6887ce21dd63c6234e424f9f8fe"
+      "ref": "7d298be1db15bbd1e17638b9c37423efc38fa602"
     }
   }
 }

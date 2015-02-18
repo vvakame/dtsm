@@ -153,18 +153,10 @@ root
             .then(manager=> {
                 if (!opts.interactive && args.files.length === 0) {
                     return manager.installFromFile({dryRun: opts.dryRun})
-                        .then(result => {
-                            Object.keys(result.dependencies).forEach(depName => {
-                                console.log(depName);
-                            });
-                        });
+                        .then(result => printResult(result));
                 } else if (args.files.length !== 0) {
                     return manager.install({save: opts.save, dryRun: opts.dryRun}, args.files)
-                        .then(result => {
-                            Object.keys(result.dependencies).forEach(depName => {
-                                console.log(depName);
-                            });
-                        });
+                        .then(result => printResult(result));
                 } else {
                     return manager.search("")
                         .then(resultList => {
@@ -185,11 +177,7 @@ root
                         .then(resultList => {
                             var files = resultList.map(result => result.fileInfo.path);
                             return manager.install({save: opts.save, dryRun: opts.dryRun}, files)
-                                .then(result => {
-                                    Object.keys(result.dependencies).forEach(depName => {
-                                        console.log(depName);
-                                    });
-                                });
+                                .then(result => printResult(result));
                         });
                 }
             })
@@ -211,11 +199,7 @@ root
             .then(manager=> {
                 return manager.update({save: opts.save, dryRun: opts.dryRun});
             })
-            .then(result => {
-                Object.keys(result.dependencies).forEach(depName => {
-                    console.log(depName);
-                });
-            })
+            .then(result => printResult(result))
             .catch(errorHandler);
     });
 
@@ -300,6 +284,25 @@ function setup(opts:RootOptions):Promise<dtsm.Manager> {
                 .askPermissionIfNeeded()
                 .then(()=> manager);
         });
+}
+
+function printResult(result:pmb.Result) {
+    "use strict";
+
+    var show = (deps:{[depName: string]: pmb.ResolvedDependency;} = {}) => {
+        Object.keys(deps).forEach(depName => {
+            var dep = deps[depName];
+            var text = "";
+            for (var i = 1; i < dep.depth; i++) {
+                text += "\t";
+            }
+            text += depName;
+            console.log(text);
+            show(dep.dependencies);
+        });
+    };
+
+    show(result.dependencies);
 }
 
 function errorHandler(err:any) {

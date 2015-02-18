@@ -266,17 +266,19 @@ export class Manager {
                 baseRef: baseRepo.ref,
                 path: recipe.path,
                 dependencies: recipe.dependencies,
-                postProcessForDependency: (recipe:pmb.Recipe, dep:pmb.Dependency, content:any) => {
+                postProcessForDependency: (result:pmb.Result, depResult:pmb.ResolvedDependency, content:any) => {
                     var dependencies = utils.extractDependencies(content.toString("utf8"));
                     dependencies.forEach(detected => {
-                        this.backend.pushAdditionalDependency(recipe, dep, detected);
+                        var obj = result.toDepNameAndPath(detected);
+                        result.pushAdditionalDependency(obj.depName, {
+                            repo: depResult.repo,
+                            ref: depResult.ref,
+                            path: obj.path
+                        });
                     });
                 }
             }).then((result:pmb.Result) => {
-                var errors:any[] = Object.keys(result.dependencies).map(depName => {
-                    var depResult = result.dependencies[depName];
-                    return depResult.error;
-                }).filter(error => !!error);
+                var errors = result.dependenciesList.filter(depResult => !!depResult.error);
                 if (errors.length !== 0) {
                     // TODO toString
                     return Promise.reject(errors);
@@ -287,14 +289,13 @@ export class Manager {
                 }
 
                 // create definition files and bundle file
-                Object.keys(result.dependencies).forEach(depName => {
-                    var depResult = result.dependencies[depName];
-                    this._writeDefinitionFile(recipe, depName, depResult);
+                result.dependenciesList.forEach(depResult => {
+                    this._writeDefinitionFile(recipe, depResult);
 
                     if (!recipe.bundle) {
                         return;
                     }
-                    this._addReferenceToBundle(recipe, depName);
+                    this._addReferenceToBundle(recipe, depResult.depName);
                 });
 
                 return result;
@@ -368,7 +369,7 @@ export class Manager {
 
                 Object.keys(result.dependencies).forEach(depName => {
                     var depResult = result.dependencies[depName];
-                    this._writeDefinitionFile(this.savedRecipe, depName, depResult);
+                    this._writeDefinitionFile(this.savedRecipe, depResult);
                     if (this.savedRecipe.dependencies[depName]) {
                         this.savedRecipe.dependencies[depName].ref = depResult.fileInfo.ref;
                     }
@@ -380,8 +381,8 @@ export class Manager {
             });
     }
 
-    _writeDefinitionFile(recipe:m.Recipe, depName:string, depResult:pmb.DepResult) {
-        var path = _path.resolve(recipe.path, depName);
+    _writeDefinitionFile(recipe:m.Recipe, depResult:pmb.ResolvedDependency) {
+        var path = _path.resolve(recipe.path, depResult.depName);
         mkdirp.sync(_path.resolve(path, "../"));
         fs.writeFileSync(path, depResult.content.toString("utf8"));
     }
