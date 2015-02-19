@@ -31,7 +31,7 @@
     "fs-git": "0.4.1",
     "insight": "0.5.2",
     "mkdirp": "0.5.0",
-    "packagemanager-backend": "0.5.0",
+    "packagemanager-backend": "0.5.1",
     "rimraf": "2.2.8",
     "update-notifier": "0.3.0",
     "which": "1.0.8"
@@ -41,7 +41,7 @@
     "grunt": "0.4.5",
     "grunt-contrib-clean": "0.6.0",
     "grunt-conventional-changelog": "1.1.0",
-    "grunt-dtsm": "0.2.4",
+    "grunt-dtsm": "0.2.5",
     "grunt-mocha-test": "0.12.7",
     "grunt-ts": "3.0.0",
     "grunt-tslint": "2.0.0",
