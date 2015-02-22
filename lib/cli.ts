@@ -1,5 +1,6 @@
 /// <reference path="../typings/es6-promise/es6-promise.d.ts" />
 /// <reference path="../typings/update-notifier/update-notifier.d.ts" />
+/// <reference path="../typings/archy/archy.d.ts" />
 /// <reference path="../node_modules/commandpost/commandpost.d.ts" />
 
 require("es6-promise").polyfill();
@@ -26,6 +27,7 @@ import pmb = require("packagemanager-backend");
 import is = require("./incrementalsearch");
 
 import commandpost = require("commandpost");
+import archy = require("archy");
 
 interface RootOptions {
     offline:boolean;
@@ -289,16 +291,67 @@ function setup(opts:RootOptions):Promise<dtsm.Manager> {
 function printResult(result:pmb.Result) {
     "use strict";
 
-    var show = (deps:{[depName: string]: pmb.ResolvedDependency;} = {}) => {
-        Object.keys(deps).forEach(depName => {
-            var dep = deps[depName];
-            var text = "";
-            for (var i = 1; i < dep.depth; i++) {
-                text += "\t";
+    // short is justice.
+
+    var emitRepo = 1 < result.manager.repos.length;
+    var emitHost = result.manager.repos.filter(repo => {
+            if (!!repo.urlInfo) {
+                return repo.urlInfo.host !== "github.com";
+            } else if (!!repo.sshInfo) {
+                return repo.sshInfo.hostname !== "github.com";
+            } else {
+                return true;
             }
-            text += depName;
-            console.log(text);
-            show(dep.dependencies);
+        }).length !== 0;
+    var fileInfo = (dep:pmb.ResolvedDependency) => {
+        if (!!dep.parent) {
+            // emit only root node
+            return "";
+        }
+        var result = "";
+        if (emitRepo && emitHost) {
+            if (dep.repoInstance.urlInfo) {
+                result += dep.repoInstance.urlInfo.hostname;
+            } else if (dep.repoInstance.sshInfo) {
+                result += dep.repoInstance.sshInfo.hostname;
+            }
+        }
+        if (emitRepo) {
+            var path:string;
+            if (dep.repoInstance.urlInfo) {
+                path = dep.repoInstance.urlInfo.pathname;
+            } else if (dep.repoInstance.sshInfo) {
+                path = dep.repoInstance.sshInfo.path;
+            }
+            var hasExt = /\.git$/.test(path);
+            if (!emitHost) {
+                path = path.substr(1);
+            }
+            if (hasExt) {
+                path = path.substr(0, path.length - 4);
+            }
+            result += path;
+
+        }
+        result += "#" + dep.fileInfo.ref.substr(0, 6);
+        return " " + result;
+    };
+
+    var show = (deps:{[depName: string]: pmb.ResolvedDependency;} = {}, data?:archy.Data) => {
+        Object.keys(deps).forEach(depName => {
+            var d:archy.Data = {
+                label: depName,
+                nodes: []
+            };
+            var dep = deps[depName];
+            if (!!data) {
+                data.nodes.push(d);
+            }
+            show(dep.dependencies, d);
+            if (!data) {
+                d.label += fileInfo(dep);
+                console.log(archy(d));
+            }
         });
     };
 
