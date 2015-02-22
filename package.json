@@ -26,6 +26,7 @@
     "test": "test"
   },
   "dependencies": {
+    "archy": "1.0.0",
     "commandpost": "0.1.1",
     "es6-promise": "2.0.1",
     "fs-git": "0.4.1",
