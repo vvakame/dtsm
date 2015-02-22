@@ -26,3 +26,13 @@ export function extractDependencies(sourceCode:string):string[] {
         .filter(matches => !!matches)
         .map(matches => matches[2]);
 }
+
+export function padString(str:string, length:number, pad = " "):string {
+    "use strict";
+
+    var shortage = length - str.length;
+    for (var i = 0; i < shortage; i++) {
+        str += pad;
+    }
+    return str;
+}

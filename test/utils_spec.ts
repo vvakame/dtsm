@@ -25,4 +25,14 @@ describe("utils", ()=> {
             assert(deps[0] === "../q/Q.d.ts");
         });
     });
+
+    describe("padString", ()=> {
+        it("pad string", ()=> {
+            var str = utils.padString("foo", 5);
+            assert(str === "foo  ");
+
+            str = utils.padString("foo", 5, "*");
+            assert(str === "foo**");
+        });
+    });
 });
