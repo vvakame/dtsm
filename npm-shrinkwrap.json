@@ -4,7 +4,7 @@
   "dependencies": {
     "archy": {
       "version": "1.0.0",
-      "from": "archy@>=1.0.0 <2.0.0",
+      "from": "archy@1.0.0",
       "resolved": "https://registry.npmjs.org/archy/-/archy-1.0.0.tgz"
     },
     "commandpost": {
@@ -156,7 +156,7 @@
                 },
                 "type-name": {
                   "version": "1.0.1",
-                  "from": "type-name@>=1.0.0 <1.1.0",
+                  "from": "type-name@>=1.0.1 <1.1.0",
                   "resolved": "https://registry.npmjs.org/type-name/-/type-name-1.0.1.tgz"
                 }
               }
@@ -953,7 +953,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@>=0.2.0 <0.3.0",
+                  "from": "ansi-regex@>=0.2.1 <0.3.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
@@ -965,7 +965,7 @@
               "dependencies": {
                 "ansi-regex": {
                   "version": "0.2.1",
-                  "from": "ansi-regex@>=0.2.0 <0.3.0",
+                  "from": "ansi-regex@>=0.2.1 <0.3.0",
                   "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-0.2.1.tgz"
                 }
               }
@@ -1163,9 +1163,9 @@
               }
             },
             "rx": {
-              "version": "2.4.0",
+              "version": "2.4.1",
               "from": "rx@>=2.2.27 <3.0.0",
-              "resolved": "https://registry.npmjs.org/rx/-/rx-2.4.0.tgz"
+              "resolved": "https://registry.npmjs.org/rx/-/rx-2.4.1.tgz"
             },
             "through": {
               "version": "2.3.6",
@@ -1652,9 +1652,9 @@
       "resolved": "https://registry.npmjs.org/nexpect/-/nexpect-0.5.0.tgz"
     },
     "packagemanager-backend": {
-      "version": "0.5.1",
-      "from": "packagemanager-backend@0.5.1",
-      "resolved": "https://registry.npmjs.org/packagemanager-backend/-/packagemanager-backend-0.5.1.tgz",
+      "version": "0.6.1",
+      "from": "packagemanager-backend@0.6.1",
+      "resolved": "https://registry.npmjs.org/packagemanager-backend/-/packagemanager-backend-0.6.1.tgz",
       "dependencies": {
         "minimatch": {
           "version": "2.0.1",
@@ -2101,9 +2101,9 @@
           "resolved": "https://registry.npmjs.org/latest-version/-/latest-version-1.0.0.tgz",
           "dependencies": {
             "package-json": {
-              "version": "1.0.2",
+              "version": "1.1.0",
               "from": "package-json@>=1.0.0 <2.0.0",
-              "resolved": "https://registry.npmjs.org/package-json/-/package-json-1.0.2.tgz",
+              "resolved": "https://registry.npmjs.org/package-json/-/package-json-1.1.0.tgz",
               "dependencies": {
                 "got": {
                   "version": "2.4.0",
@@ -2206,14 +2206,14 @@
                   }
                 },
                 "registry-url": {
-                  "version": "2.1.0",
-                  "from": "registry-url@>=2.0.0 <3.0.0",
-                  "resolved": "https://registry.npmjs.org/registry-url/-/registry-url-2.1.0.tgz",
+                  "version": "3.0.0",
+                  "from": "registry-url@>=3.0.0 <4.0.0",
+                  "resolved": "https://registry.npmjs.org/registry-url/-/registry-url-3.0.0.tgz",
                   "dependencies": {
                     "rc": {
-                      "version": "0.5.5",
-                      "from": "rc@>=0.5.1 <0.6.0",
-                      "resolved": "https://registry.npmjs.org/rc/-/rc-0.5.5.tgz",
+                      "version": "0.6.0",
+                      "from": "rc@>=0.6.0 <0.7.0",
+                      "resolved": "https://registry.npmjs.org/rc/-/rc-0.6.0.tgz",
                       "dependencies": {
                         "minimist": {
                           "version": "0.0.10",
@@ -2249,9 +2249,9 @@
           "resolved": "https://registry.npmjs.org/semver-diff/-/semver-diff-2.0.0.tgz",
           "dependencies": {
             "semver": {
-              "version": "4.3.0",
+              "version": "4.3.1",
               "from": "semver@>=4.0.0 <5.0.0",
-              "resolved": "https://registry.npmjs.org/semver/-/semver-4.3.0.tgz"
+              "resolved": "https://registry.npmjs.org/semver/-/semver-4.3.1.tgz"
             }
           }
         },
