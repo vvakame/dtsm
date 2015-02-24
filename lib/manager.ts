@@ -276,6 +276,28 @@ export class Manager {
                             path: obj.path
                         });
                     });
+                },
+                resolveMissingDependency: (result:pmb.Result, missing:pmb.ResolvedDependency):Promise<pmb.Dependency>=> {
+                    if (missing.depth === 1) {
+                        return null;
+                    }
+                    // first, from current process
+                    var newDep:pmb.Dependency = result.dependencies[missing.depName];
+                    if (newDep) {
+                        return Promise.resolve(newDep);
+                    }
+                    // second, from dtsm.json. can't use this.repos in `dtsm --remote .... install ....` context.
+                    if (this.savedRecipe) {
+                        newDep = this.savedRecipe.dependencies[missing.depName];
+                        var repo = this.savedRecipe.repos[0];
+                        if (newDep && repo) {
+                            newDep.repo = newDep.repo || repo.url || Manager.defaultRepo;
+                            newDep.ref = newDep.ref || repo.ref || Manager.defaultRef;
+                        }
+                        return Promise.resolve(newDep);
+                    }
+
+                    return Promise.resolve(null);
                 }
             }).then((result:pmb.Result) => {
                 var errors = result.dependenciesList.filter(depResult => !!depResult.error);
