@@ -1,7 +1,7 @@
 {
   "name": "dtsm",
   "author": "vvakame",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "TypeScript definition file (.d.ts) manager",
   "main": "./index",
   "bin": {
@@ -30,11 +30,11 @@
     "commandpost": "0.1.1",
     "es6-promise": "2.0.1",
     "fs-git": "0.4.1",
-    "insight": "0.5.2",
+    "insight": "0.5.3",
     "mkdirp": "0.5.0",
     "packagemanager-backend": "0.6.1",
     "rimraf": "2.2.8",
-    "update-notifier": "0.3.0",
+    "update-notifier": "0.3.1",
     "which": "1.0.8"
   },
   "devDependencies": {
@@ -52,7 +52,7 @@
     "nexpect": "0.5.0",
     "power-assert": "0.10.2",
     "source-map-support": "0.2.9",
-    "time-grunt": "1.0.0",
+    "time-grunt": "1.1.0",
     "typescript": "1.4.1"
   }
 }
