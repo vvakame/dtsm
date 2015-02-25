@@ -304,7 +304,7 @@ function printResult(result:pmb.Result) {
             }
         }).length !== 0;
     var fileInfo = (dep:pmb.ResolvedDependency) => {
-        if (!!dep.parent) {
+        if (!!dep.parent && dep.parent.repo === dep.repo && dep.parent.ref === dep.ref) {
             // emit only root node
             return "";
         }
@@ -347,9 +347,9 @@ function printResult(result:pmb.Result) {
             if (!!data) {
                 data.nodes.push(d);
             }
+            d.label += fileInfo(dep);
             show(dep.dependencies, d);
             if (!data) {
-                d.label += fileInfo(dep);
                 console.log(archy(d));
             }
         });
