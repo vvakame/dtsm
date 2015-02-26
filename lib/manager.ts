@@ -161,7 +161,7 @@ export class Manager {
                     });
             })
             .then((resultList:pmb.SearchResult[])=> resultList.filter(result => result.fileInfo.path.indexOf(phrase) !== -1))
-            .then((resultList:pmb.SearchResult[])=> this._addWeightingAndSort(phrase, resultList).map(data => data.result));
+            .then((resultList:pmb.SearchResult[])=> this._addWeightingAndSort(phrase, resultList, v => v.fileInfo.path).map(data => data.result));
     }
 
     install(opts:{save:boolean;dryRun:boolean;}, phrases:string[]):Promise<pmb.Result> {
@@ -185,7 +185,7 @@ export class Manager {
                 } else if (resultList.length === 0) {
                     return Promise.reject(phrase + " is not found");
                 } else {
-                    var fileInfoWithWeight = this._addWeightingAndSort(phrase, resultList)[0];
+                    var fileInfoWithWeight = this._addWeightingAndSort(phrase, resultList, v => v.fileInfo.path)[0];
                     if (fileInfoWithWeight && fileInfoWithWeight.weight === 1) {
                         return Promise.resolve(fileInfoWithWeight.result);
                     } else {
@@ -327,47 +327,47 @@ export class Manager {
             });
     }
 
-    _addWeightingAndSort(phrase:string, resultList:pmb.SearchResult[]):{weight: number; result:pmb.SearchResult;}[] {
+    _addWeightingAndSort<T>(phrase:string, list:T[], getPath:(val:T)=>string):{weight: number; result:T;}[] {
         // TODO add something awesome weighing algorithm.
-        return resultList
-            .map(result => {
-                var fileInfo = result.fileInfo;
+        return list
+            .map(value => {
+                var path = getPath(value);
                 // exact match
-                if (fileInfo.path === phrase) {
+                if (path === phrase) {
                     return {
                         weight: 1,
-                        result: result
+                        result: value
                     };
                 }
 
                 // library name match
-                if (fileInfo.path === phrase + "/" + phrase + ".d.ts") {
+                if (path === phrase + "/" + phrase + ".d.ts") {
                     return {
                         weight: 1,
-                        result: result
+                        result: value
                     };
                 }
 
                 // .d.t.s file match
-                if (fileInfo.path.indexOf("/" + phrase + ".d.ts") !== -1) {
+                if (path.indexOf("/" + phrase + ".d.ts") !== -1) {
                     return {
                         weight: 0.9,
-                        result: result
+                        result: value
                     };
                 }
 
                 // directory name match
-                if (fileInfo.path.indexOf(phrase + "/") === 0) {
+                if (path.indexOf(phrase + "/") === 0) {
                     return {
                         weight: 0.8,
-                        result: result
+                        result: value
                     };
                 }
 
                 // junk
                 return {
                     weight: 0.0,
-                    result: result
+                    result: value
                 };
             })
             .sort((a, b) => b.weight - a.weight);
