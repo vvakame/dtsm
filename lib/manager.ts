@@ -237,7 +237,10 @@ export class Manager {
     }
 
     installFromFile(opts:{dryRun?:boolean;} = {}, retryWithFetch = true):Promise<pmb.Result> {
-        this.tracker.track("installFromFile");
+        if (retryWithFetch) {
+            // installFromFile exec recursive, call tracker only once.
+            this.tracker.track("installFromFile");
+        }
 
         if (!this.configPath) {
             return Promise.reject("configPath is required");
