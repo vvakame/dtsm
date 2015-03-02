@@ -404,22 +404,23 @@ export class Manager {
     }
 
     _writeDefinitionFile(recipe:m.Recipe, depResult:pmb.ResolvedDependency) {
-        var path = _path.resolve(recipe.path, depResult.depName);
+        var path = _path.resolve(_path.dirname(this.configPath), recipe.path, depResult.depName);
         mkdirp.sync(_path.resolve(path, "../"));
         fs.writeFileSync(path, depResult.content.toString("utf8"));
     }
 
     _addReferenceToBundle(recipe:m.Recipe, depName:string) {
         var bundleContent = "";
-        if (fs.existsSync(recipe.bundle)) {
-            bundleContent = fs.readFileSync(recipe.bundle, "utf8");
+        var bundlePath = _path.resolve(_path.dirname(this.configPath), recipe.bundle);
+        if (fs.existsSync(bundlePath)) {
+            bundleContent = fs.readFileSync(bundlePath, "utf8");
         } else {
-            mkdirp.sync(_path.resolve(recipe.bundle, "../"));
+            mkdirp.sync(_path.resolve(bundlePath, "../"));
         }
         var referencePath = _path.relative(_path.resolve(recipe.bundle, "../"), _path.resolve(recipe.path, depName));
         var referenceComment = "/// <reference path=\"" + referencePath + "\" />\n";
         if (bundleContent.indexOf(referenceComment) === -1) {
-            fs.appendFileSync(recipe.bundle, referenceComment, {encoding: "utf8"});
+            fs.appendFileSync(bundlePath, referenceComment, {encoding: "utf8"});
         }
     }
 
