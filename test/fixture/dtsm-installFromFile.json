@@ -5,8 +5,8 @@
       "ref": "master"
     }
   ],
-  "path": "test-tmp/installFromFile",
-  "bundle": "test-tmp/installFromFile/bundle.d.ts",
+  "path": "../../test-tmp/installFromFile",
+  "bundle": "../../test-tmp/installFromFile/bundle.d.ts",
   "dependencies": {
     "atom/atom.d.ts": {
       "ref": "master"
