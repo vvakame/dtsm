@@ -186,6 +186,30 @@ describe("Manager", ()=> {
         });
     });
 
+    describe("#uninstall", ()=> {
+
+        var dtsmFilePath = "./test/fixture/dtsm-uninstall.json";
+        var targetDir:string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
+
+        beforeEach(()=> {
+            if (fs.existsSync(targetDir)) {
+                rimraf.sync(targetDir);
+            }
+        });
+
+        it("can update files", ()=> {
+            assert(!fs.existsSync(targetDir));
+
+            return dtsm
+                .createManager({configPath: dtsmFilePath})
+                .then(manager => {
+                    return manager.uninstall({}, ["atom"]).then(resultList => {
+                        assert(1 === resultList.length);
+                    });
+                });
+        });
+    });
+
     describe("#fetch", ()=> {
         it("can fetch from remote repos", ()=> {
             return dtsm

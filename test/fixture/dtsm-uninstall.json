@@ -1,0 +1,15 @@
+{
+  "repos": [
+    {
+      "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "ref": "master"
+    }
+  ],
+  "path": "../../test-tmp/update",
+  "bundle": "../../test-tmp/update/bundle.d.ts",
+  "dependencies": {
+    "atom/atom.d.ts": {
+      "ref": "8b077e4f05910a405387f4fcfbe84e8b8f15d6bd"
+    }
+  }
+}

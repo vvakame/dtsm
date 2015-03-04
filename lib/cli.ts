@@ -186,6 +186,31 @@ root
             .catch(errorHandler);
     });
 
+interface UninstallOptions {
+    save:boolean;
+    dryRun: boolean;
+}
+
+interface UninstallArguments {
+    files: string[];
+}
+
+root
+    .subCommand<InstallOptions, InstallArguments>("uninstall [files...]")
+    .description("uninstall .d.ts files")
+    .option("--save", "save .d.ts file path into dtsm.json")
+    .option("--dry-run", "save .d.ts file path into dtsm.json")
+    .action((opts, args) => {
+        // .action((...targets:string[])=> {
+
+        setup(root.parsedOpts)
+            .then(manager=> {
+                return manager.uninstall({save: opts.save, dryRun: opts.dryRun}, args.files);
+            })
+            .then(resultList => resultList.forEach(dep => console.log(dep.depName)))
+            .catch(errorHandler);
+    });
+
 interface UpdateOptions {
     save:boolean;
     dryRun: boolean;
@@ -288,35 +313,23 @@ function setup(opts:RootOptions):Promise<dtsm.Manager> {
         });
 }
 
-function printResult(result:pmb.Result) {
+function printResolvedDependency(dep:pmb.ResolvedDependency, opts:{emitRepo:boolean; emitHost:boolean;}) {
     "use strict";
 
-    // short is justice.
-
-    var emitRepo = 1 < result.manager.repos.length;
-    var emitHost = result.manager.repos.filter(repo => {
-            if (!!repo.urlInfo) {
-                return repo.urlInfo.host !== "github.com";
-            } else if (!!repo.sshInfo) {
-                return repo.sshInfo.hostname !== "github.com";
-            } else {
-                return true;
-            }
-        }).length !== 0;
     var fileInfo = (dep:pmb.ResolvedDependency) => {
         if (!!dep.parent && dep.parent.repo === dep.repo && dep.parent.ref === dep.ref) {
             // emit only root node
             return "";
         }
         var result = "";
-        if (emitRepo && emitHost) {
+        if (opts.emitRepo && opts.emitHost) {
             if (dep.repoInstance.urlInfo) {
                 result += dep.repoInstance.urlInfo.hostname;
             } else if (dep.repoInstance.sshInfo) {
                 result += dep.repoInstance.sshInfo.hostname;
             }
         }
-        if (emitRepo) {
+        if (opts.emitRepo) {
             var path:string;
             if (dep.repoInstance.urlInfo) {
                 path = dep.repoInstance.urlInfo.pathname;
@@ -324,7 +337,7 @@ function printResult(result:pmb.Result) {
                 path = dep.repoInstance.sshInfo.path;
             }
             var hasExt = /\.git$/.test(path);
-            if (!emitHost) {
+            if (!opts.emitHost) {
                 path = path.substr(1);
             }
             if (hasExt) {
@@ -337,25 +350,47 @@ function printResult(result:pmb.Result) {
         return " " + result;
     };
 
-    var show = (deps:{[depName: string]: pmb.ResolvedDependency;} = {}, data?:archy.Data) => {
-        Object.keys(deps).forEach(depName => {
-            var d:archy.Data = {
-                label: depName,
-                nodes: []
-            };
-            var dep = deps[depName];
-            if (!!data) {
-                data.nodes.push(d);
-            }
-            d.label += fileInfo(dep);
-            show(dep.dependencies, d);
-            if (!data) {
-                console.log(archy(d));
-            }
+    var resultTree = (dep:pmb.ResolvedDependency, data?:archy.Data) => {
+        var d:archy.Data = {
+            label: dep.depName,
+            nodes: []
+        };
+        if (!!data) {
+            data.nodes.push(d);
+        }
+        d.label += fileInfo(dep);
+        Object.keys(dep.dependencies).forEach(depName => {
+            resultTree(dep.dependencies[depName], d);
         });
+        if (!data) {
+            return archy(d);
+        }
+        return null;
     };
 
-    show(result.dependencies);
+    var output = resultTree(dep);
+    console.log(output);
+}
+
+function printResult(result:pmb.Result) {
+    "use strict";
+
+    // short is justice.
+    var emitRepo = 1 < result.manager.repos.length;
+    var emitHost = result.manager.repos.filter(repo => {
+            if (!!repo.urlInfo) {
+                return repo.urlInfo.host !== "github.com";
+            } else if (!!repo.sshInfo) {
+                return repo.sshInfo.hostname !== "github.com";
+            } else {
+                return true;
+            }
+        }).length !== 0;
+
+    Object.keys(result.dependencies).forEach(depName => {
+        var dep = result.dependencies[depName];
+        printResolvedDependency(dep, {emitRepo: emitRepo, emitHost: emitHost});
+    });
 }
 
 function errorHandler(err:any) {

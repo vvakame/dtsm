@@ -282,6 +282,65 @@ describe("command line interface", ()=> {
         });
     });
 
+    describe("uninstall sub-command", () => {
+
+        it("can uninstall definition files", ()=> {
+            var targetFile = testWorkingDir + "/dtsm.json";
+
+            assert(!fs.existsSync(targetFile));
+            return Promise.resolve(null)
+                .then(()=> {
+                    return new Promise((resolve, reject) => {
+                        nexpect
+                            .spawn(command, ["--config", targetFile, "init"])
+                            .run((err, stdout, exit) => {
+                                assert(!err);
+                                if (err) {
+                                    reject(err);
+                                    return;
+                                }
+                                assert(exit === 0);
+                                assert(fs.existsSync(targetFile));
+                                resolve();
+                            });
+                    });
+                })
+                .then(()=> {
+                    return new Promise((resolve, reject) => {
+                        nexpect
+                            .spawn(command, ["--config", targetFile, "install", "es6-promise", "--save"])
+                            .run((err, stdout, exit) => {
+                                assert(!err);
+                                if (err) {
+                                    reject(err);
+                                    return;
+                                }
+                                assert(exit === 0);
+                                assert(fs.existsSync(targetFile));
+                                assert(fs.existsSync(testWorkingDir + "/typings/es6-promise/es6-promise.d.ts"));
+                                resolve();
+                            });
+                    });
+                })
+                .then(()=> {
+                    return new Promise((resolve, reject) => {
+                        nexpect
+                            .spawn(command, ["--config", targetFile, "uninstall", "es6-promise", "--save"])
+                            .run((err, stdout, exit) => {
+                                assert(!err);
+                                if (err) {
+                                    reject(err);
+                                    return;
+                                }
+                                assert(exit === 0);
+                                assert(fs.existsSync(targetFile));
+                                assert(!fs.existsSync(testWorkingDir + "/typings/es6-promise/es6-promise.d.ts"));
+                                resolve();
+                            });
+                    });
+                });
+        });
+    });
 
     describe("update sub-command", () => {
 
@@ -323,7 +382,7 @@ describe("command line interface", ()=> {
                     });
                 })
                 .then(()=> {
-                    new Promise((resolve, reject) => {
+                    return new Promise((resolve, reject) => {
                         nexpect
                             .spawn(command, ["--config", targetFile, "update", "--save"])
                             .run((err, stdout, exit) => {

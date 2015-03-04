@@ -1,6 +1,7 @@
 import fs = require("fs");
 import mkdirp = require("mkdirp");
 import _path = require("path");
+import rimraf = require("rimraf");
 
 import fsgit = require("fs-git");
 import pmb = require("packagemanager-backend");
@@ -406,10 +407,92 @@ export class Manager {
             });
     }
 
+    uninstall(opts:{save?:boolean;dryRun?:boolean}, phrases:string[]):Promise<pmb.ResolvedDependency[]> {
+        this.tracker.track("uninstall");
+
+        return this.installFromFile({dryRun: true}, false)
+            .then(result => {
+                var topLevelDeps = Object.keys(result.dependencies).map(depName => result.dependencies[depName]);
+                if (topLevelDeps.length === 0) {
+                    return Promise.reject("this project doesn't have a dependency tree.");
+                }
+
+                var promises = phrases.map(phrase => {
+                    var weights = this._addWeightingAndSort(phrase, topLevelDeps, dep => dep.depName);
+                    weights = weights.filter(w => w.weight !== 0);
+                    if (weights.length === 0) {
+                        return Promise.reject(phrase + " is not found in config file");
+                    }
+                    if (weights[0].weight !== 1) {
+                        return Promise.reject(phrase + " could not be identified. found: " + weights.length);
+                    }
+                    return Promise.resolve(weights[0].result);
+                });
+                return Promise.all(promises)
+                    .then((depList:pmb.ResolvedDependency[])=> {
+                        var removeList:pmb.ResolvedDependency[] = [];
+                        var addToRemoveList = (dep:pmb.ResolvedDependency) => {
+                            if (!dep) {
+                                return;
+                            }
+                            if (removeList.filter(rmDep => rmDep.depName === dep.depName).length !== 0) {
+                                return;
+                            }
+                            removeList.push(dep);
+                            if (!dep.dependencies) {
+                                return;
+                            }
+                            Object.keys(dep.dependencies).forEach(depName => {
+                                addToRemoveList(dep.dependencies[depName]);
+                            });
+                        };
+                        depList.forEach(dep => {
+                            // always remove from top level.
+                            delete this.savedRecipe.dependencies[dep.depName];
+                            delete result.dependencies[dep.depName];
+
+                            addToRemoveList(dep);
+                        });
+
+                        if (opts.dryRun) {
+                            return depList;
+                        }
+
+                        removeList.forEach(dep => {
+                            var unused = result.dependenciesList.every(exDep => exDep.depName !== dep.depName);
+                            if (unused) {
+                                this._removeDefinitionFile(this.savedRecipe, dep);
+                            }
+                        });
+
+                        if (!opts.save) {
+                            return depList;
+                        }
+
+                        this._save();
+
+                        return depList;
+                    });
+            });
+    }
+
     _writeDefinitionFile(recipe:m.Recipe, depResult:pmb.ResolvedDependency) {
         var path = _path.resolve(_path.dirname(this.configPath), recipe.path, depResult.depName);
         mkdirp.sync(_path.resolve(path, "../"));
         fs.writeFileSync(path, depResult.content.toString("utf8"));
+    }
+
+    _removeDefinitionFile(recipe:m.Recipe, depResult:pmb.ResolvedDependency) {
+        var path = _path.resolve(_path.dirname(this.configPath), recipe.path, depResult.depName);
+        try {
+            fs.unlinkSync(path);
+            var contents = fs.readdirSync(_path.dirname(path));
+            if (contents.length === 0) {
+                rimraf.sync(_path.dirname(path));
+            }
+        } catch (e) {
+            // suppress error when path is already removed.
+        }
     }
 
     _addReferenceToBundle(recipe:m.Recipe, depName:string) {
