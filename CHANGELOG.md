@@ -1,3 +1,19 @@
+<a name="0.8.0"></a>
+## 0.8.0 (2015-03-05)
+
+
+#### Bug Fixes
+
+* **dtsm:**
+  * fix `grunt test` failed ([90e382a9](https://github.com/vvakame/dtsm/commit/90e382a9da822da54c034097d43f29251a058871))
+  * avoid twice tracking in uninstall method ([b316cdbf](https://github.com/vvakame/dtsm/commit/b316cdbfe18edc5508aa45260fcff418681f9183))
+  * fix output directory resolution ([9fabbc](https://github.com/vvakame/dtsm/commit/9fabbc071dccf4b8263dfa48db036dcedf49d766)) thanks @Tsuguya !
+
+#### Features
+
+* **dtsm:** implement uninstall sub-command and Manager#uninstall method ([7962a40e](https://github.com/vvakame/dtsm/commit/7962a40e0dd06c272f3a902d7206d7f320b856af))
+
+
 <a name="0.7.0"></a>
 ## 0.7.0 (2015-02-25)
 
