@@ -1,3 +1,12 @@
+<a name="0.8.2"></a>
+### 0.8.2 (2015-03-23)
+
+
+#### Features
+
+* **dtsm:** update dependencies ([0f10fba6](https://github.com/vvakame/dtsm/commit/0f10fba676a9cf581125a8508b4853260e6d1c80))
+
+
 <a name="0.8.1"></a>
 ### 0.8.1 (2015-03-13)
 
