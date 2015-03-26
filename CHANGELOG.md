@@ -1,3 +1,12 @@
+<a name="0.9.0"></a>
+## 0.9.0 (2015-03-27)
+
+
+#### Features
+
+* **dtsm:** support default query in --interactive option ([9b4be7bf](https://github.com/vvakame/dtsm/commit/9b4be7bfc1512d641858a1ead61c028772a0bf6e))
+
+
 <a name="0.8.2"></a>
 ### 0.8.2 (2015-03-23)
 
