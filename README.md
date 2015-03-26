@@ -19,6 +19,8 @@ please install git client.
 ```
 # fetch from remote repository
 $ dtsm fetch
+fetching...
+fetching https://github.com/borisyankov/DefinitelyTyped.git
 
 # search .d.ts
 $ dtsm search atom
@@ -29,39 +31,52 @@ Search results.
 
 # install .d.ts
 $ dtsm install atom
-atom/atom.d.ts
-q/Q.d.ts
-jquery/jquery.d.ts
-space-pen/space-pen.d.ts
-emissary/emissary.d.ts
-pathwatcher/pathwatcher.d.ts
-text-buffer/text-buffer.d.ts
-status-bar/status-bar.d.ts
-mixto/mixto.d.ts
-node/node.d.ts
+atom/atom.d.ts #be0b6b
+├── q/Q.d.ts
+├── jquery/jquery.d.ts
+├─┬ space-pen/space-pen.d.ts
+│ └── jquery/jquery.d.ts
+├─┬ emissary/emissary.d.ts
+│ └── mixto/mixto.d.ts
+├─┬ pathwatcher/pathwatcher.d.ts
+│ ├── node/node.d.ts
+│ └── q/Q.d.ts
+├─┬ text-buffer/text-buffer.d.ts
+│ ├─┬ emissary/emissary.d.ts
+│ │ └── mixto/mixto.d.ts
+│ └── q/Q.d.ts
+└─┬ status-bar/status-bar.d.ts
+  ├─┬ space-pen/space-pen.d.ts
+  │ └── jquery/jquery.d.ts
+  └─┬ text-buffer/text-buffer.d.ts
+    ├─┬ emissary/emissary.d.ts
+    │ └── mixto/mixto.d.ts
+    └── q/Q.d.ts
 
 $ tree typings
-  typings
-  ├── atom
-  │   └── atom.d.ts
-  ├── emissary
-  │   └── emissary.d.ts
-  ├── jquery
-  │   └── jquery.d.ts
-  ├── mixto
-  │   └── mixto.d.ts
-  ├── node
-  │   └── node.d.ts
-  ├── pathwatcher
-  │   └── pathwatcher.d.ts
-  ├── q
-  │   └── Q.d.ts
-  ├── space-pen
-  │   └── space-pen.d.ts
-  ├── status-bar
-  │   └── status-bar.d.ts
-  └── text-buffer
-      └── text-buffer.d.ts
+typings
+├── atom
+│   └── atom.d.ts
+├── emissary
+│   └── emissary.d.ts
+├── jquery
+│   └── jquery.d.ts
+├── mixto
+│   └── mixto.d.ts
+├── node
+│   └── node.d.ts
+├── pathwatcher
+│   └── pathwatcher.d.ts
+├── q
+│   └── Q.d.ts
+├── space-pen
+│   └── space-pen.d.ts
+├── status-bar
+│   └── status-bar.d.ts
+└── text-buffer
+    └── text-buffer.d.ts
+
+10 directories, 10 files
 
 # create dtsm.json and save dependencies
 $ dtsm init
@@ -79,16 +94,27 @@ write to dtsm.json
 }
 
 $ dtsm install --save atom
-atom/atom.d.ts
-q/Q.d.ts
-jquery/jquery.d.ts
-space-pen/space-pen.d.ts
-emissary/emissary.d.ts
-pathwatcher/pathwatcher.d.ts
-text-buffer/text-buffer.d.ts
-status-bar/status-bar.d.ts
-mixto/mixto.d.ts
-node/node.d.ts
+atom/atom.d.ts #be0b6b
+├── q/Q.d.ts
+├── jquery/jquery.d.ts
+├─┬ space-pen/space-pen.d.ts
+│ └── jquery/jquery.d.ts
+├─┬ emissary/emissary.d.ts
+│ └── mixto/mixto.d.ts
+├─┬ pathwatcher/pathwatcher.d.ts
+│ ├── node/node.d.ts
+│ └── q/Q.d.ts
+├─┬ text-buffer/text-buffer.d.ts
+│ ├─┬ emissary/emissary.d.ts
+│ │ └── mixto/mixto.d.ts
+│ └── q/Q.d.ts
+└─┬ status-bar/status-bar.d.ts
+  ├─┬ space-pen/space-pen.d.ts
+  │ └── jquery/jquery.d.ts
+  └─┬ text-buffer/text-buffer.d.ts
+    ├─┬ emissary/emissary.d.ts
+    │ └── mixto/mixto.d.ts
+    └── q/Q.d.ts
 
 $ cat dtsm.json
 {
@@ -102,7 +128,7 @@ $ cat dtsm.json
   "bundle": "typings/bundle.d.ts",
   "dependencies": {
     "atom/atom.d.ts": {
-      "ref": "0605ebbdbdd8183c70b4a14e1e34ecb3f2b446bf"
+      "ref": "be0b6b394f77a59e192ad7cfec18078706e44db5"
     }
   }
 }
@@ -110,31 +136,53 @@ $ cat dtsm.json
 $ rm -rf typings/
 
 $ dtsm install
-atom/atom.d.ts
-q/Q.d.ts
-jquery/jquery.d.ts
-space-pen/space-pen.d.ts
-emissary/emissary.d.ts
-pathwatcher/pathwatcher.d.ts
-text-buffer/text-buffer.d.ts
-status-bar/status-bar.d.ts
-mixto/mixto.d.ts
-node/node.d.ts
+atom/atom.d.ts #be0b6b
+├── q/Q.d.ts
+├── jquery/jquery.d.ts
+├─┬ space-pen/space-pen.d.ts
+│ └── jquery/jquery.d.ts
+├─┬ emissary/emissary.d.ts
+│ └── mixto/mixto.d.ts
+├─┬ pathwatcher/pathwatcher.d.ts
+│ ├── node/node.d.ts
+│ └── q/Q.d.ts
+├─┬ text-buffer/text-buffer.d.ts
+│ ├─┬ emissary/emissary.d.ts
+│ │ └── mixto/mixto.d.ts
+│ └── q/Q.d.ts
+└─┬ status-bar/status-bar.d.ts
+  ├─┬ space-pen/space-pen.d.ts
+  │ └── jquery/jquery.d.ts
+  └─┬ text-buffer/text-buffer.d.ts
+    ├─┬ emissary/emissary.d.ts
+    │ └── mixto/mixto.d.ts
+    └── q/Q.d.ts
 
 $ ls -la | grep typings
-  drwxr-xr-x   12 vvakame  staff   408 10  6 17:36 typings
+drwxr-xr-x  13 vvakame  wheel     442  3 27 00:31 typings
 
 $ dtsm update --save
-atom/atom.d.ts
-q/Q.d.ts
-jquery/jquery.d.ts
-space-pen/space-pen.d.ts
-emissary/emissary.d.ts
-pathwatcher/pathwatcher.d.ts
-text-buffer/text-buffer.d.ts
-status-bar/status-bar.d.ts
-node/node.d.ts
-mixto/mixto.d.ts
+atom/atom.d.ts #0c2ee8
+├── q/Q.d.ts
+├── jquery/jquery.d.ts
+├─┬ space-pen/space-pen.d.ts
+│ └── jquery/jquery.d.ts
+├─┬ emissary/emissary.d.ts
+│ └── mixto/mixto.d.ts
+├─┬ pathwatcher/pathwatcher.d.ts
+│ ├── node/node.d.ts
+│ └── q/Q.d.ts
+├─┬ text-buffer/text-buffer.d.ts
+│ ├─┬ emissary/emissary.d.ts
+│ │ └── mixto/mixto.d.ts
+│ └── q/Q.d.ts
+└─┬ status-bar/status-bar.d.ts
+  ├─┬ space-pen/space-pen.d.ts
+  │ └── jquery/jquery.d.ts
+  └─┬ text-buffer/text-buffer.d.ts
+    ├─┬ emissary/emissary.d.ts
+    │ └── mixto/mixto.d.ts
+    └── q/Q.d.ts
 ```
 
 ## Advanced usage
@@ -180,10 +228,12 @@ $ cat dtsm.json
     }
   }
 }
+
 $ dtsm install
-jquery/jquery.d.ts
-gapi/bigquery-v2-browser.d.ts
-gapi/googleapis-browser-common.d.ts
+jquery/jquery.d.ts borisyankov/DefinitelyTyped#0605eb
+
+gapidts/bigquery-v2-browser.d.ts vvakame/gapidts#4edbcc
+└── gapidts/googleapis-browser-common.d.ts
 ```
 
 [example](https://github.com/vvakame/dtsm/blob/master/example/mixedRepisitory/dtsm.json)
@@ -211,7 +261,6 @@ If you are native english speaker. I wish received a pull request for document a
 ## TODO
 
  * write document
- * list sub-command
  * create pull request
    * generate self check todo list
  * Windows support
