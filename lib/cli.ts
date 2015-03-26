@@ -91,7 +91,7 @@ root
                     return Promise.resolve(resultList);
                 }
                 return is
-                    .exec(candidates, "peco")
+                    .exec(candidates, [args.phrase], "peco")
                     .then(selected => {
                         return selected
                             .map(path => {
@@ -156,10 +156,7 @@ root
                 if (!opts.interactive && args.files.length === 0) {
                     return manager.installFromFile({dryRun: opts.dryRun})
                         .then(result => printResult(result));
-                } else if (args.files.length !== 0) {
-                    return manager.install({save: opts.save, dryRun: opts.dryRun}, args.files)
-                        .then(result => printResult(result));
-                } else {
+                } else if (opts.interactive || args.files.length === 0) {
                     return manager.search("")
                         .then(resultList => {
                             var candidates = resultList.map(result => result.fileInfo.path);
@@ -167,7 +164,7 @@ root
                                 return Promise.resolve(resultList);
                             }
                             return is
-                                .exec(candidates, "peco")
+                                .exec(candidates, args.files, "peco")
                                 .then(selected => {
                                     return selected
                                         .map(path => {
@@ -181,6 +178,9 @@ root
                             return manager.install({save: opts.save, dryRun: opts.dryRun}, files)
                                 .then(result => printResult(result));
                         });
+                } else {
+                    return manager.install({save: opts.save, dryRun: opts.dryRun}, args.files)
+                        .then(result => printResult(result));
                 }
             })
             .catch(errorHandler);
