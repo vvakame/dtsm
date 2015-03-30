@@ -1,0 +1,20 @@
+# appveyor file
+# http://www.appveyor.com/docs/appveyor-yml
+
+version: "{build}"
+
+environment:
+  matrix:
+    - nodejs_version: 0.10
+
+build: off
+deploy: off
+
+install:
+  - ps: Update-NodeJsInstallation (Get-NodeJsLatestBuild $env:nodejs_version)
+  - node --version
+  - npm install -g grunt-cli
+  - npm install
+
+test_script:
+  - npm test
