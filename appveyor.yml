@@ -15,6 +15,7 @@ install:
   - node --version
   - npm install -g grunt-cli
   - npm install
+  - grunt setup
 
 test_script:
   - npm test
