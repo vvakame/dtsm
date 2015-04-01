@@ -1,3 +1,20 @@
+<a name"0.9.1"></a>
+### 0.9.1 (2015-04-02)
+
+
+#### Bug Fixes
+
+* **dtsm:** add `grunt setup` to appveyor.yml ([5b963bd6](https://github.com/vvakame/dtsm/commit/5b963bd6))
+
+
+#### Features
+
+* **dtsm:**
+  * challenge for windows support! update dependencies ([44fb100e](https://github.com/vvakame/dtsm/commit/44fb100e))
+  * update node.js version in appveyor ([83af71f5](https://github.com/vvakame/dtsm/commit/83af71f5))
+  * add appveyor.yml ([b3603305](https://github.com/vvakame/dtsm/commit/b3603305))
+
+
 <a name="0.9.0"></a>
 ## 0.9.0 (2015-03-27)
 
