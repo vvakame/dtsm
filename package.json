@@ -32,7 +32,7 @@
     "fs-git": "0.4.1",
     "insight": "0.5.3",
     "mkdirp": "0.5.0",
-    "packagemanager-backend": "0.6.3",
+    "packagemanager-backend": "0.6.5",
     "rimraf": "2.3.2",
     "update-notifier": "0.3.1",
     "which": "1.0.9"
