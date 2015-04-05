@@ -9,37 +9,37 @@
   "bundle": null,
   "dependencies": {
     "update-notifier/update-notifier.d.ts": {
-      "ref": "32bb5fea1c1a00a0f4d44523b75849fe60e97bee"
+      "ref": "2520bce9a8a71b66e67487cbd5b33fec880b0c55"
     },
     "insight/insight.d.ts": {
-      "ref": "32bb5fea1c1a00a0f4d44523b75849fe60e97bee"
+      "ref": "2520bce9a8a71b66e67487cbd5b33fec880b0c55"
     },
     "es6-promise/es6-promise.d.ts": {
-      "ref": "32bb5fea1c1a00a0f4d44523b75849fe60e97bee"
+      "ref": "2520bce9a8a71b66e67487cbd5b33fec880b0c55"
     },
     "mkdirp/mkdirp.d.ts": {
-      "ref": "32bb5fea1c1a00a0f4d44523b75849fe60e97bee"
+      "ref": "2520bce9a8a71b66e67487cbd5b33fec880b0c55"
     },
     "rimraf/rimraf.d.ts": {
-      "ref": "32bb5fea1c1a00a0f4d44523b75849fe60e97bee"
+      "ref": "2520bce9a8a71b66e67487cbd5b33fec880b0c55"
     },
     "node/node.d.ts": {
-      "ref": "32bb5fea1c1a00a0f4d44523b75849fe60e97bee"
+      "ref": "2520bce9a8a71b66e67487cbd5b33fec880b0c55"
     },
     "mocha/mocha.d.ts": {
-      "ref": "32bb5fea1c1a00a0f4d44523b75849fe60e97bee"
+      "ref": "2520bce9a8a71b66e67487cbd5b33fec880b0c55"
     },
     "power-assert/power-assert.d.ts": {
-      "ref": "32bb5fea1c1a00a0f4d44523b75849fe60e97bee"
+      "ref": "2520bce9a8a71b66e67487cbd5b33fec880b0c55"
     },
     "nexpect/nexpect.d.ts": {
-      "ref": "32bb5fea1c1a00a0f4d44523b75849fe60e97bee"
+      "ref": "2520bce9a8a71b66e67487cbd5b33fec880b0c55"
     },
     "which/which.d.ts": {
-      "ref": "32bb5fea1c1a00a0f4d44523b75849fe60e97bee"
+      "ref": "2520bce9a8a71b66e67487cbd5b33fec880b0c55"
     },
     "archy/archy.d.ts": {
-      "ref": "32bb5fea1c1a00a0f4d44523b75849fe60e97bee"
+      "ref": "2520bce9a8a71b66e67487cbd5b33fec880b0c55"
     }
   }
 }
