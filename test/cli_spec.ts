@@ -1,13 +1,15 @@
 import nexpect = require("nexpect");
 import rimraf = require("rimraf");
 import mkdirp = require("mkdirp");
+
 import fs = require("fs");
+import path = require("path");
 
 describe("command line interface", ()=> {
 
-    var command = process.cwd() + "/bin/dtsm";
-    var testWorkingDir = process.cwd() + "/test-cli";
-    var fixtureRootDir = process.cwd() + "/test/fixture";
+    var command = process.platform === 'win32' ? "node " + path.resolve(process.cwd(), "bin/dtsm") : path.resolve(process.cwd(), "bin/dtsm");
+    var testWorkingDir = path.resolve(process.cwd(), "test-cli");
+    var fixtureRootDir = path.resolve(process.cwd(), "test/fixture");
 
     before(done => {
         // turn off send usage
@@ -29,7 +31,7 @@ describe("command line interface", ()=> {
     describe("init sub-command", () => {
 
         it("make new dtsm.json", done=> {
-            var targetFile = testWorkingDir + "/dtsm.json";
+            var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             assert(!fs.existsSync(targetFile));
             nexpect
@@ -45,7 +47,7 @@ describe("command line interface", ()=> {
         });
 
         it("make new dtsm.json with --remote option", done=> {
-            var targetFile = testWorkingDir + "/dtsm.json";
+            var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             assert(!fs.existsSync(targetFile));
             nexpect
@@ -83,7 +85,7 @@ describe("command line interface", ()=> {
         });
 
         it("can find all .d.ts files with config file", done=> {
-            var configFile = fixtureRootDir + "/dtsm-gapidts-repo.json";
+            var configFile = path.resolve(fixtureRootDir, "dtsm-gapidts-repo.json");
 
             nexpect
                 .spawn(command, ["--config", configFile, "search"])
@@ -171,7 +173,7 @@ describe("command line interface", ()=> {
     describe("install sub-command", () => {
 
         it("can install .d.ts file", done=> {
-            assert(!fs.existsSync(testWorkingDir + "/typings/atom/atom.d.ts"));
+            assert(!fs.existsSync(path.resolve(testWorkingDir, "typings/atom/atom.d.ts")));
             nexpect
                 .spawn(command, ["install", "atom"], {
                     cwd: testWorkingDir
@@ -183,15 +185,15 @@ describe("command line interface", ()=> {
                     assert(stdout.some(line => line.indexOf("atom/atom.d.ts") !== -1));
                     assert(stdout.some(line => line.indexOf("space-pen/space-pen.d.ts") !== -1));
 
-                    assert(fs.existsSync(testWorkingDir + "/typings/atom/atom.d.ts"));
-                    assert(fs.existsSync(testWorkingDir + "/typings/space-pen/space-pen.d.ts"));
+                    assert(fs.existsSync(path.resolve(testWorkingDir, "typings/atom/atom.d.ts")));
+                    assert(fs.existsSync(path.resolve(testWorkingDir, "typings/space-pen/space-pen.d.ts")));
 
                     done();
                 });
         });
 
         it("can install .d.ts file with --dry-run option", done=> {
-            assert(!fs.existsSync(testWorkingDir + "/typings/atom/atom.d.ts"));
+            assert(!fs.existsSync(path.resolve(testWorkingDir, "/typings/atom/atom.d.ts")));
             nexpect
                 .spawn(command, ["install", "atom", "--dry-run"], {
                     cwd: testWorkingDir
@@ -203,15 +205,15 @@ describe("command line interface", ()=> {
                     assert(stdout.some(line => line.indexOf("atom/atom.d.ts") !== -1));
                     assert(stdout.some(line => line.indexOf("space-pen/space-pen.d.ts") !== -1));
 
-                    assert(!fs.existsSync(testWorkingDir + "/typings/atom/atom.d.ts"));
-                    assert(!fs.existsSync(testWorkingDir + "/typings/space-pen/space-pen.d.ts"));
+                    assert(!fs.existsSync(path.resolve(testWorkingDir, "typings/atom/atom.d.ts")));
+                    assert(!fs.existsSync(path.resolve(testWorkingDir, "typings/space-pen/space-pen.d.ts")));
 
                     done();
                 });
         });
 
         it("can install .d.ts file with --save option", done=> {
-            var targetFile = testWorkingDir + "/dtsm.json";
+            var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             assert(!fs.existsSync(targetFile));
             nexpect
@@ -245,7 +247,7 @@ describe("command line interface", ()=> {
         });
 
         it("can install .d.ts file with --remote and --save option", done=> {
-            var targetFile = testWorkingDir + "/dtsm.json";
+            var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             assert(!fs.existsSync(targetFile));
             nexpect
@@ -285,7 +287,7 @@ describe("command line interface", ()=> {
     describe("uninstall sub-command", () => {
 
         it("can uninstall definition files", ()=> {
-            var targetFile = testWorkingDir + "/dtsm.json";
+            var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             assert(!fs.existsSync(targetFile));
             return Promise.resolve(null)
@@ -317,7 +319,7 @@ describe("command line interface", ()=> {
                                 }
                                 assert(exit === 0);
                                 assert(fs.existsSync(targetFile));
-                                assert(fs.existsSync(testWorkingDir + "/typings/es6-promise/es6-promise.d.ts"));
+                                assert(fs.existsSync(path.resolve(testWorkingDir, "typings/es6-promise/es6-promise.d.ts")));
                                 resolve();
                             });
                     });
@@ -334,7 +336,7 @@ describe("command line interface", ()=> {
                                 }
                                 assert(exit === 0);
                                 assert(fs.existsSync(targetFile));
-                                assert(!fs.existsSync(testWorkingDir + "/typings/es6-promise/es6-promise.d.ts"));
+                                assert(!fs.existsSync(path.resolve(testWorkingDir + "typings/es6-promise/es6-promise.d.ts")));
                                 resolve();
                             });
                     });
@@ -345,7 +347,7 @@ describe("command line interface", ()=> {
     describe("update sub-command", () => {
 
         it("can update definition files", ()=> {
-            var targetFile = testWorkingDir + "/dtsm.json";
+            var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             assert(!fs.existsSync(targetFile));
             return Promise.resolve(null)
@@ -403,7 +405,7 @@ describe("command line interface", ()=> {
     describe("refs sub-command", () => {
 
         it("can show repository refs", done=> {
-            var targetFile = testWorkingDir + "/dtsm.json";
+            var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             nexpect
                 .spawn(command, ["--config", targetFile, "refs"], {
