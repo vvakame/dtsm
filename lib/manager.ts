@@ -504,6 +504,9 @@ export class Manager {
             mkdirp.sync(_path.resolve(bundlePath, "../"));
         }
         var referencePath = _path.relative(_path.resolve(recipe.bundle, "../"), _path.resolve(recipe.path, depName));
+        if (_path.posix) {
+            referencePath = _path.posix.relative(_path.posix.resolve(recipe.bundle, "../"), _path.posix.resolve(recipe.path, depName));
+        }
         var referenceComment = "/// <reference path=\"" + referencePath + "\" />\n";
         if (bundleContent.indexOf(referenceComment) === -1) {
             fs.appendFileSync(bundlePath, referenceComment, {encoding: "utf8"});
