@@ -7,7 +7,7 @@ import path = require("path");
 
 describe("command line interface", ()=> {
 
-    var command = process.platform === 'win32' ? "node " + path.resolve(process.cwd(), "bin/dtsm") : path.resolve(process.cwd(), "bin/dtsm");
+    var dtsmPath = path.resolve(__dirname, "../bin/dtsm");
     var testWorkingDir = path.resolve(process.cwd(), "test-cli");
     var fixtureRootDir = path.resolve(process.cwd(), "test/fixture");
 
@@ -15,7 +15,7 @@ describe("command line interface", ()=> {
         // turn off send usage
         // make fetch log
         nexpect
-            .spawn(command, ["--insight", "false", "fetch"])
+            .spawn("node", [dtsmPath, "--insight", "false", "fetch"])
             .run((err, stdout, exit) => {
                 assert(!err);
                 assert(exit === 0);
@@ -35,7 +35,7 @@ describe("command line interface", ()=> {
 
             assert(!fs.existsSync(targetFile));
             nexpect
-                .spawn(command, ["--config", targetFile, "init"], {
+                .spawn("node", [dtsmPath, "--config", targetFile, "init"], {
                     cwd: testWorkingDir
                 })
                 .run((err, stdout, exit) => {
@@ -51,7 +51,7 @@ describe("command line interface", ()=> {
 
             assert(!fs.existsSync(targetFile));
             nexpect
-                .spawn(command, ["--config", targetFile, "--remote", "https://github.com/vvakame/gapidts.git", "init"], {
+                .spawn("node", [dtsmPath, "--config", targetFile, "--remote", "https://github.com/vvakame/gapidts.git", "init"], {
                     cwd: testWorkingDir
                 })
                 .run((err, stdout, exit) => {
@@ -72,7 +72,7 @@ describe("command line interface", ()=> {
 
         it("can find all .d.ts files without config file", done=> {
             nexpect
-                .spawn(command, ["search"])
+                .spawn("node", [dtsmPath, "search"])
                 .run((err, stdout, exit) => {
                     assert(!err);
                     assert(exit === 0);
@@ -88,7 +88,7 @@ describe("command line interface", ()=> {
             var configFile = path.resolve(fixtureRootDir, "dtsm-gapidts-repo.json");
 
             nexpect
-                .spawn(command, ["--config", configFile, "search"])
+                .spawn("node", [dtsmPath, "--config", configFile, "search"])
                 .run((err, stdout, exit) => {
                     assert(!err);
                     assert(exit === 0);
@@ -102,7 +102,7 @@ describe("command line interface", ()=> {
 
         it("can find all .d.ts files with --remote option", done=> {
             nexpect
-                .spawn(command, ["--remote", "https://github.com/vvakame/gapidts.git", "search"])
+                .spawn("node", [dtsmPath, "--remote", "https://github.com/vvakame/gapidts.git", "search"])
                 .run((err, stdout, exit) => {
                     assert(!err);
                     assert(exit === 0);
@@ -116,7 +116,7 @@ describe("command line interface", ()=> {
 
         it("can find .d.ts files by phrase", done=> {
             nexpect
-                .spawn(command, ["search", "atom"])
+                .spawn("node", [dtsmPath, "search", "atom"])
                 .run((err, stdout, exit) => {
                     assert(!err);
                     assert(exit === 0);
@@ -130,7 +130,7 @@ describe("command line interface", ()=> {
 
         it("can find .d.ts files with --raw option", done=> {
             nexpect
-                .spawn(command, ["search", "--raw"])
+                .spawn("node", [dtsmPath, "search", "--raw"])
                 .run((err, stdout, exit) => {
                     assert(!err);
                     assert(exit === 0);
@@ -149,7 +149,7 @@ describe("command line interface", ()=> {
 
         it("can fetch remote info", done=> {
             nexpect
-                .spawn(command, ["fetch"])
+                .spawn("node", [dtsmPath, "fetch"])
                 .run((err, stdout, exit) => {
                     assert(!err);
                     assert(exit === 0);
@@ -160,7 +160,7 @@ describe("command line interface", ()=> {
 
         it("can fetch remote info with --remote option", done=> {
             nexpect
-                .spawn(command, ["--remote", "https://github.com/vvakame/gapidts.git", "fetch"])
+                .spawn("node", [dtsmPath, "--remote", "https://github.com/vvakame/gapidts.git", "fetch"])
                 .run((err, stdout, exit) => {
                     assert(!err);
                     assert(exit === 0);
@@ -175,7 +175,7 @@ describe("command line interface", ()=> {
         it("can install .d.ts file", done=> {
             assert(!fs.existsSync(path.resolve(testWorkingDir, "typings/atom/atom.d.ts")));
             nexpect
-                .spawn(command, ["install", "atom"], {
+                .spawn("node", [dtsmPath, "install", "atom"], {
                     cwd: testWorkingDir
                 })
                 .run((err, stdout, exit) => {
@@ -195,7 +195,7 @@ describe("command line interface", ()=> {
         it("can install .d.ts file with --dry-run option", done=> {
             assert(!fs.existsSync(path.resolve(testWorkingDir, "/typings/atom/atom.d.ts")));
             nexpect
-                .spawn(command, ["install", "atom", "--dry-run"], {
+                .spawn("node", [dtsmPath, "install", "atom", "--dry-run"], {
                     cwd: testWorkingDir
                 })
                 .run((err, stdout, exit) => {
@@ -217,7 +217,7 @@ describe("command line interface", ()=> {
 
             assert(!fs.existsSync(targetFile));
             nexpect
-                .spawn(command, ["--config", targetFile, "init"], {
+                .spawn("node", [dtsmPath, "--config", targetFile, "init"], {
                     cwd: testWorkingDir
                 })
                 .run((err, stdout, exit) => {
@@ -231,7 +231,7 @@ describe("command line interface", ()=> {
                     assert(Object.keys(data.dependencies).length === 0);
 
                     nexpect
-                        .spawn(command, ["install", "--save", "atom"], {
+                        .spawn("node", [dtsmPath, "install", "--save", "atom"], {
                             cwd: testWorkingDir
                         })
                         .run((err, stdout, exit) => {
@@ -251,7 +251,7 @@ describe("command line interface", ()=> {
 
             assert(!fs.existsSync(targetFile));
             nexpect
-                .spawn(command, ["--config", targetFile, "init"], {
+                .spawn("node", [dtsmPath, "--config", targetFile, "init"], {
                     cwd: testWorkingDir
                 })
                 .run((err, stdout, exit) => {
@@ -265,7 +265,7 @@ describe("command line interface", ()=> {
                     assert(Object.keys(data.dependencies).length === 0);
 
                     nexpect
-                        .spawn(command, ["--remote", "https://github.com/vvakame/gapidts.git", "install", "--save", "bigquery-v2-browser"], {
+                        .spawn("node", [dtsmPath, "--remote", "https://github.com/vvakame/gapidts.git", "install", "--save", "bigquery-v2-browser"], {
                             cwd: testWorkingDir
                         })
                         .run((err, stdout, exit) => {
@@ -294,7 +294,7 @@ describe("command line interface", ()=> {
                 .then(()=> {
                     return new Promise((resolve, reject) => {
                         nexpect
-                            .spawn(command, ["--config", targetFile, "init"])
+                            .spawn("node", [dtsmPath, "--config", targetFile, "init"])
                             .run((err, stdout, exit) => {
                                 assert(!err);
                                 if (err) {
@@ -310,7 +310,7 @@ describe("command line interface", ()=> {
                 .then(()=> {
                     return new Promise((resolve, reject) => {
                         nexpect
-                            .spawn(command, ["--config", targetFile, "install", "es6-promise", "--save"])
+                            .spawn("node", [dtsmPath, "--config", targetFile, "install", "es6-promise", "--save"])
                             .run((err, stdout, exit) => {
                                 assert(!err);
                                 if (err) {
@@ -327,7 +327,7 @@ describe("command line interface", ()=> {
                 .then(()=> {
                     return new Promise((resolve, reject) => {
                         nexpect
-                            .spawn(command, ["--config", targetFile, "uninstall", "es6-promise", "--save"])
+                            .spawn("node", [dtsmPath, "--config", targetFile, "uninstall", "es6-promise", "--save"])
                             .run((err, stdout, exit) => {
                                 assert(!err);
                                 if (err) {
@@ -354,7 +354,7 @@ describe("command line interface", ()=> {
                 .then(()=> {
                     return new Promise((resolve, reject) => {
                         nexpect
-                            .spawn(command, ["--config", targetFile, "init"])
+                            .spawn("node", [dtsmPath, "--config", targetFile, "init"])
                             .run((err, stdout, exit) => {
                                 assert(!err);
                                 if (err) {
@@ -370,7 +370,7 @@ describe("command line interface", ()=> {
                 .then(()=> {
                     return new Promise((resolve, reject) => {
                         nexpect
-                            .spawn(command, ["--config", targetFile, "install", "es6-promise"])
+                            .spawn("node", [dtsmPath, "--config", targetFile, "install", "es6-promise"])
                             .run((err, stdout, exit) => {
                                 assert(!err);
                                 if (err) {
@@ -386,7 +386,7 @@ describe("command line interface", ()=> {
                 .then(()=> {
                     return new Promise((resolve, reject) => {
                         nexpect
-                            .spawn(command, ["--config", targetFile, "update", "--save"])
+                            .spawn("node", [dtsmPath, "--config", targetFile, "update", "--save"])
                             .run((err, stdout, exit) => {
                                 assert(!err);
                                 if (err) {
@@ -408,7 +408,7 @@ describe("command line interface", ()=> {
             var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             nexpect
-                .spawn(command, ["--config", targetFile, "refs"], {
+                .spawn("node", [dtsmPath, "--config", targetFile, "refs"], {
                     cwd: testWorkingDir
                 })
                 .run((err, stdout, exit) => {
