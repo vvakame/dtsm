@@ -1,0 +1,43 @@
+{
+    "version": "1.5.0-beta",
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "declaration": false,
+        "noImplicitAny": true,
+        "removeComments": false,
+        "noLib": false
+    },
+    "filesGlob": [
+        "./**/*.ts",
+        "!./node_modules/**/*.ts",
+        "!./test-tmp/**/*.ts",
+        "!./lib/*.d.ts"
+    ],
+    "files": [
+        "./lib/cli.ts",
+        "./lib/incrementalsearch.ts",
+        "./lib/index.ts",
+        "./lib/manager.ts",
+        "./lib/model.ts",
+        "./lib/tracker.ts",
+        "./lib/utils.ts",
+        "./test/cli_spec.ts",
+        "./test/index_spec.ts",
+        "./test/utils_spec.ts",
+        "./typings/archy/archy.d.ts",
+        "./typings/empower/empower.d.ts",
+        "./typings/es6-promise/es6-promise.d.ts",
+        "./typings/insight/insight.d.ts",
+        "./typings/jquery/jquery.d.ts",
+        "./typings/mkdirp/mkdirp.d.ts",
+        "./typings/mocha/mocha.d.ts",
+        "./typings/nexpect/nexpect.d.ts",
+        "./typings/node/node.d.ts",
+        "./typings/power-assert-formatter/power-assert-formatter.d.ts",
+        "./typings/power-assert/power-assert.d.ts",
+        "./typings/rimraf/rimraf.d.ts",
+        "./typings/update-notifier/update-notifier.d.ts",
+        "./typings/which/which.d.ts"
+    ]
+}
