@@ -1,4 +1,3 @@
-/// <reference path="../typings/es6-promise/es6-promise.d.ts" />
 /// <reference path="../typings/update-notifier/update-notifier.d.ts" />
 /// <reference path="../typings/archy/archy.d.ts" />
 /// <reference path="../node_modules/commandpost/commandpost.d.ts" />
@@ -283,7 +282,7 @@ function setup(opts:RootOptions):Promise<dtsm.Manager> {
 
     if (typeof insightStr === "string") {
         if (insightStr !== "true" && insightStr !== "false") {
-            return Promise.reject("--insight options required \"true\" or \"false\"");
+            return Promise.reject<dtsm.Manager>("--insight options required \"true\" or \"false\"");
         } else if (insightStr === "true") {
             insightOptout = false; // inverse
         } else {

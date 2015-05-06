@@ -11,6 +11,7 @@
     "filesGlob": [
         "./**/*.ts",
         "!./node_modules/**/*.ts",
+        "./node_modules/typescript/bin/lib.es6.d.ts",
         "!./test-tmp/**/*.ts",
         "!./lib/*.d.ts"
     ],
@@ -27,7 +28,6 @@
         "./test/utils_spec.ts",
         "./typings/archy/archy.d.ts",
         "./typings/empower/empower.d.ts",
-        "./typings/es6-promise/es6-promise.d.ts",
         "./typings/insight/insight.d.ts",
         "./typings/jquery/jquery.d.ts",
         "./typings/mkdirp/mkdirp.d.ts",
@@ -38,6 +38,7 @@
         "./typings/power-assert/power-assert.d.ts",
         "./typings/rimraf/rimraf.d.ts",
         "./typings/update-notifier/update-notifier.d.ts",
-        "./typings/which/which.d.ts"
+        "./typings/which/which.d.ts",
+        "./node_modules/typescript/bin/lib.es6.d.ts"
     ]
 }

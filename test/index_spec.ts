@@ -1,5 +1,7 @@
+/// <reference path="../node_modules/typescript/bin/lib.es6.d.ts" />
+// for typescript@1.5.0-beta with node.d.ts. see https://github.com/Microsoft/TypeScript/issues/2929 & https://github.com/Microsoft/TypeScript/issues/3005
+
 /// <reference path="../typings/node/node.d.ts" />
-/// <reference path="../typings/es6-promise/es6-promise.d.ts" />
 
 /// <reference path="../typings/mocha/mocha.d.ts" />
 /// <reference path="../typings/power-assert/power-assert.d.ts" />

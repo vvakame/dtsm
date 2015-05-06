@@ -172,10 +172,10 @@ export class Manager {
             });
         }
         if (!this.configPath) {
-            return Promise.reject("configPath is required");
+            return Promise.reject<pmb.Result>("configPath is required");
         }
         if (!fs.existsSync(this.configPath) && opts.save) {
-            return Promise.reject(this.configPath + " is not exists");
+            return Promise.reject<pmb.Result>(this.configPath + " is not exists");
         }
         this._setupDefaultRecipe();
 
@@ -184,13 +184,13 @@ export class Manager {
                 if (resultList.length === 1) {
                     return Promise.resolve(resultList[0]);
                 } else if (resultList.length === 0) {
-                    return Promise.reject(phrase + " is not found");
+                    return Promise.reject<pmb.SearchResult>(phrase + " is not found");
                 } else {
                     var fileInfoWithWeight = this._addWeightingAndSort(phrase, resultList, v => v.fileInfo.path)[0];
                     if (fileInfoWithWeight && fileInfoWithWeight.weight === 1) {
                         return Promise.resolve(fileInfoWithWeight.result);
                     } else {
-                        return Promise.reject(phrase + " could not be identified. found: " + resultList.length);
+                        return Promise.reject<pmb.SearchResult>(phrase + " could not be identified. found: " + resultList.length);
                     }
                 }
             });
@@ -244,11 +244,11 @@ export class Manager {
         }
 
         if (!this.configPath) {
-            return Promise.reject("configPath is required");
+            return Promise.reject<pmb.Result>("configPath is required");
         }
         var content = this._load();
         if (!content) {
-            return Promise.reject(this.configPath + " is not exists");
+            return Promise.reject<pmb.Result>(this.configPath + " is not exists");
         }
 
         return this._installFromOptions(content, opts)
@@ -257,7 +257,7 @@ export class Manager {
                 if (retryWithFetch) {
                     return this.fetch().then(()=> this.installFromFile(opts, false));
                 } else {
-                    return Promise.reject(err);
+                    return Promise.reject<pmb.Result>(err);
                 }
             });
     }
@@ -307,7 +307,7 @@ export class Manager {
                 var errors = result.dependenciesList.filter(depResult => !!depResult.error);
                 if (errors.length !== 0) {
                     // TODO toString
-                    return Promise.reject(errors);
+                    return Promise.reject<pmb.Result>(errors);
                 }
 
                 if (opts.dryRun) {
@@ -378,7 +378,7 @@ export class Manager {
         this.tracker.track("update");
 
         if (!this.configPath) {
-            return Promise.reject("configPath is required");
+            return Promise.reject<pmb.Result>("configPath is required");
         }
         this._setupDefaultRecipe();
 
@@ -414,17 +414,17 @@ export class Manager {
             .then(result => {
                 var topLevelDeps = Object.keys(result.dependencies).map(depName => result.dependencies[depName]);
                 if (topLevelDeps.length === 0) {
-                    return Promise.reject("this project doesn't have a dependency tree.");
+                    return Promise.reject<pmb.ResolvedDependency[]>("this project doesn't have a dependency tree.");
                 }
 
                 var promises = phrases.map(phrase => {
                     var weights = this._addWeightingAndSort(phrase, topLevelDeps, dep => dep.depName);
                     weights = weights.filter(w => w.weight !== 0);
                     if (weights.length === 0) {
-                        return Promise.reject(phrase + " is not found in config file");
+                        return Promise.reject<pmb.ResolvedDependency>(phrase + " is not found in config file");
                     }
                     if (weights[0].weight !== 1) {
-                        return Promise.reject(phrase + " could not be identified. found: " + weights.length);
+                        return Promise.reject<pmb.ResolvedDependency>(phrase + " could not be identified. found: " + weights.length);
                     }
                     return Promise.resolve(weights[0].result);
                 });
