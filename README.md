@@ -1,4 +1,4 @@
-# DTSM [![Circle CI](https://circleci.com/gh/vvakame/dtsm.png?style=badge)](https://circleci.com/gh/vvakame/dtsm)
+# DTSM [![Circle CI](https://circleci.com/gh/vvakame/dtsm.png?style=badge)](https://circleci.com/gh/vvakame/dtsm) [![Build status](https://ci.appveyor.com/api/projects/status/basbr6gmdfekrwc7/branch/master?svg=true)](https://ci.appveyor.com/project/vvakame/dtsm/branch/master)
 
 The .d.ts manager
 
