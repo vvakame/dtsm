@@ -1,7 +1,7 @@
 {
   "name": "dtsm",
   "author": "vvakame",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "TypeScript definition file (.d.ts) manager",
   "main": "./index",
   "bin": {

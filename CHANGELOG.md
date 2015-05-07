@@ -1,3 +1,20 @@
+<a name"0.9.2"></a>
+### 0.9.2 (2015-05-07)
+
+
+#### Bug Fixes
+
+* **ci:** fix for appveyor ([0c94b909](https://github.com/vvakame/dtsm/commit/0c94b909))
+* **dtsm:**
+  * do not use ./bin/dtsm directly in specs, avoid test failed in Windows env ([aea92275](https://github.com/vvakame/dtsm/commit/aea92275))
+  * fix reference path generation in bundle.d.ts on windows ([daedaca2](https://github.com/vvakame/dtsm/commit/daedaca2), closes [#6](https://github.com/vvakame/dtsm/issues/6))
+
+
+#### Features
+
+* **deps:** update dependencies, support typescript@1.5.0-beta ([0a8a3c59](https://github.com/vvakame/dtsm/commit/0a8a3c59))
+
+
 <a name"0.9.1"></a>
 ### 0.9.1 (2015-04-02)
 
