@@ -263,4 +263,3 @@ If you are native english speaker. I wish received a pull request for document a
  * write document
  * create pull request
    * generate self check todo list
- * Windows support
