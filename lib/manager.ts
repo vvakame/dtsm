@@ -103,6 +103,8 @@ export class Manager {
         this.savedRecipe.repos = this.savedRecipe.repos || this.repos;
         this.savedRecipe.path = this.savedRecipe.path || this.path;
         this.savedRecipe.bundle = typeof this.savedRecipe.bundle !== "undefined" ? this.savedRecipe.bundle : this.bundle; // for this.recipe.bundle === null
+        this.savedRecipe.link = this.savedRecipe.link || {};
+        this.savedRecipe.link["npm"] = this.savedRecipe.link["npm"] || {include: true};
         this.savedRecipe.dependencies = this.savedRecipe.dependencies || {};
     }
 
@@ -321,7 +323,7 @@ export class Manager {
                     if (!recipe.bundle) {
                         return;
                     }
-                    this._addReferenceToBundle(recipe, depResult.depName);
+                    this._addReferenceToBundle(recipe, _path.relative(this.path, depResult.depName));
                 });
 
                 return result;
@@ -476,6 +478,95 @@ export class Manager {
             });
     }
 
+    link(opts:{ save?: boolean; dryRun?: boolean }):Promise<m.LinkResult[]> {
+        this.tracker.track("link");
+
+        if (!this.configPath) {
+            return Promise.reject<m.LinkResult[]>("configPath is required");
+        }
+        this._setupDefaultRecipe();
+        if (!this.savedRecipe.bundle) {
+            return Promise.reject<m.LinkResult[]>("bundle is required");
+        }
+
+        let linkInfo = this.savedRecipe.link || {};
+        let resultList:m.LinkResult[] = [];
+        {
+            let depInfo = this._processLink(linkInfo["npm"], "npm", "package.json", "node_modules");
+            linkInfo["npm"] = depInfo.link;
+            if (!opts || !opts.dryRun) {
+                depInfo.results.forEach(r => {
+                    r.files.forEach(filePath => {
+                        this._addReferenceToBundle(this.savedRecipe, filePath);
+                    });
+                });
+            }
+            resultList = resultList.concat(depInfo.results);
+        }
+        {
+            let depInfo = this._processLink(linkInfo["bower"], "bower", "bower.json", "bower_components");
+            linkInfo["bower"] = depInfo.link;
+            if (!opts || !opts.dryRun) {
+                depInfo.results.forEach(r => {
+                    r.files.forEach(filePath => {
+                        this._addReferenceToBundle(this.savedRecipe, filePath);
+                    });
+                });
+            }
+            resultList = resultList.concat(depInfo.results);
+        }
+        this.savedRecipe.link = linkInfo;
+        if (opts && opts.save) {
+            this._save();
+        }
+
+        return Promise.resolve(resultList);
+    }
+
+    _processLink(linkInfo:m.Link, managerName:string, configFileName:string, moduleDir:string):{ link: m.Link; results: m.LinkResult[]; } {
+        if (linkInfo == null) {
+            // continue
+        } else if (!linkInfo.include) {
+            return {link: linkInfo, results: []};
+        }
+        linkInfo = linkInfo || {include: true};
+        let definitionList:m.LinkResult[] = [];
+        let configPath = _path.join(_path.dirname(this.configPath), linkInfo.configPath || configFileName);
+        if (!fs.existsSync(configPath)) {
+            return {link: linkInfo, results: []};
+        }
+
+        let configData = JSON.parse(fs.readFileSync(configPath, {encoding: "utf8"}));
+        ["dependencies", "devDependencies"].forEach(propName => {
+            Object.keys(configData[propName] || {}).forEach(depName => {
+                let depConfigPath = _path.join(_path.dirname(configPath), moduleDir, depName, configFileName);
+                if (!fs.existsSync(depConfigPath)) {
+                    return;
+                }
+                let depConfig = JSON.parse(fs.readFileSync(depConfigPath, {encoding: "utf8"}));
+                let definitionInfo = depConfig["typescript"];
+                if (!definitionInfo) {
+                    return;
+                }
+                let resultList:string[] = [];
+                ["definition", "definitions"].forEach(propName => {
+                    if (typeof definitionInfo[propName] === "string") {
+                        resultList.push(definitionInfo[propName]);
+                    } else if (Array.isArray(definitionInfo[propName])) {
+                        resultList = resultList.concat(definitionInfo[propName]);
+                    }
+                });
+                definitionList.push({
+                    managerName: managerName,
+                    depName: depName,
+                    files: resultList.map(filePath => _path.join(_path.dirname(configPath), moduleDir, depName, filePath))
+                });
+            });
+        });
+
+        return {link: linkInfo, results: definitionList};
+    }
+
     _writeDefinitionFile(recipe:m.Recipe, depResult:pmb.ResolvedDependency) {
         var path = _path.resolve(_path.dirname(this.configPath), recipe.path, depResult.depName);
         mkdirp.sync(_path.resolve(path, "../"));
@@ -495,17 +586,17 @@ export class Manager {
         }
     }
 
-    _addReferenceToBundle(recipe:m.Recipe, depName:string) {
+    _addReferenceToBundle(recipe:m.Recipe, pathFromCwd:string) {
         var bundleContent = "";
-        var bundlePath = _path.resolve(_path.dirname(this.configPath), recipe.bundle);
+        var bundlePath = _path.join(_path.dirname(this.configPath), recipe.bundle);
         if (fs.existsSync(bundlePath)) {
             bundleContent = fs.readFileSync(bundlePath, "utf8");
         } else {
-            mkdirp.sync(_path.resolve(bundlePath, "../"));
+            mkdirp.sync(_path.dirname(bundlePath));
         }
-        var referencePath = _path.relative(_path.resolve(recipe.bundle, "../"), _path.resolve(recipe.path, depName));
+        var referencePath = _path.relative(_path.dirname(bundlePath), pathFromCwd);
         if (_path.posix) {
-            referencePath = _path.posix.relative(_path.posix.resolve(recipe.bundle, "../"), _path.posix.resolve(recipe.path, depName));
+            referencePath = _path.posix.relative(_path.posix.dirname(bundlePath), pathFromCwd);
         }
         var referenceComment = "/// <reference path=\"" + referencePath + "\" />\n";
         if (bundleContent.indexOf(referenceComment) === -1) {

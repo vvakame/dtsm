@@ -6,7 +6,15 @@
     }
   ],
   "path": "typings",
-  "bundle": null,
+  "bundle": "./typings/bundle.d.ts",
+  "link": {
+    "npm": {
+      "include": true
+    },
+    "bower": {
+      "include": true
+    }
+  },
   "dependencies": {
     "update-notifier/update-notifier.d.ts": {
       "ref": "557bb595af0ab301d098fb5bd50943fffbfcee57"

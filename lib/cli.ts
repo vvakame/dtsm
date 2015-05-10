@@ -154,7 +154,9 @@ root
             .then(manager=> {
                 if (!opts.interactive && args.files.length === 0) {
                     return manager.installFromFile({dryRun: opts.dryRun})
-                        .then(result => printResult(result));
+                        .then(result => printResult(result))
+                        .then(()=> manager.link({dryRun: opts.dryRun}))
+                        .then(result => printLinkResult(result));
                 } else if (opts.interactive || args.files.length === 0) {
                     return manager.search("")
                         .then(resultList => {
@@ -226,6 +228,25 @@ root
                 return manager.update({save: opts.save, dryRun: opts.dryRun});
             })
             .then(result => printResult(result))
+            .catch(errorHandler);
+    });
+
+interface LinkOptions {
+    save:boolean;
+    dryRun: boolean;
+}
+
+root
+    .subCommand<LinkOptions, {}>("link")
+    .description("link to npm or bower dependencies")
+    .option("--save", "save updated ref into dtsm.json")
+    .option("--dry-run", "save .d.ts file path into dtsm.json")
+    .action((opts, args)=> {
+        setup(root.parsedOpts)
+            .then(manager=> {
+                return manager.link({save: opts.save, dryRun: opts.dryRun});
+            })
+            .then(result => printLinkResult(result))
             .catch(errorHandler);
     });
 
@@ -389,6 +410,26 @@ function printResult(result:pmb.Result) {
     Object.keys(result.dependencies).forEach(depName => {
         var dep = result.dependencies[depName];
         printResolvedDependency(dep, {emitRepo: emitRepo, emitHost: emitHost});
+    });
+}
+
+function printLinkResult(resultList:dtsm.LinkResult[]) {
+    "use strict";
+
+    ["npm", "bower"].forEach(managerName => {
+        let npmList = resultList.filter(result => result.managerName === managerName);
+        if (npmList.length !== 0) {
+            let d:archy.Data = {
+                label: `from ${managerName} dependencies`,
+                nodes: npmList.map(dep => {
+                    return {
+                        label: dep.depName,
+                        nodes: dep.files
+                    };
+                })
+            };
+            console.log(archy(d));
+        }
     });
 }
 

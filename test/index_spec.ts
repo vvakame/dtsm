@@ -212,6 +212,38 @@ describe("Manager", ()=> {
         });
     });
 
+    describe("#link", ()=> {
+
+        var dtsmFilePath = "./test/fixture/dtsm-link.json";
+        var targetDir:string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
+
+        beforeEach(()=> {
+            if (fs.existsSync(targetDir)) {
+                rimraf.sync(targetDir);
+            }
+        });
+
+        it("can found other package manager's dependencies", ()=> {
+            assert(!fs.existsSync(targetDir));
+
+            return dtsm
+                .createManager({configPath: dtsmFilePath})
+                .then(manager => {
+                    return manager.link({}).then(result => {
+                        assert(3 === result.length);
+                        var dtsPath = "test-tmp/link/bundle.d.ts";
+                        assert(fs.existsSync(dtsPath));
+
+                        // check content
+                        var dtsContent = fs.readFileSync(dtsPath, "utf8");
+                        assert(dtsContent.indexOf(`/// <reference path="../../node_modules/commandpost/commandpost.d.ts" />`) !== -1);
+                        assert(dtsContent.indexOf(`/// <reference path="../../node_modules/fs-git/fs-git.d.ts" />`) !== -1);
+                        assert(dtsContent.indexOf(`/// <reference path="../../node_modules/packagemanager-backend/packagemanager-backend.d.ts" />`) !== -1);
+                    });
+                });
+        });
+    });
+
     describe("#fetch", ()=> {
         it("can fetch from remote repos", ()=> {
             return dtsm

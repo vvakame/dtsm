@@ -1,0 +1,21 @@
+{
+  "repos": [
+    {
+      "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "ref": "master"
+    }
+  ],
+  "path": "../../test-tmp/link",
+  "bundle": "../../test-tmp/link/bundle.d.ts",
+  "link": {
+    "npm": {
+      "include": true,
+	  "configPath": "../../package.json"
+    },
+    "bower": {
+      "include": true,
+	  "configPath": "../../bower.json"
+    }
+  },
+  "dependencies": {}
+}

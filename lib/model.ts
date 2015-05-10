@@ -18,7 +18,19 @@ export interface Recipe {
     repos?:pmb.RepositorySpec[];
     path:string;
     bundle?:string;
-    dependencies:{[path:string]:pmb.Dependency};
+    link?: { [name:string]: Link; };
+    dependencies:{ [path:string]:pmb.Dependency; };
+}
+
+export interface Link {
+    include?: boolean;
+    configPath?: string; // e.g. "./package.json",
+}
+
+export interface LinkResult {
+    managerName: string;
+    depName: string;
+    files: string[];
 }
 
 export interface GlobalConfig {

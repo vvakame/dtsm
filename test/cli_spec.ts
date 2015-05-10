@@ -402,6 +402,48 @@ describe("command line interface", ()=> {
         });
     });
 
+    describe("link sub-command", () => {
+
+        it("can link npm or bower definition files", ()=> {
+            var targetFile = path.resolve(testWorkingDir, "dtsm.json");
+
+            assert(!fs.existsSync(targetFile));
+            return Promise.resolve(null)
+                .then(()=> {
+                    return new Promise((resolve, reject) => {
+                        nexpect
+                            .spawn("node", [dtsmPath, "--config", targetFile, "init"])
+                            .run((err, stdout, exit) => {
+                                assert(!err);
+                                if (err) {
+                                    reject(err);
+                                    return;
+                                }
+                                assert(exit === 0);
+                                assert(fs.existsSync(targetFile));
+                                resolve();
+                            });
+                    });
+                })
+                .then(()=> {
+                    return new Promise((resolve, reject) => {
+                        nexpect
+                            .spawn("node", [dtsmPath, "--config", targetFile, "link", "--save"])
+                            .run((err, stdout, exit) => {
+                                assert(!err);
+                                if (err) {
+                                    reject(err);
+                                    return;
+                                }
+                                assert(exit === 0);
+                                assert(fs.existsSync(targetFile));
+                                resolve();
+                            });
+                    });
+                });
+        });
+    });
+
     describe("refs sub-command", () => {
 
         it("can show repository refs", done=> {

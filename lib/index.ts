@@ -22,5 +22,7 @@ export import Manager = ma.Manager;
 import m = require("./model");
 export import Options = m.Options;
 export import Recipe = m.Recipe;
+export import Link = m.Link;
+export import LinkResult = m.LinkResult;
 export import GlobalConfig = m.GlobalConfig;
 /* tslint:enable:no-unused-variable */
