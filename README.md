@@ -249,6 +249,63 @@ $ dtsm install -i
 
 ![dtsm install -i](https://cloud.githubusercontent.com/assets/125332/5699331/88f612da-9a68-11e4-89c4-eaebaa4cb21b.gif)
 
+### Link to npm or bower bundled definitions
+
+If other package manager's dependencies have a TypeScript definition files, dtsm can find it and add to bundle.d.ts.
+
+```
+$ cat package.json
+{
+  "name": "dtsm-sample",
+  "version": "0.0.1",
+  "dependencies": {
+    "commandpost": "0.1.1"
+  }
+}
+$ dtsm link --save
+from npm dependencies
+└─┬ commandpost
+  └── node_modules/commandpost/commandpost.d.ts
+```
+
+If `dtsm.json` has `link` property, `dtsm install` exec `link` sub command implicitly.
+
+```
+$ cat package.json
+{
+  "name": "dtsm-sample",
+  "version": "0.0.1",
+  "dependencies": {
+    "commandpost": "0.1.1"
+  }
+}
+$ cat dtsm.json
+{
+  "repos": [
+    {
+      "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "ref": "master"
+    }
+  ],
+  "path": "typings",
+  "bundle": "typings/bundle.d.ts",
+  "link": {
+    "npm": {
+      "include": true
+    },
+    "bower": {
+      "include": true
+    }
+  },
+  "dependencies": {}
+}
+$ dtsm install
+install
+from npm dependencies
+└─┬ commandpost
+  └── node_modules/commandpost/commandpost.d.ts
+```
+
 ## Change log
 
 See [CHANGELOG](https://github.com/vvakame/dtsm/blob/master/CHANGELOG.md)
