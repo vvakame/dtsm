@@ -1,3 +1,12 @@
+<a name"0.10.0"></a>
+## 0.10.0 (2015-05-15)
+
+
+#### Features
+
+* **dtsm:** implement `link` sub command refs #9 ([4141749c](https://github.com/vvakame/dtsm/commit/4141749c))
+
+
 <a name"0.9.2"></a>
 ### 0.9.2 (2015-05-07)
 
