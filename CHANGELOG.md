@@ -1,3 +1,12 @@
+<a name"0.10.2"></a>
+### 0.10.2 (2015-05-21)
+
+
+#### Bug Fixes
+
+* **dtsm:** fix reference path lookup ([dfe797d6](https://github.com/vvakame/dtsm/commit/dfe797d6), closes [#10](https://github.com/vvakame/dtsm/issues/10))
+
+
 <a name"0.10.0"></a>
 ## 0.10.0 (2015-05-15)
 
