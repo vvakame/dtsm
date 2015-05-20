@@ -19,10 +19,16 @@ try {
 }
 
 import fs = require("fs");
+import path = require("path");
 import rimraf = require("rimraf");
 
 import dtsm = require("../lib/index");
 import fsgit = require("fs-git");
+
+function bundleBuilder(referencePaths: string[] = []): string {
+    "use strict";
+    return referencePaths.map(referencePath => `/// <reference path="${referencePath}" />${"\n"}`).join("");
+}
 
 describe("Manager", ()=> {
 
@@ -128,7 +134,8 @@ describe("Manager", ()=> {
     describe("#installFromFile", ()=> {
 
         var dtsmFilePath = "./test/fixture/dtsm-installFromFile.json";
-        var targetDir:string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
+        var pathFromConfig: string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
+        var targetDir = path.join(path.dirname(dtsmFilePath), pathFromConfig);
 
         beforeEach(()=> {
             if (fs.existsSync(targetDir)) {
@@ -144,7 +151,24 @@ describe("Manager", ()=> {
                 .then(manager => {
                     return manager.installFromFile().then(result => {
                         assert(1 < result.dependenciesList.length); // atom.d.ts has meny dependencies
-                        assert(fs.existsSync("test-tmp/installFromFile/atom/atom.d.ts"));
+                        assert(fs.existsSync("test-tmp/installFromFile/angularjs/angular.d.ts"));
+                    });
+                });
+        });
+        it("can generate definitions bundle files", ()=> {
+            assert(!fs.existsSync(targetDir));
+
+            return dtsm
+                .createManager({configPath: dtsmFilePath})
+                .then(manager => {
+                    return manager.installFromFile().then(result => {
+                        assert(fs.existsSync("test-tmp/installFromFile/bundle.d.ts"));
+                        let generatedBundle = fs.readFileSync("test-tmp/installFromFile/bundle.d.ts", {encoding:"utf8"});
+                        let expectedBundle = bundleBuilder([
+                            "angularjs/angular.d.ts",
+                            "jquery/jquery.d.ts",
+                        ]);
+                        assert(generatedBundle === expectedBundle);
                     });
                 });
         });
@@ -153,7 +177,8 @@ describe("Manager", ()=> {
     describe("#update", ()=> {
 
         var dtsmFilePath = "./test/fixture/dtsm-update.json";
-        var targetDir:string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
+        var pathFromConfig: string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
+        var targetDir = path.join(path.dirname(dtsmFilePath), pathFromConfig);
 
         beforeEach(()=> {
             if (fs.existsSync(targetDir)) {
@@ -191,7 +216,8 @@ describe("Manager", ()=> {
     describe("#uninstall", ()=> {
 
         var dtsmFilePath = "./test/fixture/dtsm-uninstall.json";
-        var targetDir:string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
+        var pathFromConfig: string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
+        var targetDir = path.join(path.dirname(dtsmFilePath), pathFromConfig);
 
         beforeEach(()=> {
             if (fs.existsSync(targetDir)) {
@@ -215,7 +241,8 @@ describe("Manager", ()=> {
     describe("#link", ()=> {
 
         var dtsmFilePath = "./test/fixture/dtsm-link.json";
-        var targetDir:string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
+        var pathFromConfig: string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
+        var targetDir = path.join(path.dirname(dtsmFilePath), pathFromConfig);
 
         beforeEach(()=> {
             if (fs.existsSync(targetDir)) {
@@ -235,10 +262,13 @@ describe("Manager", ()=> {
                         assert(fs.existsSync(dtsPath));
 
                         // check content
-                        var dtsContent = fs.readFileSync(dtsPath, "utf8");
-                        assert(dtsContent.indexOf(`/// <reference path="../../node_modules/commandpost/commandpost.d.ts" />`) !== -1);
-                        assert(dtsContent.indexOf(`/// <reference path="../../node_modules/fs-git/fs-git.d.ts" />`) !== -1);
-                        assert(dtsContent.indexOf(`/// <reference path="../../node_modules/packagemanager-backend/packagemanager-backend.d.ts" />`) !== -1);
+                        let generatedBundle = fs.readFileSync(dtsPath, "utf8");
+                        let expectedBundle = bundleBuilder([
+                            "../../node_modules/commandpost/commandpost.d.ts",
+                            "../../node_modules/fs-git/fs-git.d.ts",
+                            "../../node_modules/packagemanager-backend/packagemanager-backend.d.ts",
+                        ]);
+                        assert(generatedBundle === expectedBundle);
                     });
                 });
         });

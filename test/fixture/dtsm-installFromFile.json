@@ -8,7 +8,7 @@
   "path": "../../test-tmp/installFromFile",
   "bundle": "../../test-tmp/installFromFile/bundle.d.ts",
   "dependencies": {
-    "atom/atom.d.ts": {
+    "angularjs/angular.d.ts": {
       "ref": "master"
     }
   }

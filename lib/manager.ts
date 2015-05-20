@@ -323,7 +323,8 @@ export class Manager {
                     if (!recipe.bundle) {
                         return;
                     }
-                    this._addReferenceToBundle(recipe, _path.relative(this.path, depResult.depName));
+                    let depPath = _path.join(_path.dirname(this.configPath), this.path, depResult.depName);
+                    this._addReferenceToBundle(recipe, depPath);
                 });
 
                 return result;
@@ -598,7 +599,7 @@ export class Manager {
         if (_path.posix) {
             referencePath = _path.posix.relative(_path.posix.dirname(bundlePath), pathFromCwd);
         }
-        var referenceComment = "/// <reference path=\"" + referencePath + "\" />\n";
+        var referenceComment = `/// <reference path="${referencePath}" />` + "\n";
         if (bundleContent.indexOf(referenceComment) === -1) {
             fs.appendFileSync(bundlePath, referenceComment, {encoding: "utf8"});
         }
