@@ -27,6 +27,7 @@
         "./test/index_spec.ts",
         "./test/utils_spec.ts",
         "./typings/archy/archy.d.ts",
+        "./typings/bundle.d.ts",
         "./typings/empower/empower.d.ts",
         "./typings/insight/insight.d.ts",
         "./typings/jquery/jquery.d.ts",
