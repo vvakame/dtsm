@@ -1,3 +1,10 @@
+<a name"0.10.3"></a>
+### 0.10.3 (2015-06-03)
+
+#### Bug Fixes
+
+* **dtsm:** fix path generation for Windows ([b614014](https://github.com/vvakame/dtsm/commit/b614014), closes [#12](https://github.com/vvakame/dtsm/issues/12))
+
 <a name"0.10.2"></a>
 ### 0.10.2 (2015-05-21)
 
