@@ -1,3 +1,5 @@
+"use strict";
+
 import pmb = require("packagemanager-backend");
 
 export interface Console {

@@ -1,3 +1,5 @@
+"use strict";
+
 export function deepClone(obj:any) {
     "use strict";
 

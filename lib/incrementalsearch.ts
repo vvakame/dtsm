@@ -1,3 +1,5 @@
+"use strict";
+
 // incremental search. based by peco.
 
 import child_process = require('child_process');

@@ -1,6 +1,4 @@
-/// <reference path="../typings/update-notifier/update-notifier.d.ts" />
-/// <reference path="../typings/archy/archy.d.ts" />
-/// <reference path="../node_modules/commandpost/commandpost.d.ts" />
+"use strict";
 
 require("es6-promise").polyfill();
 

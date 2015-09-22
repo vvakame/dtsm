@@ -1,19 +1,30 @@
 {
-    "version": "1.5.0-beta",
     "compilerOptions": {
-        "target": "es5",
         "module": "commonjs",
-        "declaration": false,
+        "target": "es5",
         "noImplicitAny": true,
         "removeComments": false,
-        "noLib": false
+        "experimentalDecorators": true,
+        "rootDir": ".",
+        "sourceMap": true,
+        "declaration": true,
+        "listFiles": true,
+        "newLine": "LF",
+        "noEmitOnError": true,
+        "inlineSources": true
     },
     "filesGlob": [
         "./**/*.ts",
-        "!./node_modules/**/*.ts",
-        "./node_modules/typescript/bin/lib.es6.d.ts",
+        "./**/*.tsx",
+        "!./**/*.d.ts",
+        "./lib/typings/**/*.d.ts",
+        "./typings/**/*.d.ts",
         "!./test-tmp/**/*.ts",
-        "!./lib/*.d.ts"
+        "!./example/**/*.ts",
+        "!./pages/**/*.ts",
+        "!./bower_components/**/*.ts",
+        "!./node_modules/**/*",
+        "./node_modules/typescript/lib/lib.es6.d.ts"
     ],
     "files": [
         "./lib/cli.ts",
@@ -30,6 +41,7 @@
         "./typings/bundle.d.ts",
         "./typings/empower/empower.d.ts",
         "./typings/insight/insight.d.ts",
+        "./typings/jquery/jquery.d.ts",
         "./typings/mkdirp/mkdirp.d.ts",
         "./typings/mocha/mocha.d.ts",
         "./typings/nexpect/nexpect.d.ts",
@@ -39,6 +51,6 @@
         "./typings/rimraf/rimraf.d.ts",
         "./typings/update-notifier/update-notifier.d.ts",
         "./typings/which/which.d.ts",
-        "./node_modules/typescript/bin/lib.es6.d.ts"
+        "./node_modules/typescript/lib/lib.es6.d.ts"
     ]
 }

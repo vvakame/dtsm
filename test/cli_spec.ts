@@ -1,3 +1,5 @@
+"use strict";
+
 import nexpect = require("nexpect");
 import rimraf = require("rimraf");
 import mkdirp = require("mkdirp");

@@ -1,3 +1,5 @@
+"use strict";
+
 import fs = require("fs");
 import mkdirp = require("mkdirp");
 import _path = require("path");
@@ -629,7 +631,7 @@ export class Manager {
         return Promise.all(promises).then(()=> <any>null);
     }
 
-    _fetchIfOutdated(repo:pmb.Repo) {
+    _fetchIfOutdated(repo:pmb.Repo): Promise<pmb.Repo> {
         if (this._checkOutdated(repo.spec.url)) {
             return this._fetchRepo(repo);
         } else {
@@ -637,7 +639,7 @@ export class Manager {
         }
     }
 
-    _fetchRepo(repo:pmb.Repo) {
+    _fetchRepo(repo:pmb.Repo): Promise<pmb.Repo> {
         console.log("fetching " + repo.spec.url);
         return Promise
             .resolve(null)

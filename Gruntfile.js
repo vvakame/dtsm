@@ -14,25 +14,15 @@ module.exports = function (grunt) {
         },
 
         ts: {
-            options: {
-                compile: true,                 // perform compilation. [true (default) | false]
-                comments: true,               // same as !removeComments. [true | false (default)]
-                target: 'es5',                 // target javascript language. [es3 (default) | es5]
-                module: 'commonjs',            // target javascript module style. [amd (default) | commonjs]
-                noImplicitAny: true,
-                sourceMap: true,              // generate a source map for every output js file. [true (default) | false]
-                sourceRoot: '',                // where to locate TypeScript files. [(default) '' == source ts location]
-                mapRoot: '',                   // where to locate .map.js files. [(default) '' == generated js location.]
-                declaration: false             // generate a declaration .d.ts file for every output js file. [true | false (default)]
-            },
-            clientMain: {
-                src: ['<%= opt.client.tsMain %>/cli.ts'],
-                options: {
-                    declaration: true
-                }
-            },
-            clientTest: {
-                src: ['<%= opt.client.tsTest %>/index_spec.ts']
+          default: {
+            tsconfig: {
+              tsconfig: "./tsconfig.json",
+              updateFiles:false
+            }
+          }
+        },
+        tsconfig: {
+            main: {
             }
         },
         tslint: {
@@ -113,9 +103,28 @@ module.exports = function (grunt) {
                 ]
             }
         },
-        changelog: {
-            options: {
-            }
+        conventionalChangelog: {
+          options: {
+            changelogOpts: {
+              // conventional-changelog options go here
+              preset: "angular"
+           },
+           context: {
+              // context goes here
+           },
+           gitRawCommitsOpts: {
+              // git-raw-commits options go here
+           },
+           parserOpts: {
+              // conventional-commits-parser options go here
+           },
+           writerOpts: {
+              // conventional-changelog-writer options go here
+           }
+          },
+          release: {
+            src: "CHANGELOG.md"
+          }
         }
     });
 
@@ -125,11 +134,11 @@ module.exports = function (grunt) {
 
     grunt.registerTask(
         'default',
-        ['ts:clientMain', 'tslint']);
+        ['tsconfig', 'ts', 'tslint']);
 
     grunt.registerTask(
         'test',
-        ['default', 'ts:clientTest', 'mochaTest']);
+        ['default', 'mochaTest']);
 
     require('load-grunt-tasks')(grunt);
 };

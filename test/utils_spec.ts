@@ -1,3 +1,5 @@
+"use strict";
+
 import utils = require("../lib/utils");
 
 describe("utils", ()=> {

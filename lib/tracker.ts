@@ -1,3 +1,5 @@
+"use strict";
+
 import Insight = require("insight");
 var pkg = require("../package.json");
 
