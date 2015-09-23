@@ -4,7 +4,7 @@ import Insight = require("insight");
 let pkg = require("../package.json");
 
 export default class Tracker {
-    insight:Insight;
+    insight: Insight;
 
     constructor() {
         this.insight = new Insight({
@@ -15,18 +15,18 @@ export default class Tracker {
         });
     }
 
-    set optOut(val:boolean) {
+    set optOut(val: boolean) {
         this.insight.config.set('optOut', val);
     }
 
-    get optOut():boolean {
+    get optOut(): boolean {
         return this.insight.optOut;
     }
 
-    askPermissionIfNeeded():Promise<void> {
+    askPermissionIfNeeded(): Promise<void> {
         if (typeof this.optOut === "undefined") {
-            return new Promise((resolve:(value?:any)=>void, reject:(error:any)=>void)=> {
-                this.insight.askPermission(null, ()=> {
+            return new Promise((resolve: (value?: any) => void, reject: (error: any) => void) => {
+                this.insight.askPermission(null, () => {
                     resolve();
                 });
             });
@@ -35,7 +35,7 @@ export default class Tracker {
         }
     }
 
-    track(...args:string[]) {
+    track(...args: string[]) {
         this.insight.track.apply(this.insight, args);
     }
 }

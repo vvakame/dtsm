@@ -20,19 +20,19 @@ function bundleBuilder(referencePaths: string[] = []): string {
     return referencePaths.map(referencePath => `/// <reference path="${referencePath}" />${"\n"}`).join("");
 }
 
-describe("Manager", ()=> {
+describe("Manager", () => {
 
     describe("#init", () => {
 
         var dtsmFilePath = "./test-tmp/dtsm.json";
 
-        beforeEach(()=> {
+        beforeEach(() => {
             if (fs.existsSync(dtsmFilePath)) {
                 fs.unlinkSync(dtsmFilePath);
             }
         });
 
-        it("can create new dtsm.json", ()=> {
+        it("can create new dtsm.json", () => {
             return dtsm
                 .createManager()
                 .then(manager => {
@@ -42,8 +42,8 @@ describe("Manager", ()=> {
         });
     });
 
-    describe("#search", ()=> {
-        it("can find single file", ()=> {
+    describe("#search", () => {
+        it("can find single file", () => {
             return dtsm
                 .createManager()
                 .then(manager => {
@@ -53,7 +53,7 @@ describe("Manager", ()=> {
                 });
         });
 
-        it("can find multiple files", ()=> {
+        it("can find multiple files", () => {
             return dtsm
                 .createManager()
                 .then(manager => {
@@ -64,21 +64,21 @@ describe("Manager", ()=> {
         });
     });
 
-    describe("#install", ()=> {
+    describe("#install", () => {
 
         var dtsmFilePath = "./test-tmp/install/dtsm.json";
 
-        beforeEach(()=> {
+        beforeEach(() => {
             if (fs.existsSync(dtsmFilePath)) {
                 fs.unlinkSync(dtsmFilePath);
             }
         });
 
-        it("can install single file without save options", ()=> {
+        it("can install single file without save options", () => {
             return dtsm
                 .createManager()
                 .then(manager => {
-                    return manager.install({save: false, dryRun: false}, ["jquery/jquery.d.ts"]).then(result => {
+                    return manager.install({ save: false, dryRun: false }, ["jquery/jquery.d.ts"]).then(result => {
                         assert(Object.keys(result.dependencies).length === 1);
                         assert(!result.dependencies["jquery/jquery.d.ts"].error);
                         assert(!fs.existsSync(dtsmFilePath));
@@ -86,13 +86,13 @@ describe("Manager", ()=> {
                 });
         });
 
-        it("can install single file with save options", ()=> {
+        it("can install single file with save options", () => {
             return dtsm
-                .createManager({configPath: dtsmFilePath})
+                .createManager({ configPath: dtsmFilePath })
                 .then(manager => {
                     manager.init(dtsmFilePath);
 
-                    return manager.install({save: true, dryRun: false}, ["jquery/jquery.d.ts"]).then(result => {
+                    return manager.install({ save: true, dryRun: false }, ["jquery/jquery.d.ts"]).then(result => {
                         assert(Object.keys(result.dependencies).length === 1);
                         assert(!result.dependencies["jquery/jquery.d.ts"].error);
                         assert(fs.existsSync(dtsmFilePath));
@@ -104,16 +104,16 @@ describe("Manager", ()=> {
                 });
         });
 
-        it("can't install files if it found more than 1 file", ()=> {
+        it("can't install files if it found more than 1 file", () => {
             return dtsm
                 .createManager()
                 .then(manager => {
-                    return manager.install({save: false, dryRun: false}, ["angul"]).then(result=> {
+                    return manager.install({ save: false, dryRun: false }, ["angul"]).then(result=> {
                         throw new Error("unexpected");
                         /* tslint:disable:no-unreachable */
                         return "";
                         /* tslint:enable:no-unreachable */
-                    }, ()=> {
+                    }, () => {
                         // TODO
                         return "OK";
                     });
@@ -121,23 +121,23 @@ describe("Manager", ()=> {
         });
     });
 
-    describe("#installFromFile", ()=> {
+    describe("#installFromFile", () => {
 
         var dtsmFilePath = "./test/fixture/dtsm-installFromFile.json";
         var pathFromConfig: string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
         var targetDir = path.join(path.dirname(dtsmFilePath), pathFromConfig);
 
-        beforeEach(()=> {
+        beforeEach(() => {
             if (fs.existsSync(targetDir)) {
                 rimraf.sync(targetDir);
             }
         });
 
-        it("can install files from recipe", ()=> {
+        it("can install files from recipe", () => {
             assert(!fs.existsSync(targetDir));
 
             return dtsm
-                .createManager({configPath: dtsmFilePath})
+                .createManager({ configPath: dtsmFilePath })
                 .then(manager => {
                     return manager.installFromFile().then(result => {
                         assert(1 < result.dependenciesList.length); // atom.d.ts has meny dependencies
@@ -145,15 +145,15 @@ describe("Manager", ()=> {
                     });
                 });
         });
-        it("can generate definitions bundle files", ()=> {
+        it("can generate definitions bundle files", () => {
             assert(!fs.existsSync(targetDir));
 
             return dtsm
-                .createManager({configPath: dtsmFilePath})
+                .createManager({ configPath: dtsmFilePath })
                 .then(manager => {
                     return manager.installFromFile().then(result => {
                         assert(fs.existsSync("test-tmp/installFromFile/bundle.d.ts"));
-                        let generatedBundle = fs.readFileSync("test-tmp/installFromFile/bundle.d.ts", {encoding:"utf8"});
+                        let generatedBundle = fs.readFileSync("test-tmp/installFromFile/bundle.d.ts", { encoding: "utf8" });
                         let expectedBundle = bundleBuilder([
                             "angularjs/angular.d.ts",
                             "jquery/jquery.d.ts",
@@ -164,23 +164,23 @@ describe("Manager", ()=> {
         });
     });
 
-    describe("#update", ()=> {
+    describe("#update", () => {
 
         var dtsmFilePath = "./test/fixture/dtsm-update.json";
         var pathFromConfig: string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
         var targetDir = path.join(path.dirname(dtsmFilePath), pathFromConfig);
 
-        beforeEach(()=> {
+        beforeEach(() => {
             if (fs.existsSync(targetDir)) {
                 rimraf.sync(targetDir);
             }
         });
 
-        it("can update files", ()=> {
+        it("can update files", () => {
             assert(!fs.existsSync(targetDir));
 
             return dtsm
-                .createManager({configPath: dtsmFilePath})
+                .createManager({ configPath: dtsmFilePath })
                 .then(manager => {
                     return manager.update({}).then(result => {
                         assert(1 === Object.keys(result.dependencies).length);
@@ -191,10 +191,10 @@ describe("Manager", ()=> {
                         var updatedContent = fs.readFileSync(dtsPath, "utf8");
                         var depName = "es6-promise/es6-promise.d.ts";
                         var dep = result.dependencies[depName];
-                        var originalRef:string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).dependencies[depName].ref;
+                        var originalRef: string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).dependencies[depName].ref;
                         return fsgit
                             .open(dep.repoInstance.targetDir, originalRef)
-                            .then(repo => repo.readFile(depName, {encoding: "utf8"}))
+                            .then(repo => repo.readFile(depName, { encoding: "utf8" }))
                             .then(oldContent => {
                                 assert(oldContent !== updatedContent);
                             });
@@ -203,23 +203,23 @@ describe("Manager", ()=> {
         });
     });
 
-    describe("#uninstall", ()=> {
+    describe("#uninstall", () => {
 
         var dtsmFilePath = "./test/fixture/dtsm-uninstall.json";
         var pathFromConfig: string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
         var targetDir = path.join(path.dirname(dtsmFilePath), pathFromConfig);
 
-        beforeEach(()=> {
+        beforeEach(() => {
             if (fs.existsSync(targetDir)) {
                 rimraf.sync(targetDir);
             }
         });
 
-        it("can update files", ()=> {
+        it("can update files", () => {
             assert(!fs.existsSync(targetDir));
 
             return dtsm
-                .createManager({configPath: dtsmFilePath})
+                .createManager({ configPath: dtsmFilePath })
                 .then(manager => {
                     return manager.uninstall({}, ["atom"]).then(resultList => {
                         assert(1 === resultList.length);
@@ -228,24 +228,24 @@ describe("Manager", ()=> {
         });
     });
 
-    describe.skip("#link", ()=> {
+    describe.skip("#link", () => {
         // NOTE now, commandpost, fs-git and packagemanager-backend does not have definition info in package.json
 
         var dtsmFilePath = "./test/fixture/dtsm-link.json";
         var pathFromConfig: string = JSON.parse(fs.readFileSync(dtsmFilePath, "utf8")).path;
         var targetDir = path.join(path.dirname(dtsmFilePath), pathFromConfig);
 
-        beforeEach(()=> {
+        beforeEach(() => {
             if (fs.existsSync(targetDir)) {
                 rimraf.sync(targetDir);
             }
         });
 
-        it("can found other package manager's dependencies", ()=> {
+        it("can found other package manager's dependencies", () => {
             assert(!fs.existsSync(targetDir));
 
             return dtsm
-                .createManager({configPath: dtsmFilePath})
+                .createManager({ configPath: dtsmFilePath })
                 .then(manager => {
                     return manager.link({}).then(result => {
                         assert(3 === result.length);
@@ -265,8 +265,8 @@ describe("Manager", ()=> {
         });
     });
 
-    describe("#fetch", ()=> {
-        it("can fetch from remote repos", ()=> {
+    describe("#fetch", () => {
+        it("can fetch from remote repos", () => {
             return dtsm
                 .createManager()
                 .then(manager => manager.fetch());

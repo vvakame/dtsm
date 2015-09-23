@@ -27,11 +27,11 @@ import * as commandpost from "commandpost";
 import * as archy from "archy";
 
 interface RootOptions {
-    offline:boolean;
-    config:string[];
-    remote:string[];
-    insight:string[];
-    ref:string[];
+    offline: boolean;
+    config: string[];
+    remote: string[];
+    insight: string[];
+    ref: string[];
 }
 
 let root = commandpost
@@ -42,14 +42,14 @@ let root = commandpost
     .option("--remote <uri>", "uri of remote repository")
     .option("--config <path>", "path to json file")
     .option("--ref <ref>", "ref of repository")
-    .action(()=> {
+    .action(() => {
         process.stdout.write(root.helpText() + '\n');
     });
 
 root
     .subCommand("init")
     .description("make new dtsm.json")
-    .action(()=> {
+    .action(() => {
         setup(root.parsedOpts)
             .then(manager => {
                 let jsonContent = manager.init();
@@ -61,8 +61,8 @@ root
     });
 
 interface SearchOptions {
-    raw:boolean;
-    interactive:boolean;
+    raw: boolean;
+    interactive: boolean;
 }
 
 interface SearchArguments {
@@ -120,7 +120,7 @@ root
 root
     .subCommand("fetch")
     .description("fetch all data from remote repos")
-    .action(()=> {
+    .action(() => {
         setup(root.parsedOpts)
             .then(manager=> {
                 process.stdout.write("fetching...\n");
@@ -130,7 +130,7 @@ root
     });
 
 interface InstallOptions {
-    save:boolean;
+    save: boolean;
     dryRun: boolean;
     interactive: boolean;
 }
@@ -151,9 +151,9 @@ root
         setup(root.parsedOpts)
             .then(manager=> {
                 if (!opts.interactive && args.files.length === 0) {
-                    return manager.installFromFile({dryRun: opts.dryRun})
+                    return manager.installFromFile({ dryRun: opts.dryRun })
                         .then(result => printResult(result))
-                        .then(()=> manager.link({dryRun: opts.dryRun}))
+                        .then(() => manager.link({ dryRun: opts.dryRun }))
                         .then(result => printLinkResult(result));
                 } else if (opts.interactive || args.files.length === 0) {
                     return manager.search("")
@@ -174,11 +174,11 @@ root
                         })
                         .then(resultList => {
                             let files = resultList.map(result => result.fileInfo.path);
-                            return manager.install({save: opts.save, dryRun: opts.dryRun}, files)
+                            return manager.install({ save: opts.save, dryRun: opts.dryRun }, files)
                                 .then(result => printResult(result));
                         });
                 } else {
-                    return manager.install({save: opts.save, dryRun: opts.dryRun}, args.files)
+                    return manager.install({ save: opts.save, dryRun: opts.dryRun }, args.files)
                         .then(result => printResult(result));
                 }
             })
@@ -186,7 +186,7 @@ root
     });
 
 interface UninstallOptions {
-    save:boolean;
+    save: boolean;
     dryRun: boolean;
 }
 
@@ -204,14 +204,14 @@ root
 
         setup(root.parsedOpts)
             .then(manager=> {
-                return manager.uninstall({save: opts.save, dryRun: opts.dryRun}, args.files);
+                return manager.uninstall({ save: opts.save, dryRun: opts.dryRun }, args.files);
             })
             .then(resultList => resultList.forEach(dep => console.log(dep.depName)))
             .catch(errorHandler);
     });
 
 interface UpdateOptions {
-    save:boolean;
+    save: boolean;
     dryRun: boolean;
 }
 
@@ -220,17 +220,17 @@ root
     .description("update definition files version")
     .option("--save", "save updated ref into dtsm.json")
     .option("--dry-run", "save .d.ts file path into dtsm.json")
-    .action((opts, args)=> {
+    .action((opts, args) => {
         setup(root.parsedOpts)
             .then(manager=> {
-                return manager.update({save: opts.save, dryRun: opts.dryRun});
+                return manager.update({ save: opts.save, dryRun: opts.dryRun });
             })
             .then(result => printResult(result))
             .catch(errorHandler);
     });
 
 interface LinkOptions {
-    save:boolean;
+    save: boolean;
     dryRun: boolean;
 }
 
@@ -239,10 +239,10 @@ root
     .description("link to npm or bower dependencies")
     .option("--save", "save updated ref into dtsm.json")
     .option("--dry-run", "save .d.ts file path into dtsm.json")
-    .action((opts, args)=> {
+    .action((opts, args) => {
         setup(root.parsedOpts)
             .then(manager=> {
-                return manager.link({save: opts.save, dryRun: opts.dryRun});
+                return manager.link({ save: opts.save, dryRun: opts.dryRun });
             })
             .then(result => printLinkResult(result))
             .catch(errorHandler);
@@ -251,7 +251,7 @@ root
 root
     .subCommand<{}, {}>("refs")
     .description("show refs, it can use with --ref option")
-    .action((opts, args)=> {
+    .action((opts, args) => {
         setup(root.parsedOpts)
             .then(manager=> manager.refs())
             .then(refs => {
@@ -289,15 +289,15 @@ commandpost
     .exec(root, process.argv)
     .catch(errorHandler);
 
-function setup(opts:RootOptions):Promise<dtsm.Manager> {
+function setup(opts: RootOptions): Promise<dtsm.Manager> {
     "use strict";
 
     let offline = opts.offline;
-    let configPath:string = opts.config[0];
-    let remoteUri:string = opts.remote[0];
-    let specifiedRef:string = opts.ref[0];
+    let configPath: string = opts.config[0];
+    let remoteUri: string = opts.remote[0];
+    let specifiedRef: string = opts.ref[0];
     let insightStr = opts.insight[0];
-    let insightOptout:boolean;
+    let insightOptout: boolean;
 
     if (typeof insightStr === "string") {
         if (insightStr !== "true" && insightStr !== "false") {
@@ -309,14 +309,14 @@ function setup(opts:RootOptions):Promise<dtsm.Manager> {
         }
     }
 
-    let repos:pmb.RepositorySpec[] = [];
+    let repos: pmb.RepositorySpec[] = [];
     if (remoteUri || specifiedRef) {
         repos.push({
             url: remoteUri,
             ref: specifiedRef
         });
     }
-    let options:dtsm.Options = {
+    let options: dtsm.Options = {
         configPath: configPath || "dtsm.json",
         repos: repos,
         offline: offline,
@@ -327,14 +327,14 @@ function setup(opts:RootOptions):Promise<dtsm.Manager> {
         .then(manager => {
             return manager.tracker
                 .askPermissionIfNeeded()
-                .then(()=> manager);
+                .then(() => manager);
         });
 }
 
-function printResolvedDependency(dep:pmb.ResolvedDependency, opts:{emitRepo:boolean; emitHost:boolean;}) {
+function printResolvedDependency(dep: pmb.ResolvedDependency, opts: { emitRepo: boolean; emitHost: boolean; }) {
     "use strict";
 
-    let fileInfo = (dep:pmb.ResolvedDependency) => {
+    let fileInfo = (dep: pmb.ResolvedDependency) => {
         if (!!dep.parent && dep.parent.repo === dep.repo && dep.parent.ref === dep.ref) {
             // emit only root node
             return "";
@@ -348,7 +348,7 @@ function printResolvedDependency(dep:pmb.ResolvedDependency, opts:{emitRepo:bool
             }
         }
         if (opts.emitRepo) {
-            let path:string;
+            let path: string;
             if (dep.repoInstance.urlInfo) {
                 path = dep.repoInstance.urlInfo.pathname;
             } else if (dep.repoInstance.sshInfo) {
@@ -368,8 +368,8 @@ function printResolvedDependency(dep:pmb.ResolvedDependency, opts:{emitRepo:bool
         return " " + result;
     };
 
-    let resultTree = (dep:pmb.ResolvedDependency, data?:archy.Data) => {
-        let d:archy.Data = {
+    let resultTree = (dep: pmb.ResolvedDependency, data?: archy.Data) => {
+        let d: archy.Data = {
             label: dep.depName,
             nodes: []
         };
@@ -390,34 +390,34 @@ function printResolvedDependency(dep:pmb.ResolvedDependency, opts:{emitRepo:bool
     console.log(output);
 }
 
-function printResult(result:pmb.Result) {
+function printResult(result: pmb.Result) {
     "use strict";
 
     // short is justice.
     let emitRepo = 1 < result.manager.repos.length;
     let emitHost = result.manager.repos.filter(repo => {
-            if (!!repo.urlInfo) {
-                return repo.urlInfo.host !== "github.com";
-            } else if (!!repo.sshInfo) {
-                return repo.sshInfo.hostname !== "github.com";
-            } else {
-                return true;
-            }
-        }).length !== 0;
+        if (!!repo.urlInfo) {
+            return repo.urlInfo.host !== "github.com";
+        } else if (!!repo.sshInfo) {
+            return repo.sshInfo.hostname !== "github.com";
+        } else {
+            return true;
+        }
+    }).length !== 0;
 
     Object.keys(result.dependencies).forEach(depName => {
         let dep = result.dependencies[depName];
-        printResolvedDependency(dep, {emitRepo: emitRepo, emitHost: emitHost});
+        printResolvedDependency(dep, { emitRepo: emitRepo, emitHost: emitHost });
     });
 }
 
-function printLinkResult(resultList:dtsm.LinkResult[]) {
+function printLinkResult(resultList: dtsm.LinkResult[]) {
     "use strict";
 
     ["npm", "bower"].forEach(managerName => {
         let npmList = resultList.filter(result => result.managerName === managerName);
         if (npmList.length !== 0) {
-            let d:archy.Data = {
+            let d: archy.Data = {
                 label: `from ${managerName} dependencies`,
                 nodes: npmList.map(dep => {
                     return {
@@ -431,7 +431,7 @@ function printLinkResult(resultList:dtsm.LinkResult[]) {
     });
 }
 
-function errorHandler(err:any) {
+function errorHandler(err: any) {
     "use strict";
 
     if (err instanceof Error) {
@@ -439,7 +439,7 @@ function errorHandler(err:any) {
     } else {
         console.error(err);
     }
-    return Promise.resolve(null).then(()=> {
+    return Promise.resolve(null).then(() => {
         process.exit(1);
     });
 }

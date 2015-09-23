@@ -3,25 +3,25 @@
 import * as pmb from "packagemanager-backend";
 
 export interface Console {
-    error(message?:any, ...optionalParams:any[]): void;
-    warn(message?:any, ...optionalParams:any[]): void;
-    log(message?:any, ...optionalParams:any[]): void;
+    error(message?: any, ...optionalParams: any[]): void;
+    warn(message?: any, ...optionalParams: any[]): void;
+    log(message?: any, ...optionalParams: any[]): void;
 }
 
 export interface Options {
-    configPath?:string;
-    repos?:pmb.RepositorySpec[];
-    offline?:boolean;
-    insightOptout?:boolean;
+    configPath?: string;
+    repos?: pmb.RepositorySpec[];
+    offline?: boolean;
+    insightOptout?: boolean;
 }
 
 export interface Recipe {
-    rootDir?:string;
-    repos?:pmb.RepositorySpec[];
-    path:string;
-    bundle?:string;
-    link?: { [name:string]: Link; };
-    dependencies:{ [path:string]:pmb.Dependency; };
+    rootDir?: string;
+    repos?: pmb.RepositorySpec[];
+    path: string;
+    bundle?: string;
+    link?: { [name: string]: Link; };
+    dependencies: { [path: string]: pmb.Dependency; };
 }
 
 export interface Link {
@@ -37,7 +37,7 @@ export interface LinkResult {
 
 export interface GlobalConfig {
     repositories: {
-        [repoName:string]:{
+        [repoName: string]: {
             fetchAt: number; // date time
         }
     };

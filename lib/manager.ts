@@ -12,7 +12,7 @@ import * as m from "./model";
 import * as utils from "./utils";
 import Tracker from "./tracker";
 
-export function createManager(options:m.Options = {}):Promise<Manager> {
+export function createManager(options: m.Options = {}): Promise<Manager> {
     "use strict";
 
     return new Manager(options)._setupBackend();
@@ -29,15 +29,15 @@ export default class Manager {
     configPath = Manager.defaultConfigFile;
     offline = false;
     rootDir = Manager.defaultRootDir;
-    repos:pmb.RepositorySpec[] = [];
+    repos: pmb.RepositorySpec[] = [];
     path = Manager.defaultPath;
     bundle = this.path + "/" + Manager.defaultBundleFile;
 
-    backend:pmb.Manager<m.GlobalConfig>;
-    tracker:Tracker;
-    savedRecipe:m.Recipe;
+    backend: pmb.Manager<m.GlobalConfig>;
+    tracker: Tracker;
+    savedRecipe: m.Recipe;
 
-    constructor(options:m.Options = {}) {
+    constructor(options: m.Options = {}) {
         options = utils.deepClone(options);
 
         this.configPath = options.configPath || this.configPath;
@@ -64,10 +64,10 @@ export default class Manager {
         this.savedRecipe = this._load();
         if (this.savedRecipe) {
             // for backward compatible
-            let _recipe:any = this.savedRecipe;
+            let _recipe: any = this.savedRecipe;
             if (_recipe.baseRepo) {
-                let baseRepo:string = _recipe.baseRepo;
-                let baseRef:string = _recipe.baseRef;
+                let baseRepo: string = _recipe.baseRepo;
+                let baseRef: string = _recipe.baseRef;
                 delete _recipe.baseRepo;
                 delete _recipe.baseRef;
                 this.savedRecipe.repos = this.savedRecipe.repos || [];
@@ -88,12 +88,12 @@ export default class Manager {
         }
     }
 
-    _setupBackend():Promise<Manager> {
+    _setupBackend(): Promise<Manager> {
         return pmb.Manager
             .createManager<m.GlobalConfig>({
-            rootDir: this.rootDir,
-            repos: this.repos
-        })
+                rootDir: this.rootDir,
+                repos: this.repos
+            })
             .then(backend => {
                 this.backend = backend;
                 return this;
@@ -106,20 +106,20 @@ export default class Manager {
         this.savedRecipe.path = this.savedRecipe.path || this.path;
         this.savedRecipe.bundle = typeof this.savedRecipe.bundle !== "undefined" ? this.savedRecipe.bundle : this.bundle; // for this.recipe.bundle === null
         this.savedRecipe.link = this.savedRecipe.link || {};
-        this.savedRecipe.link["npm"] = this.savedRecipe.link["npm"] || {include: true};
+        this.savedRecipe.link["npm"] = this.savedRecipe.link["npm"] || { include: true };
         this.savedRecipe.dependencies = this.savedRecipe.dependencies || {};
     }
 
-    init(path:string = this.configPath):string {
+    init(path: string = this.configPath): string {
         this.tracker.track("init");
         this._setupDefaultRecipe();
 
         return this._save(path);
     }
 
-    _load(path:string = this.configPath):m.Recipe {
+    _load(path: string = this.configPath): m.Recipe {
         if (fs.existsSync(path)) {
-            let recipe:m.Recipe = JSON.parse(fs.readFileSync(path, "utf8"));
+            let recipe: m.Recipe = JSON.parse(fs.readFileSync(path, "utf8"));
 
             // backward compatible
             if (!recipe.repos || recipe.repos.length === 0) {
@@ -136,7 +136,7 @@ export default class Manager {
         }
     }
 
-    _save(path:string = this.configPath, recipe:m.Recipe = this.savedRecipe):string {
+    _save(path: string = this.configPath, recipe: m.Recipe = this.savedRecipe): string {
         let jsonContent = JSON.stringify(recipe, null, 2);
 
         mkdirp.sync(_path.resolve(path, "../"));
@@ -145,9 +145,9 @@ export default class Manager {
         return jsonContent;
     }
 
-    search(phrase:string):Promise<pmb.SearchResult[]> {
+    search(phrase: string): Promise<pmb.SearchResult[]> {
         this.tracker.track("search", phrase);
-        let promises:Promise<any>[];
+        let promises: Promise<any>[];
         if (this.offline) {
             promises = [Promise.resolve(null)];
         } else {
@@ -156,7 +156,7 @@ export default class Manager {
             });
         }
         return Promise.all(promises)
-            .then(()=> {
+            .then(() => {
                 return this.backend
                     .search({
                         globPatterns: [
@@ -165,11 +165,11 @@ export default class Manager {
                         ]
                     });
             })
-            .then((resultList:pmb.SearchResult[])=> resultList.filter(result => result.fileInfo.path.indexOf(phrase) !== -1))
-            .then((resultList:pmb.SearchResult[])=> this._addWeightingAndSort(phrase, resultList, v => v.fileInfo.path).map(data => data.result));
+            .then((resultList: pmb.SearchResult[]) => resultList.filter(result => result.fileInfo.path.indexOf(phrase) !== -1))
+            .then((resultList: pmb.SearchResult[]) => this._addWeightingAndSort(phrase, resultList, v => v.fileInfo.path).map(data => data.result));
     }
 
-    install(opts:{save:boolean;dryRun:boolean;}, phrases:string[]):Promise<pmb.Result> {
+    install(opts: { save: boolean; dryRun: boolean; }, phrases: string[]): Promise<pmb.Result> {
         if (phrases) {
             phrases.forEach(phrase=> {
                 this.tracker.track("install", phrase);
@@ -200,7 +200,7 @@ export default class Manager {
             });
         });
         return Promise.all(promises)
-            .then((resultList:pmb.SearchResult[])=> {
+            .then((resultList: pmb.SearchResult[]) => {
                 if (!opts.save || opts.dryRun) {
                     return resultList;
                 }
@@ -223,8 +223,8 @@ export default class Manager {
 
                 return resultList;
             })
-            .then((resultList:pmb.SearchResult[])=> {
-                let diff:m.Recipe = {
+            .then((resultList: pmb.SearchResult[]) => {
+                let diff: m.Recipe = {
                     repos: this.savedRecipe.repos,
                     path: this.savedRecipe.path,
                     bundle: this.savedRecipe.bundle,
@@ -241,7 +241,7 @@ export default class Manager {
             });
     }
 
-    installFromFile(opts:{dryRun?:boolean;} = {}, retryWithFetch = true):Promise<pmb.Result> {
+    installFromFile(opts: { dryRun?: boolean; } = {}, retryWithFetch = true): Promise<pmb.Result> {
         if (retryWithFetch) {
             // installFromFile exec recursive, call tracker only once.
             this.tracker.track("installFromFile");
@@ -259,14 +259,14 @@ export default class Manager {
             .catch(err => {
                 // error raised when specified ref is not fetched yet.
                 if (retryWithFetch) {
-                    return this.fetch().then(()=> this.installFromFile(opts, false));
+                    return this.fetch().then(() => this.installFromFile(opts, false));
                 } else {
                     return Promise.reject<pmb.Result>(err);
                 }
             });
     }
 
-    _installFromOptions(recipe:m.Recipe, opts:{dryRun?:boolean;} = {}):Promise<pmb.Result> {
+    _installFromOptions(recipe: m.Recipe, opts: { dryRun?: boolean; } = {}): Promise<pmb.Result> {
         let baseRepo = recipe && recipe.repos && recipe.repos[0] || this.repos[0];
         return this.backend
             .getByRecipe({
@@ -274,7 +274,7 @@ export default class Manager {
                 baseRef: baseRepo.ref,
                 path: recipe.path,
                 dependencies: recipe.dependencies,
-                postProcessForDependency: (result:pmb.Result, depResult:pmb.ResolvedDependency, content:any) => {
+                postProcessForDependency: (result: pmb.Result, depResult: pmb.ResolvedDependency, content: any) => {
                     let dependencies = utils.extractDependencies(content.toString("utf8"));
                     dependencies.forEach(detected => {
                         let obj = result.toDepNameAndPath(detected);
@@ -285,12 +285,12 @@ export default class Manager {
                         });
                     });
                 },
-                resolveMissingDependency: (result:pmb.Result, missing:pmb.ResolvedDependency):Promise<pmb.Dependency>=> {
+                resolveMissingDependency: (result: pmb.Result, missing: pmb.ResolvedDependency): Promise<pmb.Dependency>=> {
                     if (missing.depth === 1) {
                         return null;
                     }
                     // first, from current process
-                    let newDep:pmb.Dependency = result.dependencies[missing.depName];
+                    let newDep: pmb.Dependency = result.dependencies[missing.depName];
                     if (newDep) {
                         return Promise.resolve(newDep);
                     }
@@ -307,7 +307,7 @@ export default class Manager {
 
                     return Promise.resolve(null);
                 }
-            }).then((result:pmb.Result) => {
+            }).then((result: pmb.Result) => {
                 let errors = result.dependenciesList.filter(depResult => !!depResult.error);
                 if (errors.length !== 0) {
                     // TODO toString
@@ -333,7 +333,7 @@ export default class Manager {
             });
     }
 
-    _addWeightingAndSort<T>(phrase:string, list:T[], getPath:(val:T)=>string):{weight: number; result:T;}[] {
+    _addWeightingAndSort<T>(phrase: string, list: T[], getPath: (val: T) => string): { weight: number; result: T; }[] {
         // TODO add something awesome weighing algorithm.
         return list
             .map(value => {
@@ -379,7 +379,7 @@ export default class Manager {
             .sort((a, b) => b.weight - a.weight);
     }
 
-    update(opts:{save?:boolean;dryRun?:boolean}):Promise<pmb.Result> {
+    update(opts: { save?: boolean; dryRun?: boolean }): Promise<pmb.Result> {
         this.tracker.track("update");
 
         if (!this.configPath) {
@@ -412,10 +412,10 @@ export default class Manager {
             });
     }
 
-    uninstall(opts:{save?:boolean;dryRun?:boolean}, phrases:string[]):Promise<pmb.ResolvedDependency[]> {
+    uninstall(opts: { save?: boolean; dryRun?: boolean }, phrases: string[]): Promise<pmb.ResolvedDependency[]> {
         this.tracker.track("uninstall");
 
-        return this.installFromFile({dryRun: true}, false)
+        return this.installFromFile({ dryRun: true }, false)
             .then(result => {
                 let topLevelDeps = Object.keys(result.dependencies).map(depName => result.dependencies[depName]);
                 if (topLevelDeps.length === 0) {
@@ -434,9 +434,9 @@ export default class Manager {
                     return Promise.resolve(weights[0].result);
                 });
                 return Promise.all(promises)
-                    .then((depList:pmb.ResolvedDependency[])=> {
-                        let removeList:pmb.ResolvedDependency[] = [];
-                        let addToRemoveList = (dep:pmb.ResolvedDependency) => {
+                    .then((depList: pmb.ResolvedDependency[]) => {
+                        let removeList: pmb.ResolvedDependency[] = [];
+                        let addToRemoveList = (dep: pmb.ResolvedDependency) => {
                             if (!dep) {
                                 return;
                             }
@@ -481,7 +481,7 @@ export default class Manager {
             });
     }
 
-    link(opts:{ save?: boolean; dryRun?: boolean }):Promise<m.LinkResult[]> {
+    link(opts: { save?: boolean; dryRun?: boolean }): Promise<m.LinkResult[]> {
         this.tracker.track("link");
 
         if (!this.configPath) {
@@ -493,7 +493,7 @@ export default class Manager {
         }
 
         let linkInfo = this.savedRecipe.link || {};
-        let resultList:m.LinkResult[] = [];
+        let resultList: m.LinkResult[] = [];
         {
             let depInfo = this._processLink(linkInfo["npm"], "npm", "package.json", "node_modules");
             linkInfo["npm"] = depInfo.link;
@@ -526,32 +526,32 @@ export default class Manager {
         return Promise.resolve(resultList);
     }
 
-    _processLink(linkInfo:m.Link, managerName:string, configFileName:string, moduleDir:string):{ link: m.Link; results: m.LinkResult[]; } {
+    _processLink(linkInfo: m.Link, managerName: string, configFileName: string, moduleDir: string): { link: m.Link; results: m.LinkResult[]; } {
         if (linkInfo == null) {
             // continue
         } else if (!linkInfo.include) {
-            return {link: linkInfo, results: []};
+            return { link: linkInfo, results: [] };
         }
-        linkInfo = linkInfo || {include: true};
-        let definitionList:m.LinkResult[] = [];
+        linkInfo = linkInfo || { include: true };
+        let definitionList: m.LinkResult[] = [];
         let configPath = _path.join(_path.dirname(this.configPath), linkInfo.configPath || configFileName);
         if (!fs.existsSync(configPath)) {
-            return {link: linkInfo, results: []};
+            return { link: linkInfo, results: [] };
         }
 
-        let configData = JSON.parse(fs.readFileSync(configPath, {encoding: "utf8"}));
+        let configData = JSON.parse(fs.readFileSync(configPath, { encoding: "utf8" }));
         ["dependencies", "devDependencies"].forEach(propName => {
             Object.keys(configData[propName] || {}).forEach(depName => {
                 let depConfigPath = _path.join(_path.dirname(configPath), moduleDir, depName, configFileName);
                 if (!fs.existsSync(depConfigPath)) {
                     return;
                 }
-                let depConfig = JSON.parse(fs.readFileSync(depConfigPath, {encoding: "utf8"}));
+                let depConfig = JSON.parse(fs.readFileSync(depConfigPath, { encoding: "utf8" }));
                 let definitionInfo = depConfig["typescript"];
                 if (!definitionInfo) {
                     return;
                 }
-                let resultList:string[] = [];
+                let resultList: string[] = [];
                 ["definition", "definitions"].forEach(propName => {
                     if (typeof definitionInfo[propName] === "string") {
                         resultList.push(definitionInfo[propName]);
@@ -567,16 +567,16 @@ export default class Manager {
             });
         });
 
-        return {link: linkInfo, results: definitionList};
+        return { link: linkInfo, results: definitionList };
     }
 
-    _writeDefinitionFile(recipe:m.Recipe, depResult:pmb.ResolvedDependency) {
+    _writeDefinitionFile(recipe: m.Recipe, depResult: pmb.ResolvedDependency) {
         let path = _path.resolve(_path.dirname(this.configPath), recipe.path, depResult.depName);
         mkdirp.sync(_path.resolve(path, "../"));
         fs.writeFileSync(path, depResult.content.toString("utf8"));
     }
 
-    _removeDefinitionFile(recipe:m.Recipe, depResult:pmb.ResolvedDependency) {
+    _removeDefinitionFile(recipe: m.Recipe, depResult: pmb.ResolvedDependency) {
         let path = _path.resolve(_path.dirname(this.configPath), recipe.path, depResult.depName);
         try {
             fs.unlinkSync(path);
@@ -589,7 +589,7 @@ export default class Manager {
         }
     }
 
-    _addReferenceToBundle(recipe:m.Recipe, pathFromCwd:string) {
+    _addReferenceToBundle(recipe: m.Recipe, pathFromCwd: string) {
         let bundleContent = "";
         let bundlePath = _path.join(_path.dirname(this.configPath), recipe.bundle);
         if (fs.existsSync(bundlePath)) {
@@ -603,12 +603,12 @@ export default class Manager {
         }
         let referenceComment = `/// <reference path="${referencePath}" />` + "\n";
         if (bundleContent.indexOf(referenceComment) === -1) {
-            fs.appendFileSync(bundlePath, referenceComment, {encoding: "utf8"});
+            fs.appendFileSync(bundlePath, referenceComment, { encoding: "utf8" });
         }
     }
 
-    refs():Promise<fsgit.RefInfo[]> {
-        let promises:Promise<any>[];
+    refs(): Promise<fsgit.RefInfo[]> {
+        let promises: Promise<any>[];
         if (this.offline) {
             promises = [Promise.resolve(null)];
         } else {
@@ -617,21 +617,21 @@ export default class Manager {
             });
         }
         return Promise.all(promises)
-            .then(()=> {
-                let repo:pmb.Repo = this.backend.repos[0];
+            .then(() => {
+                let repo: pmb.Repo = this.backend.repos[0];
                 return repo.open().then(fs=> fs.showRef());
             });
     }
 
-    fetch():Promise<void> {
+    fetch(): Promise<void> {
         this.tracker.track("fetch");
         let promises = this.backend.repos.map(repo => {
             return this._fetchRepo(repo);
         });
-        return Promise.all(promises).then(()=> <any>null);
+        return Promise.all(promises).then(() => <any>null);
     }
 
-    _fetchIfOutdated(repo:pmb.Repo): Promise<pmb.Repo> {
+    _fetchIfOutdated(repo: pmb.Repo): Promise<pmb.Repo> {
         if (this._checkOutdated(repo.spec.url)) {
             return this._fetchRepo(repo);
         } else {
@@ -639,32 +639,32 @@ export default class Manager {
         }
     }
 
-    _fetchRepo(repo:pmb.Repo): Promise<pmb.Repo> {
+    _fetchRepo(repo: pmb.Repo): Promise<pmb.Repo> {
         console.log("fetching " + repo.spec.url);
         return Promise
             .resolve(null)
-            .then(()=> repo.fetchAll())
-            .then(()=> {
+            .then(() => repo.fetchAll())
+            .then(() => {
                 this._setLastFetchAt(repo.spec.url);
                 return repo;
             });
     }
 
-    _checkOutdated(repoUrl:string):boolean {
+    _checkOutdated(repoUrl: string): boolean {
         let fetchAt = this._getLastFetchAt(repoUrl);
         // 15min
         return fetchAt + 15 * 60 * 1000 < Date.now();
     }
 
-    _getLastFetchAt(repoID:string):number {
-        let config:m.GlobalConfig = this.backend.loadConfig() || <any>{};
+    _getLastFetchAt(repoID: string): number {
+        let config: m.GlobalConfig = this.backend.loadConfig() || <any>{};
         config.repositories = config.repositories || {};
-        let repo = config.repositories[repoID] || {fetchAt: null};
+        let repo = config.repositories[repoID] || { fetchAt: null };
         return repo.fetchAt;
     }
 
-    _setLastFetchAt(repoID:string, fetchAt:number = Date.now()):void {
-        let config:m.GlobalConfig = this.backend.loadConfig() || <any>{};
+    _setLastFetchAt(repoID: string, fetchAt: number = Date.now()): void {
+        let config: m.GlobalConfig = this.backend.loadConfig() || <any>{};
         config.repositories = config.repositories || {};
         config.repositories[repoID] = {
             fetchAt: fetchAt

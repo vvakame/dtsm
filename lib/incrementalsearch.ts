@@ -5,10 +5,10 @@
 import * as child_process from 'child_process';
 import * as which from "which";
 
-export function exec(suggestions:string[], defaultQueries:string[], command = "peco"):Promise<string[]> {
+export function exec(suggestions: string[], defaultQueries: string[], command = "peco"): Promise<string[]> {
     "use strict";
 
-    return new Promise((resolve:(result:string)=>void, reject:(err:any)=>void) => {
+    return new Promise((resolve: (result: string) => void, reject: (err: any) => void) => {
         // EPIPE is can't handling. resolve command exists first.
         which(command, (err, path) => {
             if (!!err) {
@@ -20,18 +20,18 @@ export function exec(suggestions:string[], defaultQueries:string[], command = "p
     })
         .then(path => {
             return new Promise((resolve, reject) => {
-                let args:string[] = [];
+                let args: string[] = [];
                 if (defaultQueries && 0 < defaultQueries.length) {
                     args = ["--query", defaultQueries.join(" ")];
                 }
                 let cmd = child_process.spawn(path, args);
-                let result:string[] = [];
+                let result: string[] = [];
 
-                cmd.on("error", (err:NodeJS.ErrnoException)=> {
+                cmd.on("error", (err: NodeJS.ErrnoException) => {
                     reject(err);
                 });
-                cmd.stdout.on("data", (data:any) => {
-                    let str:string = data.toString();
+                cmd.stdout.on("data", (data: any) => {
+                    let str: string = data.toString();
                     let newResult = str.split("\n").filter(str => !!str);
                     result = result.concat(newResult);
                 });

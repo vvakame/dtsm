@@ -7,7 +7,7 @@ import * as mkdirp from "mkdirp";
 import * as fs from "fs";
 import * as path from "path";
 
-describe("command line interface", ()=> {
+describe("command line interface", () => {
 
     var dtsmPath = path.resolve(__dirname, "../bin/dtsm");
     var testWorkingDir = path.resolve(process.cwd(), "test-cli");
@@ -25,7 +25,7 @@ describe("command line interface", ()=> {
             });
     });
 
-    beforeEach(()=> {
+    beforeEach(() => {
         rimraf.sync(testWorkingDir);
         mkdirp.sync(testWorkingDir);
     });
@@ -227,7 +227,7 @@ describe("command line interface", ()=> {
                     assert(exit === 0);
                     assert(fs.existsSync(targetFile));
 
-                    var data:any;
+                    var data: any;
 
                     data = JSON.parse(fs.readFileSync(targetFile, "utf8"));
                     assert(Object.keys(data.dependencies).length === 0);
@@ -261,7 +261,7 @@ describe("command line interface", ()=> {
                     assert(exit === 0);
                     assert(fs.existsSync(targetFile));
 
-                    var data:any;
+                    var data: any;
 
                     data = JSON.parse(fs.readFileSync(targetFile, "utf8"));
                     assert(Object.keys(data.dependencies).length === 0);
@@ -288,12 +288,12 @@ describe("command line interface", ()=> {
 
     describe("uninstall sub-command", () => {
 
-        it("can uninstall definition files", ()=> {
+        it("can uninstall definition files", () => {
             var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             assert(!fs.existsSync(targetFile));
             return Promise.resolve(null)
-                .then(()=> {
+                .then(() => {
                     return new Promise((resolve, reject) => {
                         nexpect
                             .spawn("node", [dtsmPath, "--config", targetFile, "init"])
@@ -309,7 +309,7 @@ describe("command line interface", ()=> {
                             });
                     });
                 })
-                .then(()=> {
+                .then(() => {
                     return new Promise((resolve, reject) => {
                         nexpect
                             .spawn("node", [dtsmPath, "--config", targetFile, "install", "es6-promise", "--save"])
@@ -326,7 +326,7 @@ describe("command line interface", ()=> {
                             });
                     });
                 })
-                .then(()=> {
+                .then(() => {
                     return new Promise((resolve, reject) => {
                         nexpect
                             .spawn("node", [dtsmPath, "--config", targetFile, "uninstall", "es6-promise", "--save"])
@@ -348,12 +348,12 @@ describe("command line interface", ()=> {
 
     describe("update sub-command", () => {
 
-        it("can update definition files", ()=> {
+        it("can update definition files", () => {
             var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             assert(!fs.existsSync(targetFile));
             return Promise.resolve(null)
-                .then(()=> {
+                .then(() => {
                     return new Promise((resolve, reject) => {
                         nexpect
                             .spawn("node", [dtsmPath, "--config", targetFile, "init"])
@@ -369,7 +369,7 @@ describe("command line interface", ()=> {
                             });
                     });
                 })
-                .then(()=> {
+                .then(() => {
                     return new Promise((resolve, reject) => {
                         nexpect
                             .spawn("node", [dtsmPath, "--config", targetFile, "install", "es6-promise"])
@@ -385,7 +385,7 @@ describe("command line interface", ()=> {
                             });
                     });
                 })
-                .then(()=> {
+                .then(() => {
                     return new Promise((resolve, reject) => {
                         nexpect
                             .spawn("node", [dtsmPath, "--config", targetFile, "update", "--save"])
@@ -406,12 +406,12 @@ describe("command line interface", ()=> {
 
     describe("link sub-command", () => {
 
-        it("can link npm or bower definition files", ()=> {
+        it("can link npm or bower definition files", () => {
             var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             assert(!fs.existsSync(targetFile));
             return Promise.resolve(null)
-                .then(()=> {
+                .then(() => {
                     return new Promise((resolve, reject) => {
                         nexpect
                             .spawn("node", [dtsmPath, "--config", targetFile, "init"])
@@ -427,7 +427,7 @@ describe("command line interface", ()=> {
                             });
                     });
                 })
-                .then(()=> {
+                .then(() => {
                     return new Promise((resolve, reject) => {
                         nexpect
                             .spawn("node", [dtsmPath, "--config", targetFile, "link", "--save"])

@@ -1,16 +1,16 @@
 "use strict";
 
-export function deepClone(obj:any) {
+export function deepClone(obj: any) {
     "use strict";
 
     if (obj == null) {
         return obj;
     } else if (Array.isArray(obj)) {
-        return obj.map((obj:any)=> deepClone(obj));
+        return obj.map((obj: any) => deepClone(obj));
     } else if (obj instanceof RegExp) {
         return obj;
     } else if (typeof obj === "object") {
-        let cloned:any = {};
+        let cloned: any = {};
         Object.keys(obj).forEach(key=> cloned[key] = deepClone(obj[key]));
         return cloned;
     } else {
@@ -18,7 +18,7 @@ export function deepClone(obj:any) {
     }
 }
 
-export function extractDependencies(sourceCode:string):string[] {
+export function extractDependencies(sourceCode: string): string[] {
     "use strict";
 
     let referenceRegExp = /^\/\/\/\s*<reference\s+path\s*=\s*("|')(.+?)\1.*?\/>/;
@@ -29,7 +29,7 @@ export function extractDependencies(sourceCode:string):string[] {
         .map(matches => matches[2]);
 }
 
-export function padString(str:string, length:number, pad = " "):string {
+export function padString(str: string, length: number, pad = " "): string {
     "use strict";
 
     let shortage = length - str.length;
