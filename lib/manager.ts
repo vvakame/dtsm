@@ -1,16 +1,16 @@
 "use strict";
 
-import fs = require("fs");
-import mkdirp = require("mkdirp");
-import _path = require("path");
-import rimraf = require("rimraf");
+import * as fs from "fs";
+import * as mkdirp from "mkdirp";
+import * as _path from "path";
+import * as rimraf from "rimraf";
 
-import fsgit = require("fs-git");
-import pmb = require("packagemanager-backend");
+import * as fsgit from "fs-git";
+import * as pmb from "packagemanager-backend";
 
-import m = require("./model");
-import utils = require("./utils");
-import Tracker = require("./tracker");
+import * as m from "./model";
+import * as utils from "./utils";
+import Tracker from "./tracker";
 
 export function createManager(options:m.Options = {}):Promise<Manager> {
     "use strict";
@@ -18,7 +18,7 @@ export function createManager(options:m.Options = {}):Promise<Manager> {
     return new Manager(options)._setupBackend();
 }
 
-export class Manager {
+export default class Manager {
     static defaultConfigFile = process.cwd() + "/dtsm.json";
     static defaultRootDir = "~/.dtsm";
     static defaultRepo = "https://github.com/borisyankov/DefinitelyTyped.git";
@@ -64,10 +64,10 @@ export class Manager {
         this.savedRecipe = this._load();
         if (this.savedRecipe) {
             // for backward compatible
-            var _recipe:any = this.savedRecipe;
+            let _recipe:any = this.savedRecipe;
             if (_recipe.baseRepo) {
-                var baseRepo:string = _recipe.baseRepo;
-                var baseRef:string = _recipe.baseRef;
+                let baseRepo:string = _recipe.baseRepo;
+                let baseRef:string = _recipe.baseRef;
                 delete _recipe.baseRepo;
                 delete _recipe.baseRef;
                 this.savedRecipe.repos = this.savedRecipe.repos || [];
@@ -119,7 +119,7 @@ export class Manager {
 
     _load(path:string = this.configPath):m.Recipe {
         if (fs.existsSync(path)) {
-            var recipe:m.Recipe = JSON.parse(fs.readFileSync(path, "utf8"));
+            let recipe:m.Recipe = JSON.parse(fs.readFileSync(path, "utf8"));
 
             // backward compatible
             if (!recipe.repos || recipe.repos.length === 0) {
@@ -137,7 +137,7 @@ export class Manager {
     }
 
     _save(path:string = this.configPath, recipe:m.Recipe = this.savedRecipe):string {
-        var jsonContent = JSON.stringify(recipe, null, 2);
+        let jsonContent = JSON.stringify(recipe, null, 2);
 
         mkdirp.sync(_path.resolve(path, "../"));
         fs.writeFileSync(path, jsonContent);
@@ -147,7 +147,7 @@ export class Manager {
 
     search(phrase:string):Promise<pmb.SearchResult[]> {
         this.tracker.track("search", phrase);
-        var promises:Promise<any>[];
+        let promises:Promise<any>[];
         if (this.offline) {
             promises = [Promise.resolve(null)];
         } else {
@@ -183,14 +183,14 @@ export class Manager {
         }
         this._setupDefaultRecipe();
 
-        var promises = phrases.map(phrase => {
+        let promises = phrases.map(phrase => {
             return this.search(phrase).then(resultList => {
                 if (resultList.length === 1) {
                     return Promise.resolve(resultList[0]);
                 } else if (resultList.length === 0) {
                     return Promise.reject<pmb.SearchResult>(phrase + " is not found");
                 } else {
-                    var fileInfoWithWeight = this._addWeightingAndSort(phrase, resultList, v => v.fileInfo.path)[0];
+                    let fileInfoWithWeight = this._addWeightingAndSort(phrase, resultList, v => v.fileInfo.path)[0];
                     if (fileInfoWithWeight && fileInfoWithWeight.weight === 1) {
                         return Promise.resolve(fileInfoWithWeight.result);
                     } else {
@@ -205,7 +205,7 @@ export class Manager {
                     return resultList;
                 }
                 resultList.forEach(result => {
-                    var depName = result.fileInfo.path;
+                    let depName = result.fileInfo.path;
                     if (this.savedRecipe.dependencies[depName]) {
                         return;
                     }
@@ -224,14 +224,14 @@ export class Manager {
                 return resultList;
             })
             .then((resultList:pmb.SearchResult[])=> {
-                var diff:m.Recipe = {
+                let diff:m.Recipe = {
                     repos: this.savedRecipe.repos,
                     path: this.savedRecipe.path,
                     bundle: this.savedRecipe.bundle,
                     dependencies: {}
                 };
                 resultList.forEach(result => {
-                    var depName = result.fileInfo.path;
+                    let depName = result.fileInfo.path;
                     diff.dependencies[depName] = this.savedRecipe.dependencies[depName] || {
                         repo: result.repo.spec.url,
                         ref: result.fileInfo.ref
@@ -250,7 +250,7 @@ export class Manager {
         if (!this.configPath) {
             return Promise.reject<pmb.Result>("configPath is required");
         }
-        var content = this._load();
+        let content = this._load();
         if (!content) {
             return Promise.reject<pmb.Result>(this.configPath + " is not exists");
         }
@@ -267,7 +267,7 @@ export class Manager {
     }
 
     _installFromOptions(recipe:m.Recipe, opts:{dryRun?:boolean;} = {}):Promise<pmb.Result> {
-        var baseRepo = recipe && recipe.repos && recipe.repos[0] || this.repos[0];
+        let baseRepo = recipe && recipe.repos && recipe.repos[0] || this.repos[0];
         return this.backend
             .getByRecipe({
                 baseRepo: baseRepo.url,
@@ -275,9 +275,9 @@ export class Manager {
                 path: recipe.path,
                 dependencies: recipe.dependencies,
                 postProcessForDependency: (result:pmb.Result, depResult:pmb.ResolvedDependency, content:any) => {
-                    var dependencies = utils.extractDependencies(content.toString("utf8"));
+                    let dependencies = utils.extractDependencies(content.toString("utf8"));
                     dependencies.forEach(detected => {
-                        var obj = result.toDepNameAndPath(detected);
+                        let obj = result.toDepNameAndPath(detected);
                         result.pushAdditionalDependency(obj.depName, {
                             repo: depResult.repo,
                             ref: depResult.ref,
@@ -290,14 +290,14 @@ export class Manager {
                         return null;
                     }
                     // first, from current process
-                    var newDep:pmb.Dependency = result.dependencies[missing.depName];
+                    let newDep:pmb.Dependency = result.dependencies[missing.depName];
                     if (newDep) {
                         return Promise.resolve(newDep);
                     }
                     // second, from dtsm.json. can't use this.repos in `dtsm --remote .... install ....` context.
                     if (this.savedRecipe) {
                         newDep = this.savedRecipe.dependencies[missing.depName];
-                        var repo = this.savedRecipe.repos[0];
+                        let repo = this.savedRecipe.repos[0];
                         if (newDep && repo) {
                             newDep.repo = newDep.repo || repo.url || Manager.defaultRepo;
                             newDep.ref = newDep.ref || repo.ref || Manager.defaultRef;
@@ -308,7 +308,7 @@ export class Manager {
                     return Promise.resolve(null);
                 }
             }).then((result:pmb.Result) => {
-                var errors = result.dependenciesList.filter(depResult => !!depResult.error);
+                let errors = result.dependenciesList.filter(depResult => !!depResult.error);
                 if (errors.length !== 0) {
                     // TODO toString
                     return Promise.reject<pmb.Result>(errors);
@@ -337,7 +337,7 @@ export class Manager {
         // TODO add something awesome weighing algorithm.
         return list
             .map(value => {
-                var path = getPath(value);
+                let path = getPath(value);
                 // exact match
                 if (path === phrase) {
                     return {
@@ -399,7 +399,7 @@ export class Manager {
                 }
 
                 Object.keys(result.dependencies).forEach(depName => {
-                    var depResult = result.dependencies[depName];
+                    let depResult = result.dependencies[depName];
                     this._writeDefinitionFile(this.savedRecipe, depResult);
                     if (this.savedRecipe.dependencies[depName]) {
                         this.savedRecipe.dependencies[depName].ref = depResult.fileInfo.ref;
@@ -417,13 +417,13 @@ export class Manager {
 
         return this.installFromFile({dryRun: true}, false)
             .then(result => {
-                var topLevelDeps = Object.keys(result.dependencies).map(depName => result.dependencies[depName]);
+                let topLevelDeps = Object.keys(result.dependencies).map(depName => result.dependencies[depName]);
                 if (topLevelDeps.length === 0) {
                     return Promise.reject<pmb.ResolvedDependency[]>("this project doesn't have a dependency tree.");
                 }
 
-                var promises = phrases.map(phrase => {
-                    var weights = this._addWeightingAndSort(phrase, topLevelDeps, dep => dep.depName);
+                let promises = phrases.map(phrase => {
+                    let weights = this._addWeightingAndSort(phrase, topLevelDeps, dep => dep.depName);
                     weights = weights.filter(w => w.weight !== 0);
                     if (weights.length === 0) {
                         return Promise.reject<pmb.ResolvedDependency>(phrase + " is not found in config file");
@@ -435,8 +435,8 @@ export class Manager {
                 });
                 return Promise.all(promises)
                     .then((depList:pmb.ResolvedDependency[])=> {
-                        var removeList:pmb.ResolvedDependency[] = [];
-                        var addToRemoveList = (dep:pmb.ResolvedDependency) => {
+                        let removeList:pmb.ResolvedDependency[] = [];
+                        let addToRemoveList = (dep:pmb.ResolvedDependency) => {
                             if (!dep) {
                                 return;
                             }
@@ -464,7 +464,7 @@ export class Manager {
                         }
 
                         removeList.forEach(dep => {
-                            var unused = result.dependenciesList.every(exDep => exDep.depName !== dep.depName);
+                            let unused = result.dependenciesList.every(exDep => exDep.depName !== dep.depName);
                             if (unused) {
                                 this._removeDefinitionFile(this.savedRecipe, dep);
                             }
@@ -571,16 +571,16 @@ export class Manager {
     }
 
     _writeDefinitionFile(recipe:m.Recipe, depResult:pmb.ResolvedDependency) {
-        var path = _path.resolve(_path.dirname(this.configPath), recipe.path, depResult.depName);
+        let path = _path.resolve(_path.dirname(this.configPath), recipe.path, depResult.depName);
         mkdirp.sync(_path.resolve(path, "../"));
         fs.writeFileSync(path, depResult.content.toString("utf8"));
     }
 
     _removeDefinitionFile(recipe:m.Recipe, depResult:pmb.ResolvedDependency) {
-        var path = _path.resolve(_path.dirname(this.configPath), recipe.path, depResult.depName);
+        let path = _path.resolve(_path.dirname(this.configPath), recipe.path, depResult.depName);
         try {
             fs.unlinkSync(path);
-            var contents = fs.readdirSync(_path.dirname(path));
+            let contents = fs.readdirSync(_path.dirname(path));
             if (contents.length === 0) {
                 rimraf.sync(_path.dirname(path));
             }
@@ -590,25 +590,25 @@ export class Manager {
     }
 
     _addReferenceToBundle(recipe:m.Recipe, pathFromCwd:string) {
-        var bundleContent = "";
-        var bundlePath = _path.join(_path.dirname(this.configPath), recipe.bundle);
+        let bundleContent = "";
+        let bundlePath = _path.join(_path.dirname(this.configPath), recipe.bundle);
         if (fs.existsSync(bundlePath)) {
             bundleContent = fs.readFileSync(bundlePath, "utf8");
         } else {
             mkdirp.sync(_path.dirname(bundlePath));
         }
-        var referencePath = _path.relative(_path.dirname(bundlePath), pathFromCwd);
+        let referencePath = _path.relative(_path.dirname(bundlePath), pathFromCwd);
         if (_path.posix) { // for windows
             referencePath = referencePath.replace(new RegExp("\\" + _path.win32.sep, "g"), _path.posix.sep);
         }
-        var referenceComment = `/// <reference path="${referencePath}" />` + "\n";
+        let referenceComment = `/// <reference path="${referencePath}" />` + "\n";
         if (bundleContent.indexOf(referenceComment) === -1) {
             fs.appendFileSync(bundlePath, referenceComment, {encoding: "utf8"});
         }
     }
 
     refs():Promise<fsgit.RefInfo[]> {
-        var promises:Promise<any>[];
+        let promises:Promise<any>[];
         if (this.offline) {
             promises = [Promise.resolve(null)];
         } else {
@@ -618,14 +618,14 @@ export class Manager {
         }
         return Promise.all(promises)
             .then(()=> {
-                var repo:pmb.Repo = this.backend.repos[0];
+                let repo:pmb.Repo = this.backend.repos[0];
                 return repo.open().then(fs=> fs.showRef());
             });
     }
 
     fetch():Promise<void> {
         this.tracker.track("fetch");
-        var promises = this.backend.repos.map(repo => {
+        let promises = this.backend.repos.map(repo => {
             return this._fetchRepo(repo);
         });
         return Promise.all(promises).then(()=> <any>null);
@@ -651,20 +651,20 @@ export class Manager {
     }
 
     _checkOutdated(repoUrl:string):boolean {
-        var fetchAt = this._getLastFetchAt(repoUrl);
+        let fetchAt = this._getLastFetchAt(repoUrl);
         // 15min
         return fetchAt + 15 * 60 * 1000 < Date.now();
     }
 
     _getLastFetchAt(repoID:string):number {
-        var config:m.GlobalConfig = this.backend.loadConfig() || <any>{};
+        let config:m.GlobalConfig = this.backend.loadConfig() || <any>{};
         config.repositories = config.repositories || {};
-        var repo = config.repositories[repoID] || {fetchAt: null};
+        let repo = config.repositories[repoID] || {fetchAt: null};
         return repo.fetchAt;
     }
 
     _setLastFetchAt(repoID:string, fetchAt:number = Date.now()):void {
-        var config:m.GlobalConfig = this.backend.loadConfig() || <any>{};
+        let config:m.GlobalConfig = this.backend.loadConfig() || <any>{};
         config.repositories = config.repositories || {};
         config.repositories[repoID] = {
             fetchAt: fetchAt

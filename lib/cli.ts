@@ -8,10 +8,10 @@ try {
 } catch (e) {
 }
 
-import updateNotifier = require("update-notifier");
-var pkg = require("../package.json");
+import * as updateNotifier from "update-notifier";
+let pkg = require("../package.json");
 
-var notifier = updateNotifier({
+let notifier = updateNotifier({
     packageName: pkg.name,
     packageVersion: pkg.version
 });
@@ -19,12 +19,12 @@ if (notifier.update) {
     notifier.notify();
 }
 
-import dtsm = require("./index");
-import pmb = require("packagemanager-backend");
-import is = require("./incrementalsearch");
+import * as dtsm from "./";
+import * as pmb from "packagemanager-backend";
+import * as is from "./incrementalsearch";
 
-import commandpost = require("commandpost");
-import archy = require("archy");
+import * as commandpost from "commandpost";
+import * as archy from "archy";
 
 interface RootOptions {
     offline:boolean;
@@ -34,7 +34,7 @@ interface RootOptions {
     ref:string[];
 }
 
-var root = commandpost
+let root = commandpost
     .create<RootOptions, {}>("dtsm")
     .version(pkg.version, "-v, --version")
     .option("--insight <use>", "send usage opt in/out. in = `--insight true`, out = `--insight false`")
@@ -52,7 +52,7 @@ root
     .action(()=> {
         setup(root.parsedOpts)
             .then(manager => {
-                var jsonContent = manager.init();
+                let jsonContent = manager.init();
 
                 console.log("write to " + manager.configPath);
                 console.log(jsonContent);
@@ -83,7 +83,7 @@ root
                 if (!opts.interactive) {
                     return Promise.resolve(resultList);
                 }
-                var candidates = resultList.map(result => result.fileInfo.path);
+                let candidates = resultList.map(result => result.fileInfo.path);
                 if (candidates.length === 0) {
                     return Promise.resolve(resultList);
                 }
@@ -158,7 +158,7 @@ root
                 } else if (opts.interactive || args.files.length === 0) {
                     return manager.search("")
                         .then(resultList => {
-                            var candidates = resultList.map(result => result.fileInfo.path);
+                            let candidates = resultList.map(result => result.fileInfo.path);
                             if (candidates.length === 0) {
                                 return Promise.resolve(resultList);
                             }
@@ -173,7 +173,7 @@ root
                                 });
                         })
                         .then(resultList => {
-                            var files = resultList.map(result => result.fileInfo.path);
+                            let files = resultList.map(result => result.fileInfo.path);
                             return manager.install({save: opts.save, dryRun: opts.dryRun}, files)
                                 .then(result => printResult(result));
                         });
@@ -262,13 +262,13 @@ root
                     }
                     return true;
                 });
-                var branches = refs.filter(ref => ref.name.indexOf("refs/heads/") === 0);
-                var tags = refs.filter(ref => ref.name.indexOf("refs/tags/") === 0);
+                let branches = refs.filter(ref => ref.name.indexOf("refs/heads/") === 0);
+                let tags = refs.filter(ref => ref.name.indexOf("refs/tags/") === 0);
 
                 if (branches.length !== 0) {
                     console.log("Branches:");
                     branches.forEach(ref => {
-                        var branchName = ref.name.substr("refs/heads/".length);
+                        let branchName = ref.name.substr("refs/heads/".length);
                         console.log("\t", branchName);
                     });
                     console.log("");
@@ -276,7 +276,7 @@ root
                 if (tags.length !== 0) {
                     console.log("Tags:");
                     tags.forEach(ref => {
-                        var tagName = ref.name.substr("refs/tags/".length);
+                        let tagName = ref.name.substr("refs/tags/".length);
                         console.log("\t", tagName);
                     });
                     console.log("");
@@ -292,12 +292,12 @@ commandpost
 function setup(opts:RootOptions):Promise<dtsm.Manager> {
     "use strict";
 
-    var offline = opts.offline;
-    var configPath:string = opts.config[0];
-    var remoteUri:string = opts.remote[0];
-    var specifiedRef:string = opts.ref[0];
-    var insightStr = opts.insight[0];
-    var insightOptout:boolean;
+    let offline = opts.offline;
+    let configPath:string = opts.config[0];
+    let remoteUri:string = opts.remote[0];
+    let specifiedRef:string = opts.ref[0];
+    let insightStr = opts.insight[0];
+    let insightOptout:boolean;
 
     if (typeof insightStr === "string") {
         if (insightStr !== "true" && insightStr !== "false") {
@@ -309,14 +309,14 @@ function setup(opts:RootOptions):Promise<dtsm.Manager> {
         }
     }
 
-    var repos:pmb.RepositorySpec[] = [];
+    let repos:pmb.RepositorySpec[] = [];
     if (remoteUri || specifiedRef) {
         repos.push({
             url: remoteUri,
             ref: specifiedRef
         });
     }
-    var options:dtsm.Options = {
+    let options:dtsm.Options = {
         configPath: configPath || "dtsm.json",
         repos: repos,
         offline: offline,
@@ -334,12 +334,12 @@ function setup(opts:RootOptions):Promise<dtsm.Manager> {
 function printResolvedDependency(dep:pmb.ResolvedDependency, opts:{emitRepo:boolean; emitHost:boolean;}) {
     "use strict";
 
-    var fileInfo = (dep:pmb.ResolvedDependency) => {
+    let fileInfo = (dep:pmb.ResolvedDependency) => {
         if (!!dep.parent && dep.parent.repo === dep.repo && dep.parent.ref === dep.ref) {
             // emit only root node
             return "";
         }
-        var result = "";
+        let result = "";
         if (opts.emitRepo && opts.emitHost) {
             if (dep.repoInstance.urlInfo) {
                 result += dep.repoInstance.urlInfo.hostname;
@@ -348,13 +348,13 @@ function printResolvedDependency(dep:pmb.ResolvedDependency, opts:{emitRepo:bool
             }
         }
         if (opts.emitRepo) {
-            var path:string;
+            let path:string;
             if (dep.repoInstance.urlInfo) {
                 path = dep.repoInstance.urlInfo.pathname;
             } else if (dep.repoInstance.sshInfo) {
                 path = dep.repoInstance.sshInfo.path;
             }
-            var hasExt = /\.git$/.test(path);
+            let hasExt = /\.git$/.test(path);
             if (!opts.emitHost) {
                 path = path.substr(1);
             }
@@ -368,8 +368,8 @@ function printResolvedDependency(dep:pmb.ResolvedDependency, opts:{emitRepo:bool
         return " " + result;
     };
 
-    var resultTree = (dep:pmb.ResolvedDependency, data?:archy.Data) => {
-        var d:archy.Data = {
+    let resultTree = (dep:pmb.ResolvedDependency, data?:archy.Data) => {
+        let d:archy.Data = {
             label: dep.depName,
             nodes: []
         };
@@ -386,7 +386,7 @@ function printResolvedDependency(dep:pmb.ResolvedDependency, opts:{emitRepo:bool
         return null;
     };
 
-    var output = resultTree(dep);
+    let output = resultTree(dep);
     console.log(output);
 }
 
@@ -394,8 +394,8 @@ function printResult(result:pmb.Result) {
     "use strict";
 
     // short is justice.
-    var emitRepo = 1 < result.manager.repos.length;
-    var emitHost = result.manager.repos.filter(repo => {
+    let emitRepo = 1 < result.manager.repos.length;
+    let emitHost = result.manager.repos.filter(repo => {
             if (!!repo.urlInfo) {
                 return repo.urlInfo.host !== "github.com";
             } else if (!!repo.sshInfo) {
@@ -406,7 +406,7 @@ function printResult(result:pmb.Result) {
         }).length !== 0;
 
     Object.keys(result.dependencies).forEach(depName => {
-        var dep = result.dependencies[depName];
+        let dep = result.dependencies[depName];
         printResolvedDependency(dep, {emitRepo: emitRepo, emitHost: emitHost});
     });
 }

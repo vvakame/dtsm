@@ -10,7 +10,7 @@ export function deepClone(obj:any) {
     } else if (obj instanceof RegExp) {
         return obj;
     } else if (typeof obj === "object") {
-        var cloned:any = {};
+        let cloned:any = {};
         Object.keys(obj).forEach(key=> cloned[key] = deepClone(obj[key]));
         return cloned;
     } else {
@@ -21,7 +21,7 @@ export function deepClone(obj:any) {
 export function extractDependencies(sourceCode:string):string[] {
     "use strict";
 
-    var referenceRegExp = /^\/\/\/\s*<reference\s+path\s*=\s*("|')(.+?)\1.*?\/>/;
+    let referenceRegExp = /^\/\/\/\s*<reference\s+path\s*=\s*("|')(.+?)\1.*?\/>/;
     return sourceCode
         .split("\n")
         .map(line => line.match(referenceRegExp))
@@ -32,8 +32,8 @@ export function extractDependencies(sourceCode:string):string[] {
 export function padString(str:string, length:number, pad = " "):string {
     "use strict";
 
-    var shortage = length - str.length;
-    for (var i = 0; i < shortage; i++) {
+    let shortage = length - str.length;
+    for (let i = 0; i < shortage; i++) {
         str += pad;
     }
     return str;

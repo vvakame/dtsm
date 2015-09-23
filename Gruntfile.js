@@ -99,7 +99,7 @@ module.exports = function (grunt) {
                     ]
                 },
                 src: [
-                    '<%= opt.client.jsTestOut %>/**/*_spec.js'
+                    '<%= opt.client.jsTestOut %>/**/*Spec.js'
                 ]
             }
         },

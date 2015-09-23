@@ -1,9 +1,9 @@
 "use strict";
 
 import Insight = require("insight");
-var pkg = require("../package.json");
+let pkg = require("../package.json");
 
-class Tracker {
+export default class Tracker {
     insight:Insight;
 
     constructor() {
@@ -39,5 +39,3 @@ class Tracker {
         this.insight.track.apply(this.insight, args);
     }
 }
-
-export = Tracker;

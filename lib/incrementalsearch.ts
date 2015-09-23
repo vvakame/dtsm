@@ -2,8 +2,8 @@
 
 // incremental search. based by peco.
 
-import child_process = require('child_process');
-import which = require("which");
+import * as child_process from 'child_process';
+import * as which from "which";
 
 export function exec(suggestions:string[], defaultQueries:string[], command = "peco"):Promise<string[]> {
     "use strict";
@@ -20,19 +20,19 @@ export function exec(suggestions:string[], defaultQueries:string[], command = "p
     })
         .then(path => {
             return new Promise((resolve, reject) => {
-                var args:string[] = [];
+                let args:string[] = [];
                 if (defaultQueries && 0 < defaultQueries.length) {
                     args = ["--query", defaultQueries.join(" ")];
                 }
-                var cmd = child_process.spawn(path, args);
-                var result:string[] = [];
+                let cmd = child_process.spawn(path, args);
+                let result:string[] = [];
 
                 cmd.on("error", (err:NodeJS.ErrnoException)=> {
                     reject(err);
                 });
                 cmd.stdout.on("data", (data:any) => {
-                    var str:string = data.toString();
-                    var newResult = str.split("\n").filter(str => !!str);
+                    let str:string = data.toString();
+                    let newResult = str.split("\n").filter(str => !!str);
                     result = result.concat(newResult);
                 });
 

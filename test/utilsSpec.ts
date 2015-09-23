@@ -1,6 +1,6 @@
 "use strict";
 
-import utils = require("../lib/utils");
+import * as utils from "../lib/utils";
 
 describe("utils", ()=> {
     describe("extractDependencies", ()=> {

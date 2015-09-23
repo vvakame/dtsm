@@ -1,8 +1,5 @@
 "use strict";
 
-/// <reference path="./cli_spec.ts" />
-/// <reference path="./utils_spec.ts" />
-
 require("es6-promise").polyfill();
 
 try {
@@ -11,12 +8,12 @@ try {
 } catch (e) {
 }
 
-import fs = require("fs");
-import path = require("path");
-import rimraf = require("rimraf");
+import * as fs from "fs";
+import * as path from "path";
+import * as rimraf from "rimraf";
 
-import dtsm = require("../lib/index");
-import fsgit = require("fs-git");
+import * as dtsm from "../lib";
+import * as fsgit from "fs-git";
 
 function bundleBuilder(referencePaths: string[] = []): string {
     "use strict";

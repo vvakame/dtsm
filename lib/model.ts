@@ -1,6 +1,6 @@
 "use strict";
 
-import pmb = require("packagemanager-backend");
+import * as pmb from "packagemanager-backend";
 
 export interface Console {
     error(message?:any, ...optionalParams:any[]): void;

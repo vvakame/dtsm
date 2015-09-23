@@ -1,11 +1,11 @@
 "use strict";
 
-import nexpect = require("nexpect");
-import rimraf = require("rimraf");
-import mkdirp = require("mkdirp");
+import * as nexpect from "nexpect";
+import * as rimraf from "rimraf";
+import * as mkdirp from "mkdirp";
 
-import fs = require("fs");
-import path = require("path");
+import * as fs from "fs";
+import * as path from "path";
 
 describe("command line interface", ()=> {
 
