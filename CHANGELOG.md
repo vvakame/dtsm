@@ -1,3 +1,15 @@
+<a name="0.11.0"></a>
+# [0.11.0](https://github.com/vvakame/dtsm/compare/0.10.3...v0.11.0) (2015-09-23)
+
+
+### Features
+
+* **dtsm:** add workaround for Microsoft/TypeScript/issues/4667 ([0c634eb](https://github.com/vvakame/dtsm/commit/0c634eb))
+* **dtsm:** refactor to es6 style ([af91f9d](https://github.com/vvakame/dtsm/commit/af91f9d))
+* **dtsm:** update dependencies & switch to tsconfig.json oriented style ([d7a25f5](https://github.com/vvakame/dtsm/commit/d7a25f5))
+
+
+
 <a name"0.10.3"></a>
 ### 0.10.3 (2015-06-03)
 
