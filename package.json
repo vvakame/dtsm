@@ -1,19 +1,18 @@
 {
   "name": "dtsm",
   "author": "vvakame",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "TypeScript definition file (.d.ts) manager",
   "main": "./index",
   "bin": {
     "dtsm": "./bin/dtsm"
   },
   "engines": {
-    "node": ">= 0.12",
-    "iojs": ">= 1.0"
+    "node": ">= 0.12"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/vvakame/dtsm.git"
+    "url": "git+https://github.com/vvakame/dtsm.git"
   },
   "bugs": {
     "url": "https://github.com/vvakame/dtsm/issues"
@@ -24,6 +23,8 @@
     "test": "grunt test"
   },
   "directories": {
+    "doc": "docs",
+    "example": "example",
     "test": "test"
   },
   "dependencies": {

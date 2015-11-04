@@ -1,3 +1,13 @@
+<a name="0.12.0"></a>
+# [0.12.0](https://github.com/vvakame/dtsm/compare/0.11.0...v0.12.0) (2015-11-04)
+
+
+### Features
+
+* **dtsm:** DT repo move borisyankov to DT org ([631481a](https://github.com/vvakame/dtsm/commit/631481a))
+
+
+
 <a name="0.11.0"></a>
 # [0.11.0](https://github.com/vvakame/dtsm/compare/0.10.3...v0.11.0) (2015-09-23)
 
