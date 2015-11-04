@@ -17,34 +17,34 @@
   },
   "dependencies": {
     "update-notifier/update-notifier.d.ts": {
-      "ref": "32029fcb4e1a3ef8968711b545d77b584435729d"
+      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
     },
     "insight/insight.d.ts": {
-      "ref": "32029fcb4e1a3ef8968711b545d77b584435729d"
+      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
     },
     "mkdirp/mkdirp.d.ts": {
-      "ref": "32029fcb4e1a3ef8968711b545d77b584435729d"
+      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
     },
     "rimraf/rimraf.d.ts": {
-      "ref": "32029fcb4e1a3ef8968711b545d77b584435729d"
+      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
     },
     "node/node.d.ts": {
-      "ref": "32029fcb4e1a3ef8968711b545d77b584435729d"
+      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
     },
     "mocha/mocha.d.ts": {
-      "ref": "32029fcb4e1a3ef8968711b545d77b584435729d"
+      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
     },
     "power-assert/power-assert.d.ts": {
-      "ref": "32029fcb4e1a3ef8968711b545d77b584435729d"
+      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
     },
     "nexpect/nexpect.d.ts": {
-      "ref": "32029fcb4e1a3ef8968711b545d77b584435729d"
+      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
     },
     "which/which.d.ts": {
-      "ref": "32029fcb4e1a3ef8968711b545d77b584435729d"
+      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
     },
     "archy/archy.d.ts": {
-      "ref": "32029fcb4e1a3ef8968711b545d77b584435729d"
+      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
     }
   }
 }
