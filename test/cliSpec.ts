@@ -79,7 +79,7 @@ describe("command line interface", () => {
                     assert(!err);
                     assert(exit === 0);
 
-                    // https://github.com/borisyankov/DefinitelyTyped has greater than 500 .d.ts files
+                    // https://github.com/DefinitelyTyped/DefinitelyTyped has greater than 500 .d.ts files
                     assert(500 < stdout.length);
 
                     done();

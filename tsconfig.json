@@ -41,7 +41,6 @@
         "./typings/bundle.d.ts",
         "./typings/empower/empower.d.ts",
         "./typings/insight/insight.d.ts",
-        "./typings/jquery/jquery.d.ts",
         "./typings/mkdirp/mkdirp.d.ts",
         "./typings/mocha/mocha.d.ts",
         "./typings/nexpect/nexpect.d.ts",

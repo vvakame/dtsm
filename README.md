@@ -3,7 +3,7 @@
 The .d.ts manager
 
 .d.ts is TypeScript definition file.
-[DefinitelyTyped!](https://github.com/borisyankov/DefinitelyTyped)
+[DefinitelyTyped!](https://github.com/DefinitelyTyped/DefinitelyTyped)
 
 ## Install
 
@@ -20,7 +20,7 @@ please install git client.
 # fetch from remote repository
 $ dtsm fetch
 fetching...
-fetching https://github.com/borisyankov/DefinitelyTyped.git
+fetching https://github.com/DefinitelyTyped/DefinitelyTyped.git
 
 # search .d.ts
 $ dtsm search atom
@@ -84,7 +84,7 @@ write to dtsm.json
 {
   "repos": [
     {
-      "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
       "ref": "master"
     }
   ],
@@ -120,7 +120,7 @@ $ cat dtsm.json
 {
   "repos": [
     {
-      "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
       "ref": "master"
     }
   ],
@@ -207,7 +207,7 @@ $ cat dtsm.json
 {
   "repos": [
     {
-      "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
       "ref": "master"
     },
     {
@@ -230,7 +230,7 @@ $ cat dtsm.json
 }
 
 $ dtsm install
-jquery/jquery.d.ts borisyankov/DefinitelyTyped#0605eb
+jquery/jquery.d.ts DefinitelyTyped/DefinitelyTyped#0605eb
 
 gapidts/bigquery-v2-browser.d.ts vvakame/gapidts#4edbcc
 └── gapidts/googleapis-browser-common.d.ts
@@ -283,7 +283,7 @@ $ cat dtsm.json
 {
   "repos": [
     {
-      "url": "https://github.com/borisyankov/DefinitelyTyped.git",
+      "url": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
       "ref": "master"
     }
   ],

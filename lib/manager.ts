@@ -21,7 +21,7 @@ export function createManager(options: m.Options = {}): Promise<Manager> {
 export default class Manager {
     static defaultConfigFile = process.cwd() + "/dtsm.json";
     static defaultRootDir = "~/.dtsm";
-    static defaultRepo = "https://github.com/borisyankov/DefinitelyTyped.git";
+    static defaultRepo = "https://github.com/DefinitelyTyped/DefinitelyTyped.git";
     static defaultRef = "master";
     static defaultPath = "typings";
     static defaultBundleFile = "bundle.d.ts";
