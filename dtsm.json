@@ -17,34 +17,34 @@
   },
   "dependencies": {
     "update-notifier/update-notifier.d.ts": {
-      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
+      "ref": "421d6610bdb09e1015b71f5991d7a68d079eca21"
     },
     "insight/insight.d.ts": {
-      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
+      "ref": "421d6610bdb09e1015b71f5991d7a68d079eca21"
     },
     "mkdirp/mkdirp.d.ts": {
-      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
+      "ref": "421d6610bdb09e1015b71f5991d7a68d079eca21"
     },
     "rimraf/rimraf.d.ts": {
-      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
+      "ref": "421d6610bdb09e1015b71f5991d7a68d079eca21"
     },
     "node/node.d.ts": {
-      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
+      "ref": "421d6610bdb09e1015b71f5991d7a68d079eca21"
     },
     "mocha/mocha.d.ts": {
-      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
+      "ref": "421d6610bdb09e1015b71f5991d7a68d079eca21"
     },
     "power-assert/power-assert.d.ts": {
-      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
+      "ref": "421d6610bdb09e1015b71f5991d7a68d079eca21"
     },
     "nexpect/nexpect.d.ts": {
-      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
+      "ref": "421d6610bdb09e1015b71f5991d7a68d079eca21"
     },
     "which/which.d.ts": {
-      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
+      "ref": "421d6610bdb09e1015b71f5991d7a68d079eca21"
     },
     "archy/archy.d.ts": {
-      "ref": "001ca36ba58cef903c4c063555afb07bbc36bb58"
+      "ref": "421d6610bdb09e1015b71f5991d7a68d079eca21"
     }
   }
 }
