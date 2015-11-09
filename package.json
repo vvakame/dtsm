@@ -20,7 +20,8 @@
   "homepage": "https://github.com/vvakame/dtsm",
   "license": "MIT",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "preversion": "npm run test"
   },
   "directories": {
     "doc": "docs",
