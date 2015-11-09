@@ -1,3 +1,13 @@
+<a name="0.13.0"></a>
+# [0.13.0](https://github.com/vvakame/dtsm/compare/0.12.0...v0.13.0) (2015-11-09)
+
+
+### Features
+
+* **dtsm:** Add -S option as an alias of --save. by @pocke ([bd4f1bb](https://github.com/vvakame/dtsm/commit/bd4f1bb51f9185fac41b660fd1edbbb0c946008d))
+
+
+
 <a name="0.12.0"></a>
 # [0.12.0](https://github.com/vvakame/dtsm/compare/0.11.0...v0.12.0) (2015-11-04)
 
