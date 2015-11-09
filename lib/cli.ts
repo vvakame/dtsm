@@ -142,7 +142,7 @@ interface InstallArguments {
 root
     .subCommand<InstallOptions, InstallArguments>("install [files...]")
     .description("install .d.ts files")
-    .option("--save", "save .d.ts file path into dtsm.json")
+    .option("-S, --save", "save .d.ts file path into dtsm.json")
     .option("--dry-run", "save .d.ts file path into dtsm.json")
     .option("-i, --interactive", "do incremental searching. use `peco` default")
     .action((opts, args) => {
@@ -197,7 +197,7 @@ interface UninstallArguments {
 root
     .subCommand<InstallOptions, InstallArguments>("uninstall [files...]")
     .description("uninstall .d.ts files")
-    .option("--save", "save .d.ts file path into dtsm.json")
+    .option("-S, --save", "save .d.ts file path into dtsm.json")
     .option("--dry-run", "save .d.ts file path into dtsm.json")
     .action((opts, args) => {
         // .action((...targets:string[])=> {
@@ -218,7 +218,7 @@ interface UpdateOptions {
 root
     .subCommand<UpdateOptions, {}>("update")
     .description("update definition files version")
-    .option("--save", "save updated ref into dtsm.json")
+    .option("-S, --save", "save updated ref into dtsm.json")
     .option("--dry-run", "save .d.ts file path into dtsm.json")
     .action((opts, args) => {
         setup(root.parsedOpts)
@@ -237,7 +237,7 @@ interface LinkOptions {
 root
     .subCommand<LinkOptions, {}>("link")
     .description("link to npm or bower dependencies")
-    .option("--save", "save updated ref into dtsm.json")
+    .option("-S, --save", "save updated ref into dtsm.json")
     .option("--dry-run", "save .d.ts file path into dtsm.json")
     .action((opts, args) => {
         setup(root.parsedOpts)
