@@ -1,3 +1,13 @@
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/vvakame/dtsm/compare/v0.13.0...v1.0.0) (2016-02-21)
+
+
+### Bug Fixes
+
+* **ci:** bump node.js version 0.12 to 0.4.x ([22e511d](https://github.com/vvakame/dtsm/commit/22e511d))
+
+
+
 <a name="0.13.0"></a>
 # [0.13.0](https://github.com/vvakame/dtsm/compare/0.12.0...v0.13.0) (2015-11-09)
 
