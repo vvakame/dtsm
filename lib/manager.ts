@@ -467,6 +467,12 @@ export default class Manager {
                             let unused = result.dependenciesList.every(exDep => exDep.depName !== dep.depName);
                             if (unused) {
                                 this._removeDefinitionFile(this.savedRecipe, dep);
+
+                                if (!this.savedRecipe.bundle) {
+                                    return;
+                                }
+                                let depPath = _path.join(_path.dirname(this.configPath), this.path, dep.depName);
+                                this._removeReferenceFromBundle(this.savedRecipe, depPath);
                             }
                         });
 
@@ -589,6 +595,14 @@ export default class Manager {
         }
     }
 
+    _createReferenceComment(bundlePath: string, pathFromCwd: string) {
+        let referencePath = _path.relative(_path.dirname(bundlePath), pathFromCwd);
+        if (_path.posix) { // for windows
+            referencePath = referencePath.replace(new RegExp("\\" + _path.win32.sep, "g"), _path.posix.sep);
+        }
+        return `/// <reference path="${referencePath}" />` + "\n";
+    }
+
     _addReferenceToBundle(recipe: m.Recipe, pathFromCwd: string) {
         let bundleContent = "";
         let bundlePath = _path.join(_path.dirname(this.configPath), recipe.bundle);
@@ -597,13 +611,22 @@ export default class Manager {
         } else {
             mkdirp.sync(_path.dirname(bundlePath));
         }
-        let referencePath = _path.relative(_path.dirname(bundlePath), pathFromCwd);
-        if (_path.posix) { // for windows
-            referencePath = referencePath.replace(new RegExp("\\" + _path.win32.sep, "g"), _path.posix.sep);
-        }
-        let referenceComment = `/// <reference path="${referencePath}" />` + "\n";
+        let referenceComment = this._createReferenceComment(bundlePath, pathFromCwd);
         if (bundleContent.indexOf(referenceComment) === -1) {
             fs.appendFileSync(bundlePath, referenceComment, { encoding: "utf8" });
+        }
+    }
+
+    _removeReferenceFromBundle(recipe: m.Recipe, pathFromCwd: string) {
+        let bundleContent = "";
+        let bundlePath = _path.join(_path.dirname(this.configPath), recipe.bundle);
+        if (!fs.existsSync(bundlePath)) {
+            return;
+        }
+        bundleContent = fs.readFileSync(bundlePath, "utf8");
+        let referenceComment = this._createReferenceComment(bundlePath, pathFromCwd);
+        if (bundleContent.indexOf(referenceComment) !== -1) {
+            fs.writeFileSync(bundlePath, bundleContent.replace(referenceComment, ''), { encoding: "utf8" });
         }
     }
 
