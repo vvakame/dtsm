@@ -290,6 +290,7 @@ describe("command line interface", () => {
 
         it("can uninstall definition files", () => {
             var targetFile = path.resolve(testWorkingDir, "dtsm.json");
+            var bundleFile = path.resolve(testWorkingDir, "typings/bundle.d.ts");
 
             assert(!fs.existsSync(targetFile));
             return Promise.resolve(null)
@@ -322,6 +323,8 @@ describe("command line interface", () => {
                                 assert(exit === 0);
                                 assert(fs.existsSync(targetFile));
                                 assert(fs.existsSync(path.resolve(testWorkingDir, "typings/es6-promise/es6-promise.d.ts")));
+                                assert(fs.existsSync(bundleFile));
+                                assert(fs.readFileSync(bundleFile).indexOf('/// <reference path="es6-promise/es6-promise.d.ts" />') !== -1);
                                 resolve();
                             });
                     });
@@ -339,6 +342,8 @@ describe("command line interface", () => {
                                 assert(exit === 0);
                                 assert(fs.existsSync(targetFile));
                                 assert(!fs.existsSync(path.resolve(testWorkingDir + "typings/es6-promise/es6-promise.d.ts")));
+                                assert(fs.existsSync(bundleFile));
+                                assert(fs.readFileSync(bundleFile).indexOf('/// <reference path="es6-promise/es6-promise.d.ts" />') === -1);
                                 resolve();
                             });
                     });
