@@ -1,7 +1,8 @@
 .git/
 
-# for WebStorm
+# for IDE
 .idea/
+.vscode/
 
 # for npm
 node_modules/

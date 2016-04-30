@@ -11,7 +11,9 @@
         "listFiles": true,
         "newLine": "LF",
         "noEmitOnError": true,
-        "inlineSources": true
+        "inlineSources": true,
+        "noImplicitReturns": true,
+        "stripInternal": true
     },
     "filesGlob": [
         "./**/*.ts",
