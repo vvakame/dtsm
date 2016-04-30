@@ -1,3 +1,13 @@
+<a name="1.1.0"></a>
+# [1.1.0](https://github.com/vvakame/dtsm/compare/v1.0.0...v1.1.0) (2016-04-30)
+
+
+### Features
+
+* **dtsm:** add @internal annotation to pseudo private method([65e9321](https://github.com/vvakame/dtsm/commit/65e9321))
+* **dtsm:** remove reference from bundle when uninstall definitions([4d0a151d](https://github.com/vvakame/dtsm/commit/4d0a151d))
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/vvakame/dtsm/compare/v0.13.0...v1.0.0) (2016-02-21)
 
