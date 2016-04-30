@@ -88,6 +88,7 @@ export default class Manager {
         }
     }
 
+    /** @internal */
     _setupBackend(): Promise<Manager> {
         return pmb.Manager
             .createManager<m.GlobalConfig>({
@@ -100,6 +101,7 @@ export default class Manager {
             });
     }
 
+    /** @internal */
     _setupDefaultRecipe() {
         this.savedRecipe = this.savedRecipe || <any>{};
         this.savedRecipe.repos = this.savedRecipe.repos || this.repos;
@@ -117,6 +119,7 @@ export default class Manager {
         return this._save(path);
     }
 
+    /** @internal */
     _load(path: string = this.configPath): m.Recipe {
         if (fs.existsSync(path)) {
             let recipe: m.Recipe = JSON.parse(fs.readFileSync(path, "utf8"));
@@ -136,6 +139,7 @@ export default class Manager {
         }
     }
 
+    /** @internal */
     _save(path: string = this.configPath, recipe: m.Recipe = this.savedRecipe): string {
         let jsonContent = JSON.stringify(recipe, null, 2);
 
@@ -266,6 +270,7 @@ export default class Manager {
             });
     }
 
+    /** @internal */
     _installFromOptions(recipe: m.Recipe, opts: { dryRun?: boolean; } = {}): Promise<pmb.Result> {
         let baseRepo = recipe && recipe.repos && recipe.repos[0] || this.repos[0];
         return this.backend
@@ -333,6 +338,7 @@ export default class Manager {
             });
     }
 
+    /** @internal */
     _addWeightingAndSort<T>(phrase: string, list: T[], getPath: (val: T) => string): { weight: number; result: T; }[] {
         // TODO add something awesome weighing algorithm.
         return list
@@ -532,6 +538,7 @@ export default class Manager {
         return Promise.resolve(resultList);
     }
 
+    /** @internal */
     _processLink(linkInfo: m.Link, managerName: string, configFileName: string, moduleDir: string): { link: m.Link; results: m.LinkResult[]; } {
         if (linkInfo == null) {
             // continue
@@ -576,12 +583,14 @@ export default class Manager {
         return { link: linkInfo, results: definitionList };
     }
 
+    /** @internal */
     _writeDefinitionFile(recipe: m.Recipe, depResult: pmb.ResolvedDependency) {
         let path = _path.resolve(_path.dirname(this.configPath), recipe.path, depResult.depName);
         mkdirp.sync(_path.resolve(path, "../"));
         fs.writeFileSync(path, depResult.content.toString("utf8"));
     }
 
+    /** @internal */
     _removeDefinitionFile(recipe: m.Recipe, depResult: pmb.ResolvedDependency) {
         let path = _path.resolve(_path.dirname(this.configPath), recipe.path, depResult.depName);
         try {
@@ -595,6 +604,7 @@ export default class Manager {
         }
     }
 
+    /** @internal */
     _createReferenceComment(bundlePath: string, pathFromCwd: string) {
         let referencePath = _path.relative(_path.dirname(bundlePath), pathFromCwd);
         if (_path.posix) { // for windows
@@ -603,6 +613,7 @@ export default class Manager {
         return `/// <reference path="${referencePath}" />` + "\n";
     }
 
+    /** @internal */
     _addReferenceToBundle(recipe: m.Recipe, pathFromCwd: string) {
         let bundleContent = "";
         let bundlePath = _path.join(_path.dirname(this.configPath), recipe.bundle);
@@ -617,6 +628,7 @@ export default class Manager {
         }
     }
 
+    /** @internal */
     _removeReferenceFromBundle(recipe: m.Recipe, pathFromCwd: string) {
         let bundleContent = "";
         let bundlePath = _path.join(_path.dirname(this.configPath), recipe.bundle);
@@ -654,6 +666,7 @@ export default class Manager {
         return Promise.all(promises).then(() => <any>null);
     }
 
+    /** @internal */
     _fetchIfOutdated(repo: pmb.Repo): Promise<pmb.Repo> {
         if (this._checkOutdated(repo.spec.url)) {
             return this._fetchRepo(repo);
@@ -662,6 +675,7 @@ export default class Manager {
         }
     }
 
+    /** @internal */
     _fetchRepo(repo: pmb.Repo): Promise<pmb.Repo> {
         console.log("fetching " + repo.spec.url);
         return Promise
@@ -673,12 +687,14 @@ export default class Manager {
             });
     }
 
+    /** @internal */
     _checkOutdated(repoUrl: string): boolean {
         let fetchAt = this._getLastFetchAt(repoUrl);
         // 15min
         return fetchAt + 15 * 60 * 1000 < Date.now();
     }
 
+    /** @internal */
     _getLastFetchAt(repoID: string): number {
         let config: m.GlobalConfig = this.backend.loadConfig() || <any>{};
         config.repositories = config.repositories || {};
@@ -686,6 +702,7 @@ export default class Manager {
         return repo.fetchAt;
     }
 
+    /** @internal */
     _setLastFetchAt(repoID: string, fetchAt: number = Date.now()): void {
         let config: m.GlobalConfig = this.backend.loadConfig() || <any>{};
         config.repositories = config.repositories || {};
