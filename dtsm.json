@@ -17,34 +17,34 @@
   },
   "dependencies": {
     "update-notifier/update-notifier.d.ts": {
-      "ref": "95433230a9913054c57c715e6b91a9ae738d0b97"
+      "ref": "08ed4e9f1869e37e29514d862e0158b40e550232"
     },
     "insight/insight.d.ts": {
-      "ref": "95433230a9913054c57c715e6b91a9ae738d0b97"
+      "ref": "08ed4e9f1869e37e29514d862e0158b40e550232"
     },
     "mkdirp/mkdirp.d.ts": {
-      "ref": "95433230a9913054c57c715e6b91a9ae738d0b97"
+      "ref": "08ed4e9f1869e37e29514d862e0158b40e550232"
     },
     "rimraf/rimraf.d.ts": {
-      "ref": "95433230a9913054c57c715e6b91a9ae738d0b97"
+      "ref": "08ed4e9f1869e37e29514d862e0158b40e550232"
     },
     "node/node.d.ts": {
-      "ref": "95433230a9913054c57c715e6b91a9ae738d0b97"
+      "ref": "08ed4e9f1869e37e29514d862e0158b40e550232"
     },
     "mocha/mocha.d.ts": {
-      "ref": "95433230a9913054c57c715e6b91a9ae738d0b97"
+      "ref": "08ed4e9f1869e37e29514d862e0158b40e550232"
     },
     "power-assert/power-assert.d.ts": {
-      "ref": "95433230a9913054c57c715e6b91a9ae738d0b97"
+      "ref": "08ed4e9f1869e37e29514d862e0158b40e550232"
     },
     "nexpect/nexpect.d.ts": {
-      "ref": "95433230a9913054c57c715e6b91a9ae738d0b97"
+      "ref": "08ed4e9f1869e37e29514d862e0158b40e550232"
     },
     "which/which.d.ts": {
-      "ref": "95433230a9913054c57c715e6b91a9ae738d0b97"
+      "ref": "08ed4e9f1869e37e29514d862e0158b40e550232"
     },
     "archy/archy.d.ts": {
-      "ref": "95433230a9913054c57c715e6b91a9ae738d0b97"
+      "ref": "08ed4e9f1869e37e29514d862e0158b40e550232"
     }
   }
 }

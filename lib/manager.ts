@@ -199,7 +199,7 @@ export default class Manager {
                 }
             });
         });
-        return Promise.all(promises)
+        return Promise.all<pmb.SearchResult>(promises)
             .then((resultList: pmb.SearchResult[]) => {
                 if (!opts.save || opts.dryRun) {
                     return resultList;
@@ -433,7 +433,7 @@ export default class Manager {
                     }
                     return Promise.resolve(weights[0].result);
                 });
-                return Promise.all(promises)
+                return Promise.all<pmb.ResolvedDependency>(promises)
                     .then((depList: pmb.ResolvedDependency[]) => {
                         let removeList: pmb.ResolvedDependency[] = [];
                         let addToRemoveList = (dep: pmb.ResolvedDependency) => {
