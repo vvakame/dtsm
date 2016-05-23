@@ -122,7 +122,7 @@ root
     .description("fetch all data from remote repos")
     .action(() => {
         setup(root.parsedOpts)
-            .then(manager=> {
+            .then(manager => {
                 process.stdout.write("fetching...\n");
                 return manager.fetch();
             })
@@ -149,7 +149,7 @@ root
         // .action((...targets:string[])=> {
 
         setup(root.parsedOpts)
-            .then(manager=> {
+            .then(manager => {
                 if (!opts.interactive && args.files.length === 0) {
                     return manager.installFromFile({ dryRun: opts.dryRun })
                         .then(result => printResult(result))
@@ -203,7 +203,7 @@ root
         // .action((...targets:string[])=> {
 
         setup(root.parsedOpts)
-            .then(manager=> {
+            .then(manager => {
                 return manager.uninstall({ save: opts.save, dryRun: opts.dryRun }, args.files);
             })
             .then(resultList => resultList.forEach(dep => console.log(dep.depName)))
@@ -222,7 +222,7 @@ root
     .option("--dry-run", "save .d.ts file path into dtsm.json")
     .action((opts, args) => {
         setup(root.parsedOpts)
-            .then(manager=> {
+            .then(manager => {
                 return manager.update({ save: opts.save, dryRun: opts.dryRun });
             })
             .then(result => printResult(result))
@@ -241,7 +241,7 @@ root
     .option("--dry-run", "save .d.ts file path into dtsm.json")
     .action((opts, args) => {
         setup(root.parsedOpts)
-            .then(manager=> {
+            .then(manager => {
                 return manager.link({ save: opts.save, dryRun: opts.dryRun });
             })
             .then(result => printLinkResult(result))
@@ -253,7 +253,7 @@ root
     .description("show refs, it can use with --ref option")
     .action((opts, args) => {
         setup(root.parsedOpts)
-            .then(manager=> manager.refs())
+            .then(manager => manager.refs())
             .then(refs => {
                 refs = refs.filter(ref => {
                     // ignore github pull refs

@@ -108,7 +108,7 @@ describe("Manager", () => {
             return dtsm
                 .createManager()
                 .then(manager => {
-                    return manager.install({ save: false, dryRun: false }, ["angul"]).then(result=> {
+                    return manager.install({ save: false, dryRun: false }, ["angul"]).then(result => {
                         throw new Error("unexpected");
                     }, () => {
                         // TODO

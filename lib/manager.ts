@@ -175,7 +175,7 @@ export default class Manager {
 
     install(opts: { save: boolean; dryRun: boolean; }, phrases: string[]): Promise<pmb.Result> {
         if (phrases) {
-            phrases.forEach(phrase=> {
+            phrases.forEach(phrase => {
                 this.tracker.track("install", phrase);
             });
         }
@@ -290,7 +290,7 @@ export default class Manager {
                         });
                     });
                 },
-                resolveMissingDependency: (result: pmb.Result, missing: pmb.ResolvedDependency): Promise<pmb.Dependency>=> {
+                resolveMissingDependency: (result: pmb.Result, missing: pmb.ResolvedDependency): Promise<pmb.Dependency> => {
                     if (missing.depth === 1) {
                         return null;
                     }
@@ -654,7 +654,7 @@ export default class Manager {
         return Promise.all(promises)
             .then(() => {
                 let repo: pmb.Repo = this.backend.repos[0];
-                return repo.open().then(fs=> fs.showRef());
+                return repo.open().then(fs => fs.showRef());
             });
     }
 

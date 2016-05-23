@@ -32,7 +32,7 @@ describe("command line interface", () => {
 
     describe("init sub-command", () => {
 
-        it("make new dtsm.json", done=> {
+        it("make new dtsm.json", done => {
             var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             assert(!fs.existsSync(targetFile));
@@ -48,7 +48,7 @@ describe("command line interface", () => {
                 });
         });
 
-        it("make new dtsm.json with --remote option", done=> {
+        it("make new dtsm.json with --remote option", done => {
             var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             assert(!fs.existsSync(targetFile));
@@ -72,7 +72,7 @@ describe("command line interface", () => {
 
     describe("search sub-command", () => {
 
-        it("can find all .d.ts files without config file", done=> {
+        it("can find all .d.ts files without config file", done => {
             nexpect
                 .spawn("node", [dtsmPath, "search"])
                 .run((err, stdout, exit) => {
@@ -86,7 +86,7 @@ describe("command line interface", () => {
                 });
         });
 
-        it("can find all .d.ts files with config file", done=> {
+        it("can find all .d.ts files with config file", done => {
             var configFile = path.resolve(fixtureRootDir, "dtsm-gapidts-repo.json");
 
             nexpect
@@ -102,7 +102,7 @@ describe("command line interface", () => {
                 });
         });
 
-        it("can find all .d.ts files with --remote option", done=> {
+        it("can find all .d.ts files with --remote option", done => {
             nexpect
                 .spawn("node", [dtsmPath, "--remote", "https://github.com/vvakame/gapidts.git", "search"])
                 .run((err, stdout, exit) => {
@@ -116,7 +116,7 @@ describe("command line interface", () => {
                 });
         });
 
-        it("can find .d.ts files by phrase", done=> {
+        it("can find .d.ts files by phrase", done => {
             nexpect
                 .spawn("node", [dtsmPath, "search", "atom"])
                 .run((err, stdout, exit) => {
@@ -130,7 +130,7 @@ describe("command line interface", () => {
                 });
         });
 
-        it("can find .d.ts files with --raw option", done=> {
+        it("can find .d.ts files with --raw option", done => {
             nexpect
                 .spawn("node", [dtsmPath, "search", "--raw"])
                 .run((err, stdout, exit) => {
@@ -138,7 +138,7 @@ describe("command line interface", () => {
                     assert(exit === 0);
 
                     assert(stdout.length !== 0);
-                    stdout.forEach(line=> {
+                    stdout.forEach(line => {
                         assert(line.indexOf("\t") === -1);
                     });
 
@@ -149,7 +149,7 @@ describe("command line interface", () => {
 
     describe("fetch sub-command", () => {
 
-        it("can fetch remote info", done=> {
+        it("can fetch remote info", done => {
             nexpect
                 .spawn("node", [dtsmPath, "fetch"])
                 .run((err, stdout, exit) => {
@@ -160,7 +160,7 @@ describe("command line interface", () => {
                 });
         });
 
-        it("can fetch remote info with --remote option", done=> {
+        it("can fetch remote info with --remote option", done => {
             nexpect
                 .spawn("node", [dtsmPath, "--remote", "https://github.com/vvakame/gapidts.git", "fetch"])
                 .run((err, stdout, exit) => {
@@ -174,7 +174,7 @@ describe("command line interface", () => {
 
     describe("install sub-command", () => {
 
-        it("can install .d.ts file", done=> {
+        it("can install .d.ts file", done => {
             assert(!fs.existsSync(path.resolve(testWorkingDir, "typings/atom/atom.d.ts")));
             nexpect
                 .spawn("node", [dtsmPath, "install", "atom"], {
@@ -194,7 +194,7 @@ describe("command line interface", () => {
                 });
         });
 
-        it("can install .d.ts file with --dry-run option", done=> {
+        it("can install .d.ts file with --dry-run option", done => {
             assert(!fs.existsSync(path.resolve(testWorkingDir, "/typings/atom/atom.d.ts")));
             nexpect
                 .spawn("node", [dtsmPath, "install", "atom", "--dry-run"], {
@@ -214,7 +214,7 @@ describe("command line interface", () => {
                 });
         });
 
-        it("can install .d.ts file with --save option", done=> {
+        it("can install .d.ts file with --save option", done => {
             var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             assert(!fs.existsSync(targetFile));
@@ -248,7 +248,7 @@ describe("command line interface", () => {
                 });
         });
 
-        it("can install .d.ts file with --remote and --save option", done=> {
+        it("can install .d.ts file with --remote and --save option", done => {
             var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             assert(!fs.existsSync(targetFile));
@@ -453,7 +453,7 @@ describe("command line interface", () => {
 
     describe("refs sub-command", () => {
 
-        it("can show repository refs", done=> {
+        it("can show repository refs", done => {
             var targetFile = path.resolve(testWorkingDir, "dtsm.json");
 
             nexpect
